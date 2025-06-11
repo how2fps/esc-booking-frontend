@@ -1,0 +1,64 @@
+.rdrDateRangePickerWrapper {
+    position: absolute;
+    top: calc(100% + 20px);
+    left: 0;
+    width: 760px;
+    display: flex;
+    border-radius: 0 0 12px 12px;
+    overflow: hidden;
+    z-index: 2;
+
+    .rdrDefinedRangesWrapper {
+        display: none;
+    }
+
+    .rdrDateRangeWrapper {
+        width: 100%;
+
+        .rdrInRange,
+        .rdrStartEdge,
+        .rdrEndEdge {
+            background: var(--primary);
+        }
+
+        .rdrDateDisplayItemActive,
+        .rdrDayStartPreview,
+        .rdrDayInPreview,
+        .rdrDayEndPreview {
+            border-color: var(--primary);
+        }
+
+        .rdrDayToday .rdrDayNumber span:after {
+            background: var(--primary);
+        }
+
+        .rdrDateDisplay {
+            display: none;
+        }
+    }
+
+    @media (max-width: 992px) {
+        width: 700px;
+    }
+
+    @media (max-width: 767.98px) {
+        width: 100%;
+        top: calc(100% + 16px);
+
+        .rdrMonths {
+            display: block;
+
+            .rdrMonth {
+                width: 100%;
+            }
+        }
+    }
+}
+
+.style-three {
+    .rdrDateRangePickerWrapper {
+        top: calc(100% + 1px);
+        left: 0;
+        width: 100%;
+    }
+}

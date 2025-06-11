@@ -1,0 +1,45 @@
+/* term of use */
+.term-block {
+    .menu-tab {
+        .ct-tab {
+            position: relative;
+
+            a {
+                transition: 0.3s;
+                height: 100%;
+            }
+
+            &::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                height: 100%;
+                width: 3px;
+                background-color: var(--primary);
+                opacity: 0;
+                transform: translateX(-3px);
+                transition: all ease 0.5s;
+            }
+
+            &.active {
+                &::before {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+
+            &:hover {
+                a {
+                    color: var(--primary);
+                }
+            }
+        }
+
+        @media (max-width: 1023.98px) {
+            position: relative !important;
+            top: unset !important;
+        }
+    }
+}
