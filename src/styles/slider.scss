@@ -1,0 +1,120 @@
+.form-date-picker,
+.sub-menu-guest {
+    transform: translateY(20px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all ease 0.4s;
+    z-index: 3;
+
+    &.open {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+    }
+
+    &.style-detail {
+        position: relative;
+    }
+}
+
+.form-date-picker {
+    @media (max-width: 1024px) {
+        left: unset;
+        right: 0;
+    }
+}
+
+.leaflet-container {
+    width: 100vw !important;
+    height: 200vh !important;
+}
+
+.list-img-detail {
+    .slick-list {
+        margin-left: -5px;
+        margin-right: -5px;
+        cursor: grab;
+
+        .slick-track {
+            .slick-slide {
+                height: inherit !important;
+                padding: 0 5px;
+                outline: none !important;
+                border: none !important;
+
+                .bg-img {
+                    outline: none !important;
+                }
+            }
+        }
+    }
+
+    .slick-arrow {
+        z-index: 1;
+        width: 64px;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background-color: var(--white) !important;
+        transition: all ease 0.4s;
+
+        &::before {
+            font-size: 64px;
+            font-family: '__DM_Sans_6ff133';
+            opacity: 1;
+            color: var(--variant1);
+            position: absolute;
+            line-height: unset;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding-bottom: 9px;
+            transition: all ease 0.4s;
+        }
+
+        &:hover {
+            background-color: var(--black) !important;
+
+            &::before {
+                color: var(--white);
+            }
+        }
+
+        &.slick-prev {
+            left: 40px;
+
+            &::before {
+                content: '<';
+                padding-right: 3px;
+            }
+        }
+
+        &.slick-next {
+            right: 40px;
+
+            &::before {
+                content: '>';
+                padding-left: 3px;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            width: 40px;
+            height: 40px;
+
+            &::before {
+                font-size: 40px;
+            }
+
+            &.slick-prev {
+                left: 6px;
+            }
+
+            &.slick-next {
+                right: 6px;
+            }
+        }
+    }
+}

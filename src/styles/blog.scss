@@ -1,0 +1,136 @@
+/* blog-item */
+.blog-item {
+    &:hover {
+        .blog-thumb img {
+            transform: translateZ(0) scale(1.07);
+        }
+
+        .blog-title {
+            text-decoration: underline;
+        }
+    }
+}
+
+.blog {
+    &.default {
+        .list-blog {
+            .blog-item {
+                .blog-thumb {
+                    aspect-ratio: 3/2;
+
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                    }
+                }
+            }
+        }
+    }
+
+    &.detail {
+        .next-pre {
+
+            .left,
+            .right {
+                &:hover {
+                    .title {
+                        color: var(--primary);
+                    }
+                }
+            }
+        }
+
+        .list-review {
+            .item {
+                &:last-child {
+                    .user {
+                        padding-bottom: 0;
+                        border-bottom: none;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.news-insight-block {
+    .list-blog {
+        @media (max-width: 1023.98px) and (min-width: 640px) {
+            .blog-item {
+                &:last-child {
+                    display: none;
+                }
+            }
+        }
+    }
+}
+
+// list-tags
+.list-tags {
+    .tags {
+        &.active {
+            color: var(--black);
+        }
+    }
+}
+
+.list-pagination {
+    .pagination {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        li {
+            width: 44px;
+            height: 44px;
+            border-radius: 6px;
+            border: 1px solid var(--line);
+            transition: all ease 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            a {
+                font-size: 16px;
+                line-height: 24px;
+                font-weight: 600;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            &.previous,
+            &.next {
+                a {
+                    font-size: 20px;
+                    margin-top: -2px;
+                }
+            }
+
+            &:hover,
+            &.active {
+                background-color: var(--primary);
+                color: var(--white);
+            }
+
+            &.disabled {
+                display: none;
+            }
+        }
+
+        @media (max-width: 767.99px) {
+            li {
+                width: 36px;
+                height: 36px;
+
+                a {
+                    font-size: 14px;
+                    line-height: 24px;
+                }
+            }
+        }
+    }
+}

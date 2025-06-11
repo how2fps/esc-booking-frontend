@@ -1,0 +1,126 @@
+/* Slider - Swiper Pagination */
+.swiper {
+    cursor: grab;
+    user-select: none;
+}
+
+.swiper-slide {
+    height: unset !important;
+}
+
+.swiper.pb-14 {
+    padding-bottom: 56px;
+
+    .swiper-pagination {
+        bottom: 0;
+    }
+}
+
+.swiper-pagination .swiper-pagination-bullet {
+    position: relative;
+    margin: 0 8px !important;
+    background: var(--variant2);
+    border: 1px solid var(--variant2);
+    opacity: 1 !important;
+    transition: all ease 0.5s;
+}
+
+.swiper-pagination .swiper-pagination-bullet::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    padding: 8px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid transparent;
+    transition: all ease 0.5s;
+    border-radius: 50%;
+
+    @media (max-width: 767.98px) {
+        padding: 6px;
+    }
+}
+
+.swiper-pagination .swiper-pagination-bullet.swiper-pagination-bullet-active::before {
+    border-color: var(--primary);
+}
+
+.swiper-pagination .swiper-pagination-bullet-active {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+/* Slider - Swiper Navigation */
+// Cate home2
+.style-navigation {
+    position: relative;
+
+    .custom-swiper-button-prev,
+    .custom-swiper-button-next {
+        width: 44px;
+        height: 44px;
+        background-color: var(--white);
+        border-radius: 50%;
+        border: 1px solid var(--outline);
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 2;
+
+        &:hover {
+            background-color: var(--black);
+            color: var(--white);
+        }
+    }
+
+    .custom-swiper-button-prev {
+        left: -64px;
+    }
+
+    .custom-swiper-button-next {
+        right: -64px;
+    }
+
+    @media (max-width: 1460px) {
+
+        .custom-swiper-button-prev,
+        .custom-swiper-button-next {
+            width: 36px;
+            height: 36px;
+        }
+
+        .custom-swiper-button-prev {
+            left: -12px;
+        }
+
+        .custom-swiper-button-next {
+            right: -12px;
+        }
+    }
+
+    @media (max-width: 576px) {
+
+        .custom-swiper-button-prev,
+        .custom-swiper-button-next {
+            width: 32px;
+            height: 32px;
+        }
+    }
+
+    &.style-three {
+        .custom-swiper-button-prev {
+            left: 0;
+        }
+
+        .custom-swiper-button-next {
+            right: 0;
+        }
+    }
+}

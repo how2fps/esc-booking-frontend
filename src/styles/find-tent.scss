@@ -1,0 +1,209 @@
+// Sidebar
+.sidebar-filter {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: calc(100vh);
+    overflow: hidden;
+    background: rgba($color: #000000, $alpha: 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: all ease 0.4s;
+    transition-delay: 0.1s;
+    z-index: 1000;
+
+    .sidebar-main {
+        background-color: var(--white);
+        width: 320px;
+        padding: 100px 30px 20px;
+        margin-left: -100%;
+        transition: all ease 0.5s;
+        overflow-x: auto;
+        max-height: 100vh;
+        height: 100vh;
+
+        @media (max-width:400px) {
+            width: 280px;
+
+        }
+    }
+
+    &.open {
+        opacity: 1;
+        visibility: visible;
+
+        .sidebar-main {
+            margin-left: 0;
+        }
+    }
+
+    &.style-top {
+        .sidebar-main {
+            width: 100% !important;
+            padding: 40px 0;
+            margin-left: 0;
+            margin-top: -100%;
+            overflow-x: unset;
+            height: auto;
+            max-height: auto;
+        }
+
+        &.open {
+            .sidebar-main {
+                margin-top: 0;
+            }
+        }
+    }
+}
+
+
+// progress price
+.rc-slider {
+    .rc-slider-rail {
+        background-color: var(--line);
+    }
+
+    .rc-slider-track,
+    .rc-slider-tracks {
+        background-color: var(--primary);
+    }
+
+    .rc-slider-handle,
+    .rc-slider-handle:hover,
+    .rc-slider-handle.active {
+        background-color: var(--white);
+        border-color: var(--primary);
+        border-width: 3px;
+        opacity: 1;
+    }
+
+    .rc-slider-handle-dragging.rc-slider-handle-dragging.rc-slider-handle-dragging {
+        border-color: var(--primary);
+        box-shadow: none;
+    }
+}
+
+
+.block-input {
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--variant2);
+    border-radius: 4px;
+    position: relative;
+
+    input {
+        opacity: 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1;
+        cursor: pointer;
+    }
+
+    .icon-checkbox {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 26px;
+        height: 26px;
+        opacity: 0;
+    }
+
+    input:checked {
+        border: 1px solid var(--primary);
+    }
+
+    input:checked+.icon-checkbox {
+        opacity: 1;
+    }
+}
+
+.style-halfmap {
+    @media (min-width: 768px) {
+        height: calc(100vh - 80px);
+
+        .header-main {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            animation: unset !important;
+        }
+
+        .content-main {
+            >.left {
+                max-height: 100%;
+                height: 100%;
+                overflow-x: auto;
+                padding-bottom: 100px;
+            }
+
+            .list-pagination {
+                padding: 16px 0;
+                background-color: var(--white);
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                z-index: 2;
+            }
+        }
+    }
+}
+
+.style-halfmap-list {
+    .tent-item {
+        &.style-list {
+            .tent-main .infor {
+                @media (min-width: 640px) {
+                    margin-left: 50%;
+                }
+
+                @media (min-width: 768px) {
+                    margin-left: 36%;
+                }
+
+                @media (min-width: 1024px) {
+                    margin-left: 33.33333333%;
+                }
+
+                @media (min-width: 1536px) {
+                    margin-left: 30%;   
+                }
+            }
+        }
+    }
+
+    @media (min-width: 1280px) {
+        height: calc(100vh - 80px);
+
+        .header-main {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            animation: unset !important;
+        }
+
+        .content-main {
+            >.left {
+                max-height: 100%;
+                height: 100%;
+                overflow-x: auto;
+                padding-bottom: 100px;
+            }
+
+            .list-pagination {
+                padding: 16px 0;
+                background-color: var(--white);
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                z-index: 2;
+            }
+        }
+    }
+}

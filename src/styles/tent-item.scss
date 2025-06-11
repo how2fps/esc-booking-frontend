@@ -1,0 +1,147 @@
+.tent-item {
+    &.style-list {
+        .tent-main {
+            .infor {
+                @media (min-width: 640px) {
+                    margin-left: 50%;
+                }
+
+                @media (min-width: 768px) {
+                    margin-left: 36%;
+                }
+
+                @media (min-width: 1024px) {
+                    margin-left: 33.33333333%;
+                }
+
+                @media (min-width: 1280px) {
+                    margin-left: 25%;
+                }
+            }
+        }
+    }
+
+    .swiper-pagination {
+        left: 12px;
+        bottom: 12px;
+        border-radius: 16px;
+        background: rgba(56, 44, 40, 0.30);
+        color: var(--white);
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 20px;
+        padding: 1px 10px;
+        width: fit-content;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        span {
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 20px;
+        }
+    }
+}
+
+.item,
+.tent-item {
+    &.hover-scale {
+        cursor: pointer;
+
+        .swiper {
+            cursor: pointer;
+
+            &:active {
+                cursor: grabbing;
+            }
+        }
+
+        .bg-img {
+            img {
+                transition: 0.6s;
+            }
+        }
+
+        .name {
+            transition: 0.3s;
+        }
+
+        &:hover {
+            .bg-img {
+                img {
+                    transform: scale(1.08);
+                }
+            }
+
+            .name {
+                color: var(--primary);
+            }
+        }
+    }
+
+    .wishlist-icon {
+        background: rgba(56, 44, 40, 0.30);
+
+        &:hover,
+        &.active {
+            background-color: var(--primary);
+        }
+    }
+}
+
+// Detail
+.ten-detail {
+    @media (max-width: 1023.98px) {
+        overflow-x: hidden;
+    }
+}
+
+.list-review {
+    .item {
+        &:last-child {
+            .review {
+                border-bottom: none;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .list-img {
+                max-width: 100%;
+                overflow-x: auto;
+                // img {
+                //     &:last-child {
+                //         display: none;
+                //     }
+                // }
+            }
+        }
+    }
+}
+
+.date-sidebar-detail {
+    .rdrDateRangePickerWrapper {
+        top: 100%;
+        left: unset;
+        right: -1px;
+        width: 700px;
+
+        @media (max-width: 992px) {
+            width: 100%;
+        }
+    }
+}
+
+.explore-block {
+    .bg-img {
+
+        &:focus,
+        &:active,
+        &:hover {
+            .icon-block {
+                background-color: transparent;
+                opacity: 0.2;
+            }
+        }
+    }
+}
