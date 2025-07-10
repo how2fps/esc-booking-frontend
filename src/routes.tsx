@@ -6,6 +6,7 @@ import Home from "./features/pages/searchpage/home";
 const AppRoutes: React.FC = () => {
        return (
 
+
               <Routes>
                      <Route
                             path="/"
@@ -20,7 +21,13 @@ const AppRoutes: React.FC = () => {
                             path="/dashboard"
                             element={<Home />}
                      />
+
+                     <Route
+                            path="/dashboard"
+                            element={<Home />}
+                     />
               </Routes>
+
 
        );
 };

@@ -16,6 +16,9 @@
     "emitDeclarationOnly": true, 
     "jsx": "preserve",
     "allowJs": true,
+    "emitDeclarationOnly": true, 
+    "jsx": "preserve",
+    "allowJs": true,
 
     /* Linting */
     "strict": true,
