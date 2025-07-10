@@ -1,0 +1,172 @@
+[
+    {
+        "id": "1",
+        "name": "Ronald Richards",
+        "position": "Ethical Hacker",
+        "avatar": "/images/avatar/60x60.png",
+        "date": "November 10, 2023",
+        "address": "Tokyo, Japan",
+        "description": "Our GlampHub experience was nothing short of amazing. It offered a tranquil escape from the daily grind, and we were impressed by the sustainable practices and the sense of community.",
+        "images": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "star": 5
+    },
+    {
+        "id": "2",
+        "name": "Darlene Robertson",
+        "position": "Scrum Master",
+        "avatar": "/images/avatar/60x60.png",
+        "date": "November 11, 2023",
+        "address": "Madrid, Spain",
+        "description": "Choosing GlampHub for our glamping retreat was an excellent decision. It provided a serene environment away from the hustle of the city, and we loved the eco-friendly approach and the camaraderie.",
+        "images": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "star": 5
+    },
+    {
+        "id": "3",
+        "name": "Floyd Miles",
+        "position": "Project Manager",
+        "avatar": "/images/avatar/60x60.png",
+        "date": "November 13, 2023",
+        "address": "Manchester, UK",
+        "description": "GlampHub exceeded our expectations! It was an oasis of calm amidst nature, and we appreciated the eco-conscious mindset and the friendly ambiance.",
+        "images": [],
+        "star": 4
+    },
+    {
+        "id": "4",
+        "name": "Jerome Bell",
+        "position": "Team Leader",
+        "avatar": "/images/avatar/60x60.png",
+        "date": "November 15, 2023",
+        "address": "California, USA",
+        "description": "Our stay at GlampHub was fantastic. It allowed us to unwind from our busy lives, and we admired the commitment to sustainability and the welcoming vibe of the place.",
+        "images": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "star": 5
+    },
+    {
+        "id": "5",
+        "name": "Mina Bonino",
+        "position": "UI/UX Designer",
+        "avatar": "/images/avatar/60x60.png",
+        "date": "November 18, 2023",
+        "address": "Paris, France",
+        "description": "GlampHub was a perfect getaway! It offered a peaceful respite, and we were delighted by the eco-friendly initiatives and the inclusive atmosphere.",
+        "images": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "star": 4
+    },
+    {
+        "id": "6",
+        "name": "Maria Sarapova",
+        "position": "UI/UX Designer",
+        "avatar": "/images/avatar/60x60.png",
+        "date": "November 19, 2023",
+        "address": "London, UK",
+        "description": "We had a wonderful time at GlampHub. It provided a much-needed escape, and we were pleased with the focus on sustainability and the communal spirit.",
+        "images": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "star": 5
+    },
+    {
+        "id": "7",
+        "name": "Christian Eriksen",
+        "position": "Project Manager",
+        "avatar": "/images/avatar/60x60.png",
+        "date": "November 15, 2023",
+        "address": "California, USA",
+        "description": "Choosing GlampHub for our glamping adventure was a brilliant choice. It provided a serene retreat, and we were impressed by the eco-conscious values and the sense of togetherness.",
+        "images": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "star": 5
+    },
+    {
+        "id": "8",
+        "name": "Emily Georgina",
+        "position": "Software Tester",
+        "avatar": "/images/avatar/60x60.png",
+        "date": "November 18, 2023",
+        "address": "Paris, France",
+        "description": "Our experience with GlampHub was incredible. It offered tranquility in nature's lap, and we valued the eco-friendly mindset and the warmth of the community.",
+        "images": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "star": 5
+    },
+    {
+        "id": "9",
+        "name": "Carolina Christin",
+        "position": "Software Development Manager",
+        "avatar": "/images/avatar/60x60.png",
+        "date": "November 19, 2023",
+        "address": "London, UK",
+        "description": "GlampHub was an exceptional choice for our glamping trip. It offered a peaceful haven, and we admired the commitment to sustainability and the friendly atmosphere.",
+        "images": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "star": 4
+    },
+    {
+        "id": "10",
+        "name": "Yoshida Emi",
+        "position": "Team Leader",
+        "avatar": "/images/avatar/60x60.png",
+        "date": "November 10, 2023",
+        "address": "Tokyo, Japan",
+        "description": "Our time at GlampHub was delightful. It offered a much-needed break, and we appreciated the focus on sustainability and the inclusive environment.",
+        "images": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "star": 4
+    },
+    {
+        "id": "11",
+        "name": "Georgina Olsen",
+        "position": "Software Tester",
+        "avatar": "/images/avatar/60x60.png",
+        "date": "November 11, 2023",
+        "address": "Madrid, Spain",
+        "description": "Choosing GlampHub for our glamping getaway was a fantastic decision. It provided a serene escape, and we loved the eco-friendly approach and the sense of belonging.",
+        "images": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "star": 5
+    },
+    {
+        "id": "12",
+        "name": "Elizabeth Adele",
+        "position": "Software Developer",
+        "avatar": "/images/avatar/60x60.png",
+        "date": "November 13, 2023",
+        "address": "Manchester, UK",
+        "description": "GlampHub provided an outstanding glamping experience. It offered serenity amidst nature, and we cherished the eco-conscious values and the camaraderie among guests.",
+        "images": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "star": 5
+    }
+]

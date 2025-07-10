@@ -1,10 +1,11 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import { HomePage } from "./features/home/HomePage";
-import { SignupForm } from "./features/signup-form/SignupForm";
-
+import { HomePage } from "./features/pages/home/HomePage";
+import { SignupForm } from "./features/pages/signup-form/SignupForm";
+import Home from "./features/pages/searchpage/home";
 const AppRoutes: React.FC = () => {
        return (
+
               <Routes>
                      <Route
                             path="/"
@@ -14,7 +15,13 @@ const AppRoutes: React.FC = () => {
                             path="/signup"
                             element={<SignupForm />}
                      />
+
+                     <Route
+                            path="/dashboard"
+                            element={<Home />}
+                     />
               </Routes>
+
        );
 };
 
