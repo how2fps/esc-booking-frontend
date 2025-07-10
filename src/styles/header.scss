@@ -1,6 +1,7 @@
 .header-main {
-    position: relative;
+    position: sticky;
     border-bottom: 1px solid var(--outline);
+
     z-index: 1003;
 
     &.fixed {

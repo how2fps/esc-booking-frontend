@@ -1,5 +1,5 @@
 import React from 'react'
-import {  Link ,useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import * as Icon from 'phosphor-react'
 import TextHeading from '../TextHeading/TextHeading'
 
