@@ -55,13 +55,21 @@ select {
     appearance: none;
     outline: none;
 }
-
+.custom-select {
+  background-color: #B4ABA8; /* Blue background */
+  color: #fff;               /* White text */
+  border: 2px solid #1e293b; /* Custom border */
+  border-radius: 8px;
+  padding: 14px 15px;
+  padding-right: 34px; /* Adjusted padding for icon */
+}
 .select-block {
     position: relative;
-
+    
     >.icon {
         position: absolute;
         top: 50%;
+    
         transform: translateY(calc(-50% - 1px));
     }
 }
