@@ -85,8 +85,8 @@ const HeaderOne = () => {
                         </ul>
                     </div>
                     <div className="right flex items-center gap-3">
-
-                        <Link to={'/signup '} className="text-button max-sm:hidden">Sign Up</Link>
+                        <Link to="/login" className="text-button max-sm:hidden">Log In</Link>
+                        <Link to="/signup" className="text-button max-sm:hidden">Sign Up</Link>
                     </div>
                 </div>
             </div>

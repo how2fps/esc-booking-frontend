@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import { HomePage } from "./features/pages/home/HomePage";
-import { SignupForm } from "./features/pages/signup-form/SignupForm";
+import SignupForm from "./features/pages/signup-form/SignupForm";
 import Home from "./features/pages/searchpage/home";
 import HotelDetail from "./features/pages/hotel-detail/hotel-detail";
 import Listings from "./features/pages/hotel-list/hotel-list";
