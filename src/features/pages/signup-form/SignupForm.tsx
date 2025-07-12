@@ -6,7 +6,7 @@ import HeaderOne from '../../components/Header/HeaderOne'
 import Footer from '../../components/Footer/Footer'
 import { Eye, EyeSlash } from 'phosphor-react';
 
-const Signup = () => {
+const SignupForm = () => {
        const [name, setName] = useState('')
        const [email, setEmail] = useState('')
        const [password, setPassword] = useState('')
@@ -138,4 +138,4 @@ const Signup = () => {
     )
 }
 
-export default Signup
+export default SignupForm
