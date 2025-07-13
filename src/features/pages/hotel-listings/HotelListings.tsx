@@ -1,21 +1,21 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import { useState } from 'react'
 
-import HeaderOne from '../../components/Header/Header'
-import SliderTwo from '../../components/Slider/Slider'
-import Footer from '../../components/Footer/Footer'
-import tentData from '../../components/data/Tent.json'
-import { TentType } from '../../type/TentType'
-import TentItem from '../../components/Tent/TentItem'
-import HandlePagination from '../../components/Other/HandlePagination'
 import * as Icon from 'phosphor-react'
 import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
-import { useSearchParams } from "react-router";
 import { Suspense } from 'react'
+import { useSearchParams } from "react-router"
+import Footer from '../../components/Footer/Footer'
+import HeaderOne from '../../components/Header/Header'
+import HandlePagination from '../../components/Other/HandlePagination'
+import SliderTwo from '../../components/Slider/Slider'
+import TentItem from '../../components/Tent/TentItem'
+import tentData from '../../components/data/Tent.json'
+import type { TentType } from '../../type/TentType'
 
-import { Outlet, Link } from "react-router-dom";
+import { Link } from "react-router-dom"
 
 
 type Service = string;
@@ -65,11 +65,8 @@ const TopMapSidebarContent = () => {
   };
 
   const handleService = (item: Service) => {
-    // check service selected
     const isSelected = service.includes(item);
 
-    // If selected, remove from list
-    // else, add to list
     if (isSelected) {
       setService(service.filter((service) => service !== item));
     } else {
@@ -79,11 +76,8 @@ const TopMapSidebarContent = () => {
   };
 
   const handleAmenities = (item: Amenities) => {
-    // check amenities selected
     const isSelected = amenities.includes(item);
 
-    // If selected, remove from list
-    // else, add to list
     if (isSelected) {
       setAmenities(amenities.filter((amenities) => amenities !== item));
     } else {
@@ -93,11 +87,8 @@ const TopMapSidebarContent = () => {
   };
 
   const handleActivities = (item: Activities) => {
-    // check activities selected
     const isSelected = activities.includes(item);
 
-    // If selected, remove from list
-    // else, add to list
     if (isSelected) {
       setActivities(activities.filter((activities) => activities !== item));
     } else {
@@ -110,8 +101,6 @@ const TopMapSidebarContent = () => {
     // check terrain selected
     const isSelected = terrain.includes(item);
 
-    // If selected, remove from list
-    // else, add to list
     if (isSelected) {
       setTerrain(terrain.filter((terrain) => terrain !== item));
     } else {
@@ -120,7 +109,6 @@ const TopMapSidebarContent = () => {
     setCurrentPage(0);
   };
 
-  // Filter tent
   let filteredData = tentData.filter(tent => {
     let isDataCategoryMatch = true;
     if (categoryParams) {
@@ -166,7 +154,6 @@ const TopMapSidebarContent = () => {
   })
 
 
-  // Create a copy array filtered to sort
   let sortedData = [...filteredData];
 
   if (sortOption === 'starHighToLow') {
