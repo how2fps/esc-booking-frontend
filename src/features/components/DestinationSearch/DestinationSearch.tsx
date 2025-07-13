@@ -52,7 +52,7 @@ const loadOptions = (inputValue: string, callback: (options: { value: string; la
        }, 500);
 };
 
-const SliderOne = () => {
+const DestinationSearch = () => {
        const [openDate, setOpenDate] = useState(false);
        const [openGuest, setOpenGuest] = useState(false);
        const [location, setLocation] = useState({
@@ -151,11 +151,7 @@ const SliderOne = () => {
                             <div className="container py-[176px]">
                                    <div className="content w-full relative">
                                           <div className="heading flex-col items-center justify-center">
-                                                 <div className="heading2 text-white text-center">Find yourself outside</div>
-                                                 <div className="heading6 text-white text-center mt-3">
-                                                        Reserve beautiful private RV spots and campsites—found <br className="max-sm:hidden" />
-                                                        only on Hipcamp.
-                                                 </div>
+                                                 <div className="heading2 text-white text-center">Pick your next journey</div>
                                           </div>
 
                                           <div className="form-search md:mt-10 mt-6 w-full">
@@ -179,7 +175,6 @@ const SliderOne = () => {
                                                                              }),
                                                                       }}
                                                                />
-
                                                                <p data-testid="uid">Selected: {location ? location.value : "None"}</p>
                                                         </div>
                                                         <div className="relative lg:w-full md:w-[48%] w-full">
@@ -300,4 +295,4 @@ const SliderOne = () => {
        );
 };
 
-export default SliderOne;
+export default DestinationSearch;

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import * as Icon from "phosphor-react";
-import HeaderOne from "../../components/Header/HeaderOne";
+import HeaderOne from "../../components/Header/Header";
 
 const Login = () => {
        return (
