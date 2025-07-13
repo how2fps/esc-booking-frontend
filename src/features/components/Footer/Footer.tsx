@@ -1,8 +1,6 @@
 'use client'
 
-import React from 'react'
-
-import Link from 'next/link'
+import Link from 'next/link';
 import * as Icon from "phosphor-react";
 
 const Footer = () => {
@@ -17,9 +15,8 @@ const Footer = () => {
                                      src={'/images/logo/Vector.png'}
                                      width={2000}
                                      height={1000}
-                                    alt='logo'
-
-                                      className='sm:w-[40px] w-[40px]'
+                                     alt='logo'
+                                   className='sm:w-[40px] w-[40px]'
                                 />
                             </Link>
                             <div className="flex items-center flex-wrap gap-4">
