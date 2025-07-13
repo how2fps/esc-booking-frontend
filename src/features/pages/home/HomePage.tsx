@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import HeaderOne from '../../components/Header/HeaderOne';
+import HeaderOne from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 
 const images = [

@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 
 import Link from 'next/link'
 import * as Icon from 'phosphor-react'
-import HeaderOne from '../../components/Header/HeaderOne'
+import HeaderOne from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
 import tentData from '../../components/data/Tent.json'
 
