@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import HeaderOne from '../../components/Header/Header';
+import { useEffect, useState } from 'react';
 import Footer from '../../components/Footer/Footer';
+import HeaderOne from '../../components/Header/Header';
 
 const images = [
   '/images/home/mountainhero.jpg',
@@ -34,7 +34,6 @@ const HomePage = () => {
           />
         ))}
 
-        {/* Overlayed Call-To-Action */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-20 px-4">
               <h1 className="text-white font-extrabold text-4xl md:text-5xl drop-shadow-lg">
               Unlock Unique Stays at Exclusive Prices

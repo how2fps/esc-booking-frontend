@@ -1,15 +1,13 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
+import DestinationSearch from "./features/pages/destination-search/DestinationSearch";
 import HomePage from "./features/pages/home/HomePage";
-import SignupForm from "./features/pages/signup-form/SignupForm";
-import Home from "./features/pages/searchpage/home";
-import HotelDetail from "./features/pages/hotel-detail/hotel-detail";
-import Listings from "./features/pages/hotel-list/hotel-list";
+import HotelDetails from "./features/pages/hotel-detail/HotelDetails";
+import Listings from "./features/pages/hotel-listings/HotelListings";
 import Login from "./features/pages/login/LoginForm";
+import SignupForm from "./features/pages/signup-form/SignupForm";
 const AppRoutes: React.FC = () => {
        return (
-
-
               <Routes>
                      <Route
                             path="/"
@@ -19,22 +17,16 @@ const AppRoutes: React.FC = () => {
                             path="/signup"
                             element={<SignupForm />}
                      />
-
                      <Route
                             path="/dashboard"
-                            element={<Home />}
-                     />
-
-                     <Route
-                            path="/dashboard"
-                            element={<Home />}
+                            element={<DestinationSearch />}
                      />
                      <Route
                             path="/hotel"
-                            element={<HotelDetail />}
+                            element={<HotelDetails />}
                      />
                      <Route
-                            path="/hotel-list"
+                            path="/hotels"
                             element={<Listings />}
                      />
                      <Route
@@ -42,8 +34,6 @@ const AppRoutes: React.FC = () => {
                             element={<Login />}
                      />
               </Routes>
-
-
        );
 };
 
