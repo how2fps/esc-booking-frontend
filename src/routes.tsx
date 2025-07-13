@@ -13,6 +13,10 @@ const AppRoutes: React.FC = () => {
                             element={<Home />}
                      />
                      <Route
+                            path="/home"
+                            element={<Home />}
+                     />
+                     <Route
                             path="/dashboard"
                             element={<Home />}
                      />
