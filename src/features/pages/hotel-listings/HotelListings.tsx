@@ -194,15 +194,12 @@ const TopMapSidebarContent = () => {
   }
 
 
-  // Find page number base on filteredData
   const pageCount = Math.ceil(filteredData.length / tentsPerPage);
 
-  // If page number 0, set current page = 0
   if (pageCount === 0) {
     setCurrentPage(0);
   }
 
-  // Get tent data for current page
   let currentTents: TentType[];
 
   if (filteredData.length > 0) {
