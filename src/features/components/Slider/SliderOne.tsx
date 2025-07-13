@@ -187,38 +187,72 @@ const SliderOne = () => {
 
                         <div className="form-search md:mt-10 mt-6 w-full">
                             <form className='bg-white rounded-lg p-5 flex max-lg:flex-wrap items-center justify-between gap-5 relative'>
-                                <div className="select-block lg:w-full md:w-[48%] w-full">
-                                  
-
-                                      <AsyncSelect
-                                             data-testid="async-select"
-                                          loadOptions={loadOptions}
-                                          defaultOptions={true}
-                                          noOptionsMessage={noOptionsMessage}
-                                          value ={location}
-                                          onChange={setLocation}
-                                          styles={{
+                                {/* Location Input */}
+                                <div className="select-block lg:w-full md:w-[70%] w-full">
+                                    <AsyncSelect
+                                        data-testid="async-select"
+                                        loadOptions={loadOptions}
+                                        defaultOptions={true}
+                                        noOptionsMessage={noOptionsMessage}
+                                        value ={location}
+                                        onChange={setLocation}
+                                        components={{
+                                            IndicatorSeparator: () => null,
+                                        }}
+                                        styles={{
                                             control: (provided) => ({
-                                                ...provided,
-                                                width: 300, // Set your desired width here
-
+                                              ...provided,
+                                              height: '54px',
+                                              minHeight: '54px',
+                                              width: 420,
+                                              borderRadius: '0.5rem',
+                                              paddingLeft: '0.5rem',
+                                              paddingRight: '1.25rem',
+                                              borderColor: '#E5E7EB',
+                                              boxShadow: 'none',
+                                              alignItems: 'center',
                                             }),
+                                            dropdownIndicator: (provided) => ({
+                                                ...provided,
+                                                position: 'absolute',
+                                                right: '12px',
+                                                color: '#9CA3AF',
+                                                padding: 0,
+                                                alignItems: 'center',
+                                              }),
                                             menu: (provided) => ({
                                                 ...provided,
-                                                width: 300,
+                                                width: 420,
+                                                verticalAlign: 'center',
+                                            }),
+                                            valueContainer: (provided) => ({
+                                                ...provided,
+                                                paddingLeft: '0.5rem',
+                                                paddingRight: '1.25rem',
+                                                verticalAlign: 'center',
+                                            }),
+                                            input: (provided) => ({
+                                                ...provided,
+                                                margin: 0,
+                                                padding: 0,
+                                                verticalAlign: 'center',
+                                              }),
+                                            indicatorsContainer: (provided) => ({
+                                                ...provided,
+                                                height: '56px',
+                                                verticalAlign: 'center',
                                             }),
                                         }}
-                                      />
-                                      
-                                           <p data-testid="uid" >Selected: {location ? location.value : 'None'}</p>
-                                     
+                                    />  
                                 </div>
-                                <div className="relative lg:w-full md:w-[48%] w-full">
+
+                                {/* Date Input */}
+                                <div className="relative lg:w-full md:w-[42%] w-full">
                                     <div className='select-block w-full' onClick={handleOpenDate}>
                                         <Icon.CalendarBlank className='icon text-xl left-5' />
                                         {/* <input className='body2 w-full pl-12 pr-5 py-3 border border-outline rounded-lg' type="text" placeholder='Add Dates' /> */}
                                         <input
-                                            className='body2 w-full pl-12 pr-5 py-4 border border-outline rounded-lg text-sm'
+                                            className='body2 w-full pl-12 pr-5 py-3 border border-outline rounded-lg'
                                             type="text"
                                             placeholder='Add Dates'
                                             value={`${state[0].startDate.toLocaleDateString()} - ${state[0].endDate.toLocaleDateString()}`}
@@ -239,7 +273,9 @@ const SliderOne = () => {
                                         direction="horizontal"
                                     />
                                 </div>
-                                <div className="relative lg:w-full md:w-[48%] w-full">
+
+                                {/* Guest and Room Input */}
+                                <div className="relative lg:w-full md:w-[42%] w-full">
                                     <div className="select-block w-full" onClick={handleOpenGuest}>
                                         
                                         <Icon.Users className='icon text-xl left-5' />
@@ -247,7 +283,7 @@ const SliderOne = () => {
                                             className='body2 w-full pl-12 pr-5 py-3 border border-outline rounded-lg'
                                             type="text"
                                             placeholder='Add Guest'
-                                            value={`${guest.adult > 0 ? (guest.adult === 1 ? (guest.adult + ' adult') : (guest.adult + ' adults')) : ('')}${guest.children > 0 ? (guest.children === 1 ? (', ' + guest.children + ' children') : (', ' + guest.children + ' childrens')) : ('')}`}
+                                            value={`${guest.adult} ${guest.adult === 1 ? 'adult' : 'adults'} · ${guest.children} ${guest.children === 1 ? 'child' : 'children'} · ${guest.room} ${guest.room === 1 ? 'room' : 'rooms'}`}
                                             readOnly
                               
                                         />
@@ -295,29 +331,17 @@ const SliderOne = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        
-                                        <div
-                                            className="button-main w-full text-center"
-                                            onClick={() => setOpenGuest(false)}
-                                        >
-                                            Done
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className ="relative lg:w-full md:w-[48%] w-full">
-
-
-                                    <div className="item flex items-center justify-between pb-3 pt-3 border border-outline rounded-lg"> 
-                                            <div className="left pl-5">
-                                                <p>No. of Room</p>
-                                                
+                                        <div className="item flex items-center justify-between pb-4 pt-4 border-b border-outline">
+                                            <div className="left">
+                                                <p>Rooms</p>
+                                                <div className="caption1 text-variant1">(Number of rooms)</div>
                                             </div>
                                             <div className="right flex items-center gap-5">
                                                 <div
                                                     className={`minus w-8 h-8 flex items-center justify-center rounded-full border border-outline duration-300 ${guest.room === 0 ? 'opacity-[0.4] cursor-default' : 'cursor-pointer hover:bg-black hover:text-white'}`}
                                                     onClick={() => decreaseGuest('room')}
                                                 >
-                                                    <Icon.Minus weight='bold' />    
+                                                    <Icon.Minus weight='bold' />
                                                 </div>
                                                 <div className="text-title">{guest.room}</div>
                                                 <div
@@ -328,8 +352,18 @@ const SliderOne = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                  
+
+                                        <div
+                                            className="button-main w-full text-center"
+                                            onClick={() => setOpenGuest(false)}
+                                        >
+                                            Done
+                                        </div>
+                                    </div>
+
                                 </div>
+
+                                {/* Button */}
                                 <div className="button-block flex-shrink-0 max-lg:w-[48%] max-md:w-full">
                                     <div className='button-main max-lg:w-full'><Link to={`/camp/topmap-grid?location=${location ? location.value : 'None'}&startDate=${state[0].startDate.toLocaleDateString()}&endDate=${state[0].endDate.toLocaleDateString()}&adult=${guest.adult}&children=${guest.children}&room=${guest.room}`}>Search</Link></div>
                                 </div>
