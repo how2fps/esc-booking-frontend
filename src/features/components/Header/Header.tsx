@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { Link } from "react-router-dom";
 
-const HeaderOne = () => {
+const Header = () => {
        const pathname = usePathname();
 
        return (
@@ -53,4 +53,4 @@ const HeaderOne = () => {
        );
 };
 
-export default HeaderOne;
+export default Header;

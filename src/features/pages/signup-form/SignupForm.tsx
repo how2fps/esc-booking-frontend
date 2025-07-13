@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Eye, EyeSlash } from "phosphor-react";
 import React, { useEffect, useState } from "react";
+import Footer from "../../components/Footer/Footer";
 import HeaderOne from "../../components/Header/Header";
 
 const SignupForm = () => {
@@ -175,6 +176,7 @@ const SignupForm = () => {
                                    </div>
                             </div>
                      </div>
+                     <Footer />
               </>
        );
 };
