@@ -1,24 +1,20 @@
 'use client'
 
-import React from 'react'
-
+import Category from '../../components/Category/Category'
+import Footer from '../../components/Footer/Footer'
 import HeaderOne from '../../components/Header/Header'
 import SliderOne from '../../components/Slider/Slider'
-import Footer from '../../components/Footer/Footer'
-import Category from '../../components/Category/Category'
-const Home = () => {
+const DestinationSearch = () => {
   return (
     <>
-    
       <div className="page-one ">
         <HeaderOne />
         <SliderOne />
         <Category />
         <Footer />
-
       </div>
     </>
   )
 }
 
-export default Home
+export default DestinationSearch;

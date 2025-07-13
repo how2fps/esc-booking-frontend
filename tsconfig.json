@@ -1,12 +1,9 @@
 {
-  "compilerOptions": {
-      "jsx": "react"
-  },
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ],
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+       "compilerOptions": {
+              "jsx": "react"
+       },
+       "files": [],
+       "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }],
+       "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+       "exclude": ["node_modules"]
 }
