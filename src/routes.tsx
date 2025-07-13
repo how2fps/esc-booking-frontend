@@ -1,33 +1,28 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import { HomePage } from "./features/pages/home/HomePage";
-import SignupForm from "./features/pages/signup-form/SignupForm";
-import Home from "./features/pages/searchpage/home";
-import HotelDetail from "./features/pages/hotel-detail/hotel-detail";
-import Listings from "./features/pages/hotel-list/hotel-list";
-import Login from "./features/pages/login/page";
+import Home from "./features/pages/home/Home";
+import HotelDetail from "./features/pages/hotel-details/HotelDetails";
+import HotelListings from "./features/pages/hotel-list/HotelList";
+import Login from "./features/pages/login/LoginForm";
+import SignupForm from "./features/pages/sign-up/SignUpForm";
 const AppRoutes: React.FC = () => {
        return (
-
-
               <Routes>
                      <Route
                             path="/"
-                            element={<HomePage />}
+                            element={<Home />}
+                     />
+                     <Route
+                            path="/dashboard"
+                            element={<Home />}
+                     />
+                     <Route
+                            path="/login"
+                            element={<Login />}
                      />
                      <Route
                             path="/signup"
                             element={<SignupForm />}
-                     />
-
-                     <Route
-                            path="/dashboard"
-                            element={<Home />}
-                     />
-
-                     <Route
-                            path="/dashboard"
-                            element={<Home />}
                      />
                      <Route
                             path="/hotel"
@@ -35,15 +30,9 @@ const AppRoutes: React.FC = () => {
                      />
                      <Route
                             path="/hotel-list"
-                            element={<Listings />}
-                     />
-                     <Route
-                            path="/login"
-                            element={<Login />}
+                            element={<HotelListings />}
                      />
               </Routes>
-
-
        );
 };
 
