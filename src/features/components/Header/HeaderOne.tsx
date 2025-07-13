@@ -46,7 +46,7 @@ const HeaderOne = () => {
                     <div className="menu-main h-full max-lg:hidden">
                         <ul className='flex items-center xl:gap-[50px] gap-10 h-full'>
                             <li className='h-full relative'>
-                                    <Link to="/" className={`text-button duration-300 h-full flex items-center justify-center gap-1 ${pathname === '/' ? 'active' : ''}`}>
+                                    <Link to="/dashboard" className={`text-button duration-300 h-full flex items-center justify-center gap-1 ${pathname === '/' ? 'active' : ''}`}>
                                         Home
                                     </Link>
                             </li>
