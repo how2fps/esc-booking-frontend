@@ -3,17 +3,20 @@
 import Link from "next/link";
 import { Eye, EyeSlash } from "phosphor-react";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import HeaderOne from "../../components/Header/Header";
 
 const SignupForm = () => {
        const [name, setName] = useState("");
        const [email, setEmail] = useState("");
        const [password, setPassword] = useState("");
+       const [phoneNumber, setPhoneNumber] = useState("");
        const [showPassword, setShowPassword] = useState(false);
        const [confirmPassword, setConfirmPassword] = useState("");
        const [showConfirmPassword, setShowConfirmPassword] = useState(false);
        const [errors, setErrors] = useState<string[]>([]);
        const [isValid, setIsValid] = useState(false);
+       const navigate = useNavigate();
 
        useEffect(() => {
               const validationErrors: string[] = [];
@@ -26,9 +29,30 @@ const SignupForm = () => {
               setIsValid(validationErrors.length === 0);
        }, [password, confirmPassword]);
 
-       const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+       const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
               e.preventDefault();
               if (isValid) {
+                     try {
+                            const response = await fetch("http://localhost:3000/api/users/signup", {
+                                   method: "POST",
+                                   headers: {
+                                          "Content-Type": "application/json",
+                                   },
+                                   body: JSON.stringify({
+                                          name,
+                                          email,
+                                          phone_number: phoneNumber,
+                                          password,
+                                   }),
+                            });
+                            const data = await response.json();
+                            if (data.success) {
+                                   navigate("/login");
+                            }
+                     } catch (error) {
+                            console.log(error);
+                     }
+
                      console.log("Sign up with:", { name, email, password });
               }
        };
@@ -42,14 +66,12 @@ const SignupForm = () => {
                                           <div
                                                  id="form-signup"
                                                  className="xl:basis-1/3 lg:basis-1/2 sm:basis-2/3 max-sm:w-full">
-                                                 <div className="heading3 text-center">Sign Up</div>
+                                                 <span className="heading3 text-center">Sign Up</span>
                                                  <form
                                                         className="md:mt-10 mt-6"
                                                         onSubmit={handleSubmit}>
-                                                        <div className="name mb-5">
-                                                               <label
-                                                                      htmlFor="name"
-                                                                      className="text-variant1">
+                                                        <div className="mb-5">
+                                                               <label htmlFor="name">
                                                                       Name<span className="text-primary">*</span>
                                                                </label>
                                                                <input
@@ -62,10 +84,8 @@ const SignupForm = () => {
                                                                />
                                                         </div>
 
-                                                        <div className="email mb-5">
-                                                               <label
-                                                                      htmlFor="email"
-                                                                      className="text-variant1">
+                                                        <div className="mb-5">
+                                                               <label htmlFor="email">
                                                                       Email address<span className="text-primary">*</span>
                                                                </label>
                                                                <input
@@ -78,10 +98,22 @@ const SignupForm = () => {
                                                                />
                                                         </div>
 
-                                                        <div className="pass mb-5 relative">
-                                                               <label
-                                                                      htmlFor="password"
-                                                                      className="text-variant1">
+                                                        <div className="mb-5">
+                                                               <label htmlFor="phoneNumber">
+                                                                      Phone Number<span className="text-primary">*</span>
+                                                               </label>
+                                                               <input
+                                                                      type="text"
+                                                                      id="phoneNumber"
+                                                                      className="border-line px-4 pt-3 pb-3 w-full rounded-lg mt-2 text-black bg-[#d1d1d1]"
+                                                                      value={phoneNumber}
+                                                                      onChange={(e) => setPhoneNumber(e.target.value)}
+                                                                      required
+                                                               />
+                                                        </div>
+
+                                                        <div className="mb-5 ">
+                                                               <label htmlFor="password">
                                                                       Password<span className="text-primary">*</span>
                                                                </label>
                                                                <input
@@ -110,10 +142,8 @@ const SignupForm = () => {
                                                                </button>
                                                         </div>
 
-                                                        <div className="pass mb-5 relative">
-                                                               <label
-                                                                      htmlFor="confirmPassword"
-                                                                      className="text-variant1">
+                                                        <div className="mb-5">
+                                                               <label htmlFor="confirmPassword">
                                                                       Confirm Password<span className="text-primary">*</span>
                                                                </label>
                                                                <input
