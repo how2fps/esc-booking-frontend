@@ -1,6 +1,6 @@
 import { render, screen, fireEvent,waitFor  } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import  SliderOne  from '../src/features/components/Slider/SliderOne';
+import  SliderOne  from '../src/features/components/Slider/Slider';
 import { MemoryRouter } from 'react-router-dom';
 import userEvent  from '@testing-library/user-event';
 // Mock react-select/async for predictable testing

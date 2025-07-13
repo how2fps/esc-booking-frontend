@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react'
 
-import HeaderOne from '../../components/Header/HeaderOne'
-import SliderTwo from '../../components/Slider/SliderOne'
+import HeaderOne from '../../components/Header/Header'
+import SliderTwo from '../../components/Slider/Slider'
 import Footer from '../../components/Footer/Footer'
 import tentData from '../../components/data/Tent.json'
 import { TentType } from '../../type/TentType'

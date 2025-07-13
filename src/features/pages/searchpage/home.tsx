@@ -2,10 +2,10 @@
 
 import React from 'react'
 
-import HeaderOne from '../../components/Header/HeaderOne'
-import SliderOne from '../../components/Slider/SliderOne'
+import HeaderOne from '../../components/Header/Header'
+import SliderOne from '../../components/Slider/Slider'
 import Footer from '../../components/Footer/Footer'
-import Category from '../../components/Category/CategoryOne'
+import Category from '../../components/Category/Category'
 const Home = () => {
   return (
     <>
