@@ -1,25 +1,27 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { MemoryRouter } from "react-router-dom";
-import { describe, expect, it, vi } from "vitest";
-import SliderOne from "../src/features/components/DestinationSearch/DestinationSearch";
-
-vi.mock("react-select/async", () => ({
-       __esModule: true,
-       default: ({ onChange, value, ...props }) => (
-              <input
-                     data-testid="async-select"
-                     value={value?.label || ""}
-                     onChange={(e) => {
-                            if (e.target.value === "Italy") {
-                                   onChange({ value: "A6Dz", label: "Italy" });
-                            } else {
-                                   onChange({ value: e.target.value, label: e.target.value });
-                            }
-                     }}
-                     {...props}
-              />
-       ),
+import { render, screen, fireEvent,waitFor  } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import  SliderOne  from '../src/features/components/Slider/Slider';
+import { MemoryRouter } from 'react-router-dom';
+import userEvent  from '@testing-library/user-event';
+// Mock react-select/async for predictable testing
+// Example mock for AsyncSelect in your test
+vi.mock('react-select/async', () => ({
+  __esModule: true,
+  default: ({ onChange, value, ...props }) => (
+    <input
+      data-testid="async-select"
+      value={value?.label || ''}
+      onChange={e => {
+        // Simulate selecting "Italy" with its real ID
+        if (e.target.value === 'Italy') {
+          onChange({ value: 'A6Dz', label: 'Italy' });
+        } else {
+          onChange({ value: e.target.value, label: e.target.value });
+        }
+      }}
+      {...props}
+    />
+  ),
 }));
 
 describe("SliderOne Component", () => {
