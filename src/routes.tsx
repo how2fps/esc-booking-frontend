@@ -1,10 +1,11 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import Home from "./features/pages/home/Home";
-import HotelDetail from "./features/pages/hotel-details/HotelDetails";
-import HotelListings from "./features/pages/hotel-list/HotelList";
+import DestinationSearch from "./features/pages/destination-search/DestinationSearch";
+import HomePage from "./features/pages/home/HomePage";
+import HotelDetails from "./features/pages/hotel-detail/HotelDetails";
+import Listings from "./features/pages/hotel-listings/HotelListings";
 import Login from "./features/pages/login/LoginForm";
-import SignupForm from "./features/pages/sign-up/SignUpForm";
+import SignupForm from "./features/pages/signup-form/SignupForm";
 const AppRoutes: React.FC = () => {
        return (
               <Routes>
@@ -25,12 +26,20 @@ const AppRoutes: React.FC = () => {
                             element={<SignupForm />}
                      />
                      <Route
-                            path="/hotel"
-                            element={<HotelDetail />}
+                            path="/dashboard"
+                            element={<DestinationSearch />}
                      />
                      <Route
-                            path="/hotel-list"
-                            element={<HotelListings />}
+                            path="/hotel"
+                            element={<HotelDetails />}
+                     />
+                     <Route
+                            path="/hotels"
+                            element={<Listings />}
+                     />
+                     <Route
+                            path="/login"
+                            element={<Login />}
                      />
               </Routes>
        );

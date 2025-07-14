@@ -1,8 +1,9 @@
 "use client";
 
-import Link from "next/link";
+import Link from 'next/link';
 import * as Icon from "phosphor-react";
-import HeaderOne from "../../components/Header/Header";
+import Footer from '../../components/Footer/Footer';
+import HeaderOne from '../../components/Header/Header';
 
 const Login = () => {
        return (
