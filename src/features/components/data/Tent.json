@@ -1,0 +1,2221 @@
+[
+    {
+        "id": "1",
+        "category": "cabin",
+        "continents": "africa",
+        "country": "namibia",
+        "name": "Moon Mountain Lodge Cabin, Solitaire, Namibia",
+        "image": "/images/tent/900x900.png",
+        "location": "Ahungalla, Southern Province, Namibia",
+        "locationMap": {
+            "lat": -24.101,
+            "lng": 15.976
+        },
+        "rate": 4.6,
+        "price": 124,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "tour guide",
+            "pet allowed",
+            "breakfast",
+            "self-service laundry",
+            "cooking service",
+            "relaxation service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "picnic table",
+            "trash",
+            "cooking equipment",
+            "coffee maker"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "fishing",
+            "biking",
+            "boating",
+            "climbing"
+        ],
+        "terrain": [
+            "lake",
+            "beach",
+            "farm",
+            "forest",
+            "river",
+            "cave"
+        ]
+    },
+    {
+        "id": "2",
+        "category": "tented cabins",
+        "continents": "asia",
+        "country": "vietnam",
+        "name": "Lak Tented Camp Tam Dao Glamping, Vietnam",
+        "image": "/images/tent/900x900.png",
+        "location": "Tam Dao Province, Vinh Phuc, Vietnam",
+        "locationMap": {
+            "lat": 21.452,
+            "lng": 105.640
+        },
+        "rate": 4.8,
+        "price": 105,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "pet allowed",
+            "breakfast",
+            "currency exchange",
+            "self-service laundry",
+            "cooking service",
+            "relaxation service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "bathtub",
+            "picnic table",
+            "trash",
+            "cooking equipment",
+            "refrigerator",
+            "microwave"
+        ],
+        "activities": [
+            "hiking",
+            "fishing",
+            "swimming",
+            "wildlife watching",
+            "biking",
+            "boating",
+            "climbing",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "lake",
+            "farm",
+            "moutain",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole",
+            "desert",
+            "cave"
+        ]
+    },
+    {
+        "id": "3",
+        "category": "safari tents",
+        "continents": "europe",
+        "country": "greece",
+        "name": "safari tents glamping Sikia Apartments, Greece",
+        "image": "/images/tent/900x900.png",
+        "location": "EO Volou Neochoriou, Kato Gatzea, Greece",
+        "locationMap": {
+            "lat": 39.31,
+            "lng": 23.11
+        },
+        "rate": 4.8,
+        "price": 130,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "pet allowed",
+            "breakfast",
+            "currency exchange",
+            "self-service laundry",
+            "cooking service",
+            "relaxation service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "bathtub",
+            "trash",
+            "cooking equipment"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "biking",
+            "boating",
+            "climbing",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "beach",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole",
+            "desert",
+            "cave",
+            "farm"
+        ]
+    },
+    {
+        "id": "4",
+        "category": "cottages",
+        "continents": "north america",
+        "country": "united state",
+        "name": "The Campsites at Disney's Fort Wilderness Resort",
+        "image": "/images/tent/900x900.png",
+        "location": "4510 Fort Wilderness Trail, Lake Buena Vista, FL 32830, united state",
+        "locationMap": {
+            "lat": 28.395874,
+            "lng": -81.553037
+        },
+        "rate": 4.7,
+        "price": 200,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "tour guide",
+            "pet allowed",
+            "breakfast",
+            "currency exchange",
+            "self-service laundry",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "bathtub",
+            "trash",
+            "cooking equipment"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "fishing",
+            "biking",
+            "boating",
+            "snow sports",
+            "horseback riding",
+            "climbing"
+        ],
+        "terrain": [
+            "lake",
+            "beach",
+            "hot spring",
+            "farm",
+            "forest",
+            "river"
+        ]
+    },
+    {
+        "id": "5",
+        "category": "tiny houses",
+        "continents": "oceania",
+        "country": "new zealand",
+        "name": "Tiny House Punakaiki Beach Camp, New Zealand",
+        "image": "/images/tent/900x900.png",
+        "location": "5 Owen Street, Punakaiki 7873, New Zealand",
+        "locationMap": {
+            "lat": -42.106669,
+            "lng": 171.336253
+        },
+        "rate": 4.7,
+        "price": 150,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "tour guide",
+            "pet allowed",
+            "breakfast",
+            "cooking service",
+            "relaxation service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "bathtub",
+            "trash",
+            "cooking equipment"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "fishing",
+            "biking",
+            "boating",
+            "climbing",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "lake",
+            "beach",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole",
+            "desert",
+            "cave",
+            "farm"
+        ]
+    },
+    {
+        "id": "6",
+        "category": "caravans",
+        "continents": "south america",
+        "country": "brazil",
+        "name": "The Caravans by pousada aguas de ibiria, Brazil",
+        "image": "/images/tent/900x900.png",
+        "location": "pousada aguas de ibiria, Sao paulo, brazil",
+        "locationMap": {
+            "lat": -21.107014,
+            "lng": -49.185141
+        },
+        "rate": 4.5,
+        "price": 140,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "tour guide",
+            "pet allowed",
+            "breakfast",
+            "currency exchange",
+            "cooking service",
+            "relaxation service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "trash",
+            "cooking equipment"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "fishing",
+            "biking",
+            "boating",
+            "climbing",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "lake",
+            "farm",
+            "beach",
+            "farm",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole"
+        ]
+    },
+    {
+        "id": "7",
+        "category": "domes",
+        "continents": "africa",
+        "country": "ethiopia",
+        "name": "Shelter dome – Arbaminch Eco campsite Ethiopia",
+        "image": "/images/tent/900x900.png",
+        "location": "12, Arba Minch, Ethiopia",
+        "locationMap": {
+            "lat": 5.995,
+            "lng": 37.538
+        },
+        "rate": 4.6,
+        "price": 220,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "tour guide",
+            "pet allowed",
+            "breakfast",
+            "self-service laundry",
+            "cooking service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "trash",
+            "cooking equipment"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "fishing",
+            "biking",
+            "boating",
+            "climbing",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "lake",
+            "beach",
+            "farm",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole"
+        ]
+    },
+    {
+        "id": "8",
+        "category": "log cabins",
+        "continents": "asia",
+        "country": "singapore",
+        "name": "Log Cabin East Coast Park Camping Site G Singapore",
+        "image": "/images/tent/900x900.png",
+        "location": "1390 East Coast Park Camping Site G, Singapore",
+        "locationMap": {
+            "lat": 1.312782,
+            "lng": 103.958159
+        },
+        "rate": 4.9,
+        "price": 180,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "tour guide",
+            "pet allowed",
+            "breakfast",
+            "currency exchange",
+            "self-service laundry",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "trash",
+            "cooking equipment"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "fishing",
+            "boating",
+            "climbing",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "lake",
+            "beach",
+            "farm",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole"
+        ]
+    },
+    {
+        "id": "9",
+        "category": "yurts",
+        "continents": "europe",
+        "country": "norway",
+        "name": "Canvas Telemark, Yurts, Treungen, Norway Camping",
+        "image": "/images/tent/900x900.png",
+        "location": "Heimdal, 3855 Treungen, Norway",
+        "locationMap": {
+            "lat": 58.984,
+            "lng": 8.679
+        },
+        "rate": 4.4,
+        "price": 185,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "tour guide",
+            "pet allowed",
+            "breakfast",
+            "self-service laundry",
+            "cooking service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "trash",
+            "cooking equipment"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "fishing",
+            "biking",
+            "boating",
+            "climbing",
+            "snow sports",
+            "horseback riding",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "lake",
+            "beach",
+            "farm",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole"
+        ]
+    },
+    {
+        "id": "10",
+        "category": "bell tents",
+        "continents": "north america",
+        "country": "united state",
+        "name": "The Bell Tents, Winthrop, United States of America",
+        "image": "/images/tent/900x900.png",
+        "location": "Winthrop, Washington (United States of America)",
+        "locationMap": {
+            "lat": 48.477,
+            "lng": -120.143
+        },
+        "rate": 4.3,
+        "price": 150,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "pet allowed",
+            "breakfast",
+            "self-service laundry",
+            "cooking service",
+            "relaxation service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "trash",
+            "cooking equipment"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "fishing",
+            "biking",
+            "boating",
+            "climbing",
+            "snow sports",
+            "horseback riding",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "lake",
+            "beach",
+            "farm",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole"
+        ]
+    },
+    {
+        "id": "11",
+        "category": "tree houses",
+        "continents": "oceania",
+        "country": "new zealand",
+        "name": "All Seasons Holiday Park Rotorua, New Zealand",
+        "image": "/images/tent/900x900.png",
+        "location": "50/58 Lee Road, Hannahs Bay, Rotorua 3010, New Zealand",
+        "locationMap": {
+            "lat": -38.117050,
+            "lng": 176.307562
+        },
+        "rate": 4.3,
+        "price": 160,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "breakfast"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "fishing"
+        ],
+        "terrain": [
+            "lake",
+            "beach",
+            "farm"
+        ]
+    },
+    {
+        "id": "12",
+        "category": "containers",
+        "continents": "south america",
+        "country": "brazil",
+        "name": "Glamping de luxo com jacuzzi para casais, Brazil",
+        "image": "/images/tent/900x900.png",
+        "location": "Estrada Geral Rio do Engano, Águas Brancas, Brazil",
+        "locationMap": {
+            "lat": -27.953,
+            "lng": -49.576
+        },
+        "rate": 4.1,
+        "price": 149,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "pet allowed",
+            "breakfast",
+            "currency exchange",
+            "self-service laundry",
+            "cooking service",
+            "relaxation service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "trash",
+            "cooking equipment"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "fishing",
+            "biking",
+            "boating",
+            "climbing",
+            "snow sports",
+            "horseback riding",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "lake",
+            "beach",
+            "farm",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole"
+        ]
+    },
+    {
+        "id": "13",
+        "category": "cabin",
+        "continents": "africa",
+        "country": "namibia",
+        "name": "Etosha Safari Camp, Gondwana Collection Namibia",
+        "image": "/images/tent/900x900.png",
+        "location": "10 km South of Andersson Gate on C38, Windhoek, Namibia",
+        "locationMap": {
+            "lat": -19.411380,
+            "lng": 15.924878
+        },
+        "rate": 4.6,
+        "price": 189,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "tour guide",
+            "pet allowed",
+            "breakfast",
+            "cooking service",
+            "relaxation service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "picnic table",
+            "trash",
+            "cooking equipment",
+            "coffee maker"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "fishing",
+            "biking",
+            "boating",
+            "climbing"
+        ],
+        "terrain": [
+            "lake",
+            "beach",
+            "farm",
+            "forest",
+            "river",
+            "cave"
+        ]
+    },
+    {
+        "id": "14",
+        "category": "tented cabins",
+        "continents": "asia",
+        "country": "vietnam",
+        "name": "Ankoret Lac Camp & Party, Da Lat, Vietnam",
+        "image": "/images/tent/900x900.png",
+        "location": "So Lang, Phuong 10, Da Lat, Lam Đong, Vietnam",
+        "locationMap": {
+            "lat": 11.911282,
+            "lng": 108.471813
+        },
+        "rate": 4.8,
+        "price": 125,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "pet allowed",
+            "breakfast",
+            "currency exchange",
+            "self-service laundry",
+            "cooking service",
+            "relaxation service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "bathtub",
+            "picnic table",
+            "trash",
+            "cooking equipment",
+            "refrigerator",
+            "microwave"
+        ],
+        "activities": [
+            "hiking",
+            "fishing",
+            "swimming",
+            "wildlife watching",
+            "biking",
+            "boating",
+            "climbing",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "lake",
+            "farm",
+            "moutain",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole",
+            "desert",
+            "cave"
+        ]
+    },
+    {
+        "id": "15",
+        "category": "safari tents",
+        "continents": "europe",
+        "country": "switzerland",
+        "name": "safari tents Camping de Vidy Lausanne, switzerland",
+        "image": "/images/tent/900x900.png",
+        "location": "Chem. du Camping 3, 1007 Lausanne, switzerland",
+        "locationMap": {
+            "lat": 46.517308,
+            "lng": 6.597912
+        },
+        "rate": 4.8,
+        "price": 160,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "tour guide",
+            "pet allowed",
+            "breakfast",
+            "self-service laundry",
+            "cooking service",
+            "relaxation service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "bathtub",
+            "trash",
+            "cooking equipment"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "biking",
+            "boating",
+            "climbing",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "beach",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole",
+            "desert",
+            "cave",
+            "farm"
+        ]
+    },
+    {
+        "id": "16",
+        "category": "cottages",
+        "continents": "north america",
+        "country": "united state",
+        "name": "Hamilton Joseph D. Grant County Park, USA",
+        "image": "/images/tent/900x900.png",
+        "location": "18405 Mt Hamilton Rd, CA 95140, united state",
+        "locationMap": {
+            "lat": 37.341462,
+            "lng": -121.719744
+        },
+        "rate": 4.7,
+        "price": 200,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "tour guide",
+            "pet allowed",
+            "breakfast",
+            "currency exchange",
+            "self-service laundry",
+            "cooking service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "fishing",
+            "biking",
+            "boating",
+            "snow sports",
+            "horseback riding",
+            "climbing"
+        ],
+        "terrain": [
+            "lake",
+            "beach",
+            "hot spring",
+            "farm"
+        ]
+    },
+    {
+        "id": "17",
+        "category": "tiny houses",
+        "continents": "oceania",
+        "country": "new zealand",
+        "name": "Uretiti Beach DOC Campsite, New Zealand",
+        "image": "/images/tent/900x900.png",
+        "location": "3149, State Highway 1, Waipu 0582, New Zealand",
+        "locationMap": {
+            "lat": -35.935148,
+            "lng": 174.457335
+        },
+        "rate": 4.7,
+        "price": 250,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "tour guide",
+            "pet allowed",
+            "currency exchange",
+            "self-service laundry",
+            "relaxation service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "bathtub",
+            "trash",
+            "cooking equipment"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "fishing",
+            "biking",
+            "boating",
+            "climbing",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "lake",
+            "beach",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole",
+            "desert",
+            "cave",
+            "farm"
+        ]
+    },
+    {
+        "id": "18",
+        "category": "caravans",
+        "continents": "south america",
+        "country": "brazil",
+        "name": "The Wanderlust Wagon Caravans Camping, Brazil",
+        "image": "/images/tent/900x900.png",
+        "location": "Park Home Ibira, Camping para, brazil",
+        "locationMap": {
+            "lat": -28.160,
+            "lng": -48.658
+        },
+        "rate": 4.5,
+        "price": 149,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "tour guide",
+            "pet allowed",
+            "breakfast",
+            "currency exchange",
+            "self-service laundry",
+            "cooking service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "trash",
+            "cooking equipment"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "fishing",
+            "biking",
+            "boating",
+            "climbing",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "lake",
+            "farm",
+            "beach",
+            "farm",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole"
+        ]
+    },
+    {
+        "id": "19",
+        "category": "domes",
+        "continents": "africa",
+        "country": "ethiopia",
+        "name": "Domes Palace Entoto Natural Park, Ethiopia",
+        "image": "/images/tent/900x900.png",
+        "location": "Entoto Road, Gulele 19/20/21, Ethiopia",
+        "locationMap": {
+            "lat": 9.086358,
+            "lng": 38.762480
+        },
+        "rate": 4.6,
+        "price": 120,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "tour guide",
+            "pet allowed",
+            "breakfast",
+            "currency exchange",
+            "cooking service",
+            "relaxation service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "trash",
+            "cooking equipment"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "fishing",
+            "biking",
+            "boating",
+            "climbing",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "lake",
+            "beach",
+            "farm",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole"
+        ]
+    },
+    {
+        "id": "20",
+        "category": "log cabins",
+        "continents": "asia",
+        "country": "singapore",
+        "name": "Sands Leadership Development Centre, Singapore",
+        "image": "/images/tent/900x900.png",
+        "location": "70 Jln Bahtera, Sarimbun Scout Camp, Singapore",
+        "locationMap": {
+            "lat": 1.437469,
+            "lng": 103.699804
+        },
+        "rate": 4.9,
+        "price": 199,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "tour guide",
+            "pet allowed",
+            "breakfast",
+            "currency exchange",
+            "self-service laundry",
+            "cooking service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "trash",
+            "cooking equipment"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "fishing",
+            "boating",
+            "climbing",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "lake",
+            "beach",
+            "farm",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole"
+        ]
+    },
+    {
+        "id": "21",
+        "category": "yurts",
+        "continents": "europe",
+        "country": "norway",
+        "name": "Trollveggen camping resort AS, Norway Camping",
+        "image": "/images/tent/900x900.png",
+        "location": "Romsdalsvegen 9241, 6300 Åndalsnes, Norway",
+        "locationMap": {
+            "lat": 62.494475,
+            "lng": 7.758324
+        },
+        "rate": 4.4,
+        "price": 185,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "pet allowed",
+            "breakfast",
+            "currency exchange",
+            "self-service laundry",
+            "cooking service",
+            "relaxation service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "trash",
+            "cooking equipment"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "fishing",
+            "biking",
+            "boating",
+            "climbing",
+            "snow sports",
+            "horseback riding",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "lake",
+            "beach",
+            "farm",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole"
+        ]
+    },
+    {
+        "id": "22",
+        "category": "bell tents",
+        "continents": "north america",
+        "country": "united state",
+        "name": "Adirondak Loj & Heart Lake Program Center, NYC",
+        "image": "/images/tent/900x900.png",
+        "location": "1002 Adirondack Loj Rd, Lake Placid, New York, Hoa Kỳ",
+        "locationMap": {
+            "lat": 44.182593,
+            "lng": -73.965805
+        },
+        "rate": 4.3,
+        "price": 169,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "pet allowed",
+            "breakfast",
+            "currency exchange",
+            "self-service laundry",
+            "cooking service",
+            "relaxation service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "trash",
+            "cooking equipment"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "fishing",
+            "biking",
+            "boating",
+            "climbing",
+            "snow sports",
+            "horseback riding",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "lake",
+            "beach",
+            "farm",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole"
+        ]
+    },
+    {
+        "id": "23",
+        "category": "containers",
+        "continents": "south america",
+        "country": "brazil",
+        "name": "Beach Camping Arembepe Camaçari, Brazil",
+        "image": "/images/tent/900x900.png",
+        "location": "Aldeia Hippie, Camaçari - BA, 42830-022, Brazil",
+        "locationMap": {
+            "lat": -12.757767,
+            "lng": -38.165243
+        },
+        "rate": 4.1,
+        "price": 249,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "tour guide",
+            "pet allowed",
+            "currency exchange",
+            "self-service laundry",
+            "relaxation service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "trash",
+            "cooking equipment"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "fishing",
+            "biking",
+            "boating",
+            "climbing",
+            "snow sports",
+            "horseback riding",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "lake",
+            "beach",
+            "farm",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole"
+        ]
+    },
+    {
+        "id": "24",
+        "category": "tree houses",
+        "continents": "oceania",
+        "country": "new zealand",
+        "name": "All Day Bay Lodge Campground, New Zealand",
+        "image": "/images/tent/900x900.png",
+        "location": "1050 Waianakarua Road, Oamaru 9495, New Zealand",
+        "locationMap": {
+            "lat": -45.209664,
+            "lng": 170.882309
+        },
+        "rate": 4.3,
+        "price": 160,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "tour guide",
+            "pet allowed",
+            "breakfast",
+            "currency exchange",
+            "self-service laundry",
+            "cooking service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "fishing"
+        ],
+        "terrain": [
+            "lake",
+            "beach",
+            "farm"
+        ]
+    },
+    {
+        "id": "25",
+        "category": "containers",
+        "continents": "europe",
+        "country": "switzerland",
+        "name": "cabin Camping Fischers Fritz, Switzerland",
+        "image": "/images/tent/900x900.png",
+        "location": "Seestrasse 559, 8038 Zürich, Switzerland",
+        "locationMap": {
+            "lat": 47.335611,
+            "lng": 8.540725
+        },
+        "rate": 4.8,
+        "price": 130,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "tour guide",
+            "pet allowed",
+            "breakfast",
+            "self-service laundry",
+            "cooking service",
+            "relaxation service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "bathtub",
+            "trash",
+            "cooking equipment"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "biking",
+            "boating",
+            "climbing",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "beach",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole",
+            "desert",
+            "cave",
+            "farm"
+        ]
+    },
+    {
+        "id": "26",
+        "category": "cabin",
+        "continents": "europe",
+        "country": "switzerland",
+        "name": "Camping Monte Generoso Melano, Switzerland",
+        "image": "/images/tent/900x900.png",
+        "location": "Via Tannini 12, 6818 Melano, Switzerland",
+        "locationMap": {
+            "lat": 45.928354,
+            "lng": 8.977431
+        },
+        "rate": 4.8,
+        "price": 230,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "tour guide",
+            "pet allowed",
+            "breakfast",
+            "self-service laundry",
+            "cooking service",
+            "relaxation service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "bathtub",
+            "trash",
+            "cooking equipment"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "biking",
+            "boating",
+            "climbing",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "beach",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole",
+            "desert",
+            "cave",
+            "farm"
+        ]
+    },
+    {
+        "id": "27",
+        "category": "cabin",
+        "continents": "europe",
+        "country": "switzerland",
+        "name": "Camping Lugano Lake Molinazzo, Switzerland",
+        "image": "/images/tent/900x900.png",
+        "location": "Via Molinazzo 9, 6982 Agno, Switzerland",
+        "locationMap": {
+            "lat": 45.995523,
+            "lng": 8.905823
+        },
+        "rate": 4.8,
+        "price": 179,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "tour guide",
+            "pet allowed",
+            "breakfast",
+            "self-service laundry",
+            "cooking service",
+            "relaxation service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "bathtub",
+            "trash",
+            "cooking equipment"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "biking",
+            "boating",
+            "climbing",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "beach",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole",
+            "desert",
+            "cave",
+            "farm"
+        ]
+    },
+    {
+        "id": "28",
+        "category": "safari tents",
+        "continents": "europe",
+        "country": "switzerland",
+        "name": "Alp Safari Glamping & Camping - Nax, switzerland",
+        "image": "/images/tent/900x900.png",
+        "location": "Le Zitiouc 5, 1973 Nax, switzerland",
+        "locationMap": {
+            "lat": 46.223788,
+            "lng": 7.424576
+        },
+        "rate": 4.9,
+        "price": 199,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "tour guide",
+            "pet allowed",
+            "breakfast",
+            "currency exchange",
+            "self-service laundry",
+            "cooking service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "trash",
+            "cooking equipment"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "fishing",
+            "boating",
+            "climbing",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "lake",
+            "beach",
+            "farm",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole"
+        ]
+    },
+    {
+        "id": "29",
+        "category": "cabin",
+        "continents": "oceania",
+        "country": "australia",
+        "name": "Notch Point Campground (Yarrawonga Park), Australia",
+        "image": "/images/tent/900x900.png",
+        "location": "Notch Point Rd, Ilbilbie QLD 4738, Australia",
+        "locationMap": {
+            "lat": -21.743328,
+            "lng": 149.477245
+        },
+        "rate": 4.6,
+        "price": 185,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "pet allowed",
+            "breakfast",
+            "currency exchange",
+            "self-service laundry",
+            "cooking service",
+            "relaxation service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "trash",
+            "cooking equipment"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "fishing",
+            "biking",
+            "boating",
+            "climbing",
+            "snow sports",
+            "horseback riding",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "lake",
+            "beach",
+            "farm",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole"
+        ]
+    },
+    {
+        "id": "30",
+        "category": "cabin",
+        "continents": "asia",
+        "country": "japan",
+        "name": "BUB Resort Chosei Village Chiba, Japan",
+        "image": "/images/tent/900x900.png",
+        "location": "2811 Kaneda, Chōsei, Chōsei District, Chiba 299-4332, Japan",
+        "locationMap": {
+            "lat": 35.395188,
+            "lng": 140.338680
+        },
+        "rate": 4.8,
+        "price": 124,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "tour guide",
+            "pet allowed",
+            "breakfast",
+            "self-service laundry",
+            "cooking service",
+            "relaxation service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "picnic table",
+            "trash",
+            "cooking equipment",
+            "coffee maker"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "fishing",
+            "biking",
+            "boating",
+            "climbing"
+        ],
+        "terrain": [
+            "lake",
+            "beach",
+            "farm",
+            "forest",
+            "river",
+            "cave"
+        ]
+    },
+    {
+        "id": "31",
+        "category": "tented cabins",
+        "continents": "asia",
+        "country": "japan",
+        "name": "Tented OkuBiwako Campground Shiga, japan",
+        "image": "/images/tent/900x900.png",
+        "location": "1796 Nishiazaicho Oura, Nagahama, Shiga 529-0721, japan",
+        "locationMap": {
+            "lat": 35.482833,
+            "lng": 136.110768
+        },
+        "rate": 4.8,
+        "price": 105,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "pet allowed",
+            "breakfast",
+            "currency exchange",
+            "self-service laundry",
+            "cooking service",
+            "relaxation service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "bathtub",
+            "picnic table",
+            "trash",
+            "cooking equipment",
+            "refrigerator",
+            "microwave"
+        ],
+        "activities": [
+            "hiking",
+            "fishing",
+            "swimming",
+            "wildlife watching",
+            "biking",
+            "boating",
+            "climbing",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "lake",
+            "farm",
+            "moutain",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole",
+            "desert",
+            "cave"
+        ]
+    },
+    {
+        "id": "32",
+        "category": "safari tents",
+        "continents": "asia",
+        "country": "vietnam",
+        "name": "Huong Xuan Camping Bui Lam Apartments, Vietnam",
+        "image": "/images/tent/900x900.png",
+        "location": "Bui Lam, Can Thanh, Can Gio, Ho Chi Minh City 70000, Vietnam",
+        "locationMap": {
+            "lat": 10.396527,
+            "lng": 106.943861
+        },
+        "rate": 4.8,
+        "price": 130,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "pet allowed",
+            "breakfast",
+            "currency exchange",
+            "self-service laundry",
+            "cooking service",
+            "relaxation service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "bathtub",
+            "trash",
+            "cooking equipment"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "biking",
+            "boating",
+            "climbing",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "beach",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole",
+            "desert",
+            "cave",
+            "farm"
+        ]
+    },
+    {
+        "id": "33",
+        "category": "cottages",
+        "continents": "asia",
+        "country": "vietnam",
+        "name": "Camping Hai Van Xanh Glamping, Vietnam",
+        "image": "/images/tent/900x900.png",
+        "location": "Hai Van, Cau Đoi, Lien Chieu, Đa Nang, Vietnam",
+        "locationMap": {
+            "lat": 16.153278,
+            "lng": 108.134085
+        },
+        "rate": 4.7,
+        "price": 200,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "tour guide",
+            "pet allowed",
+            "breakfast",
+            "currency exchange",
+            "self-service laundry",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "bathtub",
+            "trash",
+            "cooking equipment"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "fishing",
+            "biking",
+            "boating",
+            "snow sports",
+            "horseback riding",
+            "climbing"
+        ],
+        "terrain": [
+            "lake",
+            "beach",
+            "hot spring",
+            "farm",
+            "forest",
+            "river"
+        ]
+    },
+    {
+        "id": "34",
+        "category": "tiny houses",
+        "continents": "oceania",
+        "country": "australia",
+        "name": "Glamping Paradise Beach Campground, australia",
+        "image": "/images/tent/900x900.png",
+        "location": "Shoreline Dr, Paradise Beach VIC 3851, Australia",
+        "locationMap": {
+            "lat": -38.194404,
+            "lng": 147.422501
+        },
+        "rate": 4.7,
+        "price": 150,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "tour guide",
+            "pet allowed",
+            "breakfast",
+            "cooking service",
+            "relaxation service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "bathtub",
+            "trash",
+            "cooking equipment"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "fishing",
+            "biking",
+            "boating",
+            "climbing",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "lake",
+            "beach",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole",
+            "desert",
+            "cave",
+            "farm"
+        ]
+    },
+    {
+        "id": "35",
+        "category": "caravans",
+        "continents": "oceania",
+        "country": "australia",
+        "name": "South Currigee Campground / Kiosk, australia",
+        "image": "/images/tent/900x900.png",
+        "location": "South Currigee Campground South Stradbroke Island, QLD 4217, Australia",
+        "locationMap": {
+            "lat": -27.905529,
+            "lng": 153.421672
+        },
+        "rate": 4.5,
+        "price": 140,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "tour guide",
+            "pet allowed",
+            "breakfast",
+            "currency exchange",
+            "cooking service",
+            "relaxation service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "trash",
+            "cooking equipment"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "fishing",
+            "biking",
+            "boating",
+            "climbing",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "lake",
+            "farm",
+            "beach",
+            "farm",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole"
+        ]
+    },
+    {
+        "id": "36",
+        "category": "domes",
+        "continents": "oceania",
+        "country": "australia",
+        "name": "Ingenia Holidays One Mile Beach, campsite australia",
+        "image": "/images/tent/900x900.png",
+        "location": "426 Gan Gan Rd, One Mile NSW 2316, Australia",
+        "locationMap": {
+            "lat": -32.776326,
+            "lng": 152.113287
+        },
+        "rate": 4.6,
+        "price": 220,
+        "listImage": [
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png",
+            "/images/tent/900x900.png"
+        ],
+        "shortDesc": "This charming retreat is designed for families seeking a warm and intimate space, this place is perfect for creating cherished moments.",
+        "description": "As you step inside, you'll be greeted by a homely ambiance with tastefully decorated interiors. The homestay features a comfortable living area where the family can gather for quality time. The bedrooms are thoughtfully designed to provide a relaxing retreat, ensuring a good night's sleep for both parents and children. Our homestay is equipped with family-friendly amenities, including a fully functional kitchen where you can prepare and enjoy home-cooked meals together. Additionally, a cozy dining area allows your family to share memorable moments over delicious food.",
+        "services": [
+            "reception desk",
+            "tour guide",
+            "pet allowed",
+            "breakfast",
+            "self-service laundry",
+            "cooking service",
+            "cleaning service"
+        ],
+        "amenities": [
+            "parking",
+            "toilet",
+            "campfire",
+            "wifi",
+            "tv",
+            "trash",
+            "cooking equipment"
+        ],
+        "activities": [
+            "hiking",
+            "swimming",
+            "fishing",
+            "biking",
+            "boating",
+            "climbing",
+            "surfing",
+            "wind sports"
+        ],
+        "terrain": [
+            "lake",
+            "beach",
+            "farm",
+            "forest",
+            "river",
+            "hot spring",
+            "swimming hole"
+        ]
+    }
+]
