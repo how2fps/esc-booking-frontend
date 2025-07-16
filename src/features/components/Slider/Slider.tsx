@@ -8,8 +8,7 @@ import { Link } from "react-router-dom";
 import AsyncSelect from "react-select/async";
 import Destination from "../data/destinations.json";
 import MicroSpellingCorrecter from "micro-spelling-correcter";
-import buildInvertedIndex from "../Other/Invertedindex"
-import type { InvertedIndex } from "../Other/Invertedindex";
+import { AsyncPaginate } from 'react-select-async-paginate';
 interface DestinationType {
        term: string;
        uid: string;
@@ -30,48 +29,18 @@ const options: DestinationType[] = (Array.isArray(Destination) ? Destination : O
        state: typeof d.state === "string" ? d.state : "",
 }));
 
-const mappedOptions = options.map((option) => ({ value: option.uid, label: option.term }));
+//const mappedOptions = options.map((option) => ({ value: option.uid, label: option.term }));
 
 
-const tokenizedOptions = mappedOptions.map(option =>(option.label || '').match(/\w+/g) || []);
+const tokenizedOptions = options.map(option =>(option.term || '').match(/\w+/g) || []);
 
 const Common_typos = new Set(tokenizedOptions.flat().filter(word => word.length > 3));
 
 
 const correcter = new MicroSpellingCorrecter( Common_typos, 2 );
-const index = buildInvertedIndex(options)
-function searchInvertedIndex(
-  index: InvertedIndex  ,
-  keyword: string,
-  dataSet: DestinationType[]
-): DestinationType[] {
-  const lowerTerm = keyword.toLowerCase();
-  const results = index[lowerTerm];
-
-  if (!results) return [];
-
-  return Array.from(results).map((i) => dataSet[i]);
-}
 
 
-const filterOption = (input: string) => {
-       if (!input || input.length < 3) {
-              return [];
-       }
-      // const returns = searchInvertedIndex(index,input,options)
-      // console.log(returns)
-       //return returns
-       const corrected = correcter.correct(input);
-       if ( corrected === undefined || corrected === input) {
 
-            return mappedOptions.filter((i) => i.label && i.label.toLowerCase().includes(input.toLowerCase()));
-       }
-     
-       
-      return mappedOptions.filter((i) => i.label && (i.label.toLowerCase().includes(input.toLowerCase()) || i.label.toLowerCase().includes(corrected.toLowerCase())));
-       
-       
-};
 const noOptionsMessage = (input: { inputValue: string }) => {
        if (input.inputValue.length === 0) {
               return "Type to search";
@@ -81,10 +50,48 @@ const noOptionsMessage = (input: { inputValue: string }) => {
        return "No options";
 };
 
-const loadOptions = (inputValue: string, callback: (options: { value: string; label: string }[]) => void) => {
-       setTimeout(() => {
-              callback(filterOption(inputValue));
-       }, 500);
+
+const optionsPerPage = 10;
+
+const loadOptions = async (search: string, page: number) => {
+  if (!search || search.length < 3) {
+    return {
+      options: [],
+      hasMore: false
+    };
+  }
+  const corrected = correcter.correct?.(search) || search;
+
+  const filteredOptions = options.filter((i) => i.term && (i.term.toLowerCase().includes(search.toLowerCase()) || i.term.toLowerCase().includes(corrected.toLowerCase())));
+  
+  const hasMore = Math.ceil(filteredOptions.length / optionsPerPage) > page;
+
+  const slicedOptions = filteredOptions.slice(   
+    (page - 1) * optionsPerPage,
+    page * optionsPerPage
+  );
+
+  return {
+    options: slicedOptions,
+    hasMore
+  };
+};
+
+
+
+const defaultAdditional = {
+  page: 1
+};
+
+const loadPageOptions = async (q: string, additional = defaultAdditional) => {
+  const { page } = { page: 1 }
+       
+  const { options, hasMore } = await loadOptions(q, page);
+ 
+  return {
+    options,
+    hasMore
+  };
 };
 
 const DestinationSearch = () => {
@@ -92,7 +99,7 @@ const DestinationSearch = () => {
        const [openGuest, setOpenGuest] = useState(false);
        const [location, setLocation] = useState({
               term: "",
-              uid: "23",
+              uid: "",
               lat: 0,
               lng: 0,
               type: "",
@@ -192,13 +199,16 @@ const DestinationSearch = () => {
                                           <div className="form-search md:mt-10 mt-6 w-full">
                                                  <form className="bg-white rounded-lg p-5 flex max-lg:flex-wrap items-center justify-between gap-5 relative">
                                                         <div className="select-block lg:w-full md:w-[48%] w-full">
-                                                               <AsyncSelect
+                                                               <AsyncPaginate
+                                                                      debounceTimeout={100} 
                                                                       data-testid="async-select"
-                                                                      loadOptions={loadOptions}
-                                                                      defaultOptions={true}
+                                                                      additional={{ page: 1 }}
+                                                                      loadOptions={loadPageOptions}
+                                                                      getOptionLabel={(i: DestinationType) => i.term}
+                                                                     getOptionValue={(i: DestinationType) => i.uid}
                                                                       noOptionsMessage={noOptionsMessage}
-                                                                      value={location}
-                                                                      onChange={setLocation}
+                                                                      onChange={setLocation}  
+                                                                                                                                           
                                                                       styles={{
                                                                              control: (provided) => ({
                                                                                     ...provided,
@@ -210,7 +220,7 @@ const DestinationSearch = () => {
                                                                              }),
                                                                       }}
                                                                />
-                                                               <p data-testid="uid">Selected: {location ? location.value : "None"}</p>
+                                                               <p data-testid="uid">Selected: {location ? location.uid : "None"}</p>
                                                         </div>
                                                         <div className="relative lg:w-full md:w-[48%] w-full">
                                                                <div
@@ -318,7 +328,7 @@ const DestinationSearch = () => {
                                                         </div>
                                                         <div className="button-block flex-shrink-0 max-lg:w-[48%] max-md:w-full">
                                                                <div className="button-main max-lg:w-full">
-                                                                      <Link to={`/hotels/topmap-grid?location=${location ? location.value : "None"}&startDate=${state[0].startDate.toLocaleDateString()}&endDate=${state[0].endDate.toLocaleDateString()}&adult=${guest.adult}&children=${guest.children}&room=${guest.room}`}>Search</Link>
+                                                                      <Link to={`/hotels/topmap-grid?location=${location ? location.uid : "None"}&startDate=${state[0].startDate.toLocaleDateString()}&endDate=${state[0].endDate.toLocaleDateString()}&adult=${guest.adult}&children=${guest.children}&room=${guest.room}`}>Search</Link>
                                                                </div>
                                                         </div>
                                                  </form>
