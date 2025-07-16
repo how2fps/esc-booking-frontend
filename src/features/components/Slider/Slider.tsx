@@ -8,14 +8,15 @@ import { Link } from "react-router-dom";
 import AsyncSelect from "react-select/async";
 import Destination from "../data/destinations.json";
 import MicroSpellingCorrecter from "micro-spelling-correcter";
-
+import buildInvertedIndex from "../Other/Invertedindex"
+import type { InvertedIndex } from "../Other/Invertedindex";
 interface DestinationType {
        term: string;
        uid: string;
        lat: number;
        lng: number;
        type: string;
-       state: string;
+       state?: string;
 }
 
 interface GuestType {
@@ -38,21 +39,36 @@ const Common_typos = new Set(tokenizedOptions.flat().filter(word => word.length 
 
 
 const correcter = new MicroSpellingCorrecter( Common_typos, 2 );
+const index = buildInvertedIndex(options)
+function searchInvertedIndex(
+  index: InvertedIndex  ,
+  keyword: string,
+  dataSet: DestinationType[]
+): DestinationType[] {
+  const lowerTerm = keyword.toLowerCase();
+  const results = index[lowerTerm];
+
+  if (!results) return [];
+
+  return Array.from(results).map((i) => dataSet[i]);
+}
 
 
 const filterOption = (input: string) => {
        if (!input || input.length < 3) {
               return [];
        }
-
+      // const returns = searchInvertedIndex(index,input,options)
+      // console.log(returns)
+       //return returns
        const corrected = correcter.correct(input);
        if ( corrected === undefined || corrected === input) {
 
-              return mappedOptions.filter((i) => i.label && i.label.toLowerCase().includes(input.toLowerCase()));
-        }
+            return mappedOptions.filter((i) => i.label && i.label.toLowerCase().includes(input.toLowerCase()));
+       }
      
        
-       return mappedOptions.filter((i) => i.label && (i.label.toLowerCase().includes(input.toLowerCase()) || i.label.toLowerCase().includes(corrected.toLowerCase())));
+      return mappedOptions.filter((i) => i.label && (i.label.toLowerCase().includes(input.toLowerCase()) || i.label.toLowerCase().includes(corrected.toLowerCase())));
        
        
 };

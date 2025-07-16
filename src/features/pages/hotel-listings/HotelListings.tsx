@@ -13,7 +13,7 @@ import HandlePagination from '../../components/Other/HandlePagination'
 import SliderTwo from '../../components/Slider/Slider'
 import TentItem from '../../components/Tent/TentItem'
 import tentData from '../../components/data/Tent.json'
-import type { TentType } from '../../type/TentType'
+import type { TentType } from '../../type/HotelType'
 
 import { Link } from "react-router-dom"
 

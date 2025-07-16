@@ -1,4 +1,4 @@
-.tent-item {
+.hotel-item {
     &.style-list {
         .tent-main {
             .infor {
@@ -17,15 +17,27 @@
                 @media (min-width: 1280px) {
                     margin-left: 25%;
                 }
+                
+
+                
             }
         }
     }
+.thumbnail{
+border: 2px solid #333;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
 
-    .swiper-pagination {
-        left: 12px;
+
+}
+
+   .mySwiper  .swiper-pagination {
+        left: 0px;
         bottom: 12px;
         border-radius: 16px;
-        background: rgba(56, 44, 40, 0.30);
+        background: rgba(255, 71, 10, 0.3);
         color: var(--white);
         font-size: 14px;
         font-weight: 400;
@@ -35,7 +47,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-
+        
         span {
             font-size: 14px;
             font-weight: 400;
@@ -45,7 +57,7 @@
 }
 
 .item,
-.tent-item {
+.hotel-item {
     &.hover-scale {
         cursor: pointer;
 
@@ -65,6 +77,8 @@
 
         .name {
             transition: 0.3s;
+            text-align: left;
+
         }
 
         &:hover {
@@ -89,14 +103,29 @@
         }
     }
 }
-
+.infobar{
+  border: 2px solid #333;
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  box-shadow: 0 4px 8px rgba(127, 124, 124, 0);
+  padding: 16px;
+  background: #ffffff;
+}
 // Detail
 .ten-detail {
     @media (max-width: 1023.98px) {
         overflow-x: hidden;
     }
 }
+.itemtitle{
+    font-size: 18px;
+    line-height: 28px;
+    font-weight: 600;
+    font-family: "Jost", '__Jost_f47db6';
 
+}
 .list-review {
     .item {
         &:last-child {
