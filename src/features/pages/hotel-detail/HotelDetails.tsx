@@ -8,7 +8,7 @@ import HeaderOne from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
 import tentData from '../../components/data/Tent.json'
 
-import { TentType } from '../../type/TentType'
+import { TentType } from '../../type/HotelType'
 import { useSearchParams } from "react-router";
 import { Suspense } from 'react'
 

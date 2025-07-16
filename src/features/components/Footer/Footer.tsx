@@ -25,32 +25,32 @@ const Footer = () => {
                                     <Link href={'https://www.facebook.com/'} target='_blank'
                                         className='bg-white duration-300 hover:bg-primary hover:text-white w-10 h-10 rounded-full flex items-center justify-center'
                                     >
-                                        <span className='icon-facebook text-sm'></span>
+                                        <Icon.FacebookLogo size={20} className="text-sm" />
                                     </Link>
                                     <Link href={'https://www.linkedin.com/'} target='_blank'
                                         className='bg-white duration-300 hover:bg-primary hover:text-white w-10 h-10 rounded-full flex items-center justify-center'
                                     >
-                                        <span className='icon-linkedin text-sm'></span>
+                                        <Icon.LinkedinLogo size={20} className="text-sm" />
                                     </Link>
                                     <Link href={'https://www.twitter.com/'} target='_blank'
                                         className='bg-white duration-300 hover:bg-primary hover:text-white w-10 h-10 rounded-full flex items-center justify-center'
                                     >
-                                        <span className='icon-twitter text-sm'></span>
+                                        <Icon.TwitterLogo size={20} className="text-sm" />
                                     </Link>
                                     <Link href={'https://www.pinterest.com/'} target='_blank'
                                         className='bg-white duration-300 hover:bg-primary hover:text-white w-10 h-10 rounded-full flex items-center justify-center'
                                     >
-                                        <span className='icon-pinterest text-sm'></span>
+                                        <Icon.PinterestLogo size={20} className="text-sm" />
                                     </Link>
                                     <Link href={'https://www.instagram.com/'} target='_blank'
                                         className='bg-white duration-300 hover:bg-primary hover:text-white w-10 h-10 rounded-full flex items-center justify-center'
                                     >
-                                        <span className='icon-instagram text-sm'></span>
+                                        <Icon.InstagramLogo size={20} className="text-sm" />
                                     </Link>
                                     <Link href={'https://www.youtube.com/'} target='_blank'
                                         className='bg-white duration-300 hover:bg-primary hover:text-white w-10 h-10 rounded-full flex items-center justify-center'
                                     >
-                                        <span className='icon-youtube text-sm'></span>
+                                        <Icon.YoutubeLogo size={20} className="text-sm" />
                                     </Link>
                                 </div>
                             </div>

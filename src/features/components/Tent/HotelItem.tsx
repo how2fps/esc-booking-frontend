@@ -1,37 +1,52 @@
 'use client'
 
 import React from 'react'
-import Image from 'next/image'
-import * as Icon from 'phosphor-react'
-import { TentType } from '../../type/HotelType'
+import * as Icon from "@phosphor-icons/react"
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Pagination, Navigation } from "swiper/modules";
 import {  useNavigate } from "react-router-dom";
-
+import type  { HotelType } from '../../type/HotelType'
 
 interface Props {
-    data: TentType;
+    data: HotelType;
     type: string
 }
+const iconlist = {
+    dryCleaning :<Icon.WashingMachine  />,
+    outdoorPool :<Icon.SwimmingPool />,
+    continentalBreakfast :<Icon.ForkKnife />,
+    parkingGarage :<Icon.Garage  />,
+    fitnessFacility :<Icon.Barbell   />,
+    inHouseDining :<Icon.ForkKnife  />,
+    inHouseBar :<Icon.Martini    />
 
-const TentItem: React.FC<Props> = ({ data, type }) => {
+}
+
+
+
+const HotelItem: React.FC<Props> = ({ data, type }) => {
     
     const router = useNavigate()
-
-    const handleClickItem = (id: string) => {
-        router(`/camp/tent-detail?id=${id}`)
+    const prefix = data.image_details["prefix"]
+    const image_count = Math.min(data.image_details["count"],10)
+    const image_array: string[] = []
+    for (let i = 0; i < 10; i++) {
+     image_array.push(prefix+i+".jpg")
     }
 
-    
+
+    const handleClickItem = (id: string) => {
+        router(`/camp/hotel-detail?id=${id}`)
+    }
 
     return (
         <>
             {type === "default" ? (
                 <div
-                    className="tent-item hover-scale"
+                    className="hotel-item hover-scale"
                     onClick={() => { handleClickItem(data.id) }}
                 >
                     <div className="thumb-img relative">
@@ -43,16 +58,16 @@ const TentItem: React.FC<Props> = ({ data, type }) => {
                             modules={[Pagination]}
                             className="mySwiper rounded-xl"
                         >
-                            {data.listImage.map((img, index) => (
+                            {image_array.map((img,index) => (
                                 <SwiperSlide key={index} className='overflow-hidden'>
-                                    <div className="bg-img w-full aspect-square">
-                                        <Image
+                                    <div className="bg-img w-full aspect-[16/11]">
+                                        <img
                                             src={img}
                                             width={2000}
                                             height={2000}
-                                            alt={img}
-                                            priority={true}
-                                            className='w-full h-full object-cover'
+                                            alt={"ERROR"}
+                                            
+                                            className='w-full h-full object-fit: scale-down'
                                         />
                                     </div>
                                 </SwiperSlide>
@@ -63,15 +78,19 @@ const TentItem: React.FC<Props> = ({ data, type }) => {
                     <div className="infor mt-4">
                         <div className="flex items-center justify-between flex-wrap gap-2">
                             <div className="flex items-center gap-1">
-                                <Icon.MapPin className='md:text-xl text-variant1' />
-                                <div className="caption1 text-variant1">100 km</div>
+                                    {Object.entries(data.amenities).map(([key, value]) =>
+                              value && iconlist[key] ? (
+                              <span key={key} title={key}>
+                                 {iconlist[key]}   </span>
+                                ) : null
+                                )}
                             </div>
                             <div className="flex items-center gap-1">
-                                <div className="text-button-sm">{data.rate}</div>
+                                <div className="text-button-sm">{Number(data.rating).toFixed(1)}</div>
                                 <Icon.Star className='text-yellow' weight='fill' />
                             </div>
                         </div>
-                        <div className="name text-title capitalize mt-1">{data.name}</div>
+                        <div className="name capitalize mt-1">{data.name}</div>
                         <div className="flex items-center justify-between gap-2 mt-1">
                             <div className="text-variant1">Nov. 12 - 15</div>
                             <div className="flex lg:items-end">
@@ -82,32 +101,33 @@ const TentItem: React.FC<Props> = ({ data, type }) => {
                 </div>
             ) : (
                 <>
+        
                     {type === 'list' ? (
                         <>
                             <div
-                                className="tent-item hover-scale style-list"
+                                className="hotel-item hover-scale style-list"
                                 onClick={() => { handleClickItem(data.id) }}
                             >
-                                <div className="tent-main relative flex max-sm:flex-wrap items-center justify-between rounded-2xl overflow-hidden box-shadow-sm border border-outline">
+                                <div className="hotel-main relative flex max-sm:flex-wrap items-center justify-between rounded-2xl overflow-hidden box-shadow-sm border border-outline">
                                     <div className="thumb-img sm:absolute top-0 left-0 h-full xl:w-1/4 lg:w-1/3 md:w-[36%] sm:w-1/2 w-full overflow-hidden">
                                         <Swiper
                                             pagination={{
                                                 type: "fraction",
-                                            }}
+                                            }}  
                                             loop={true}
                                             modules={[Pagination]}
                                             className="mySwiper w-full h-full -left-[0.5px]"
                                         >
-                                            {data.listImage.map((img, index) => (
+                                            {image_array.map((img, index) => (
                                                 <SwiperSlide key={index} className='overflow-hidden'>
                                                     <div className="bg-img w-full h-full">
-                                                        <Image
+                                                        <img
                                                             src={img}
                                                             width={2000}
                                                             height={2000}
                                                             alt={img}
-                                                            priority={true}
-                                                            className='w-full h-full object-cover'
+                                                        
+                                                            className='w-full h-60 object-fit: scale-down'
                                                         />
                                                     </div>
                                                 </SwiperSlide>
@@ -152,10 +172,10 @@ const TentItem: React.FC<Props> = ({ data, type }) => {
                     ) : (
                         <>
                             <div
-                                className="tent-item hover-scale style-list"
+                                className="hotel-item hover-scale style-list"
                                 onClick={() => { handleClickItem(data.id) }}
                             >
-                                <div className="tent-main relative flex max-sm:flex-wrap items-center justify-between rounded-2xl overflow-hidden box-shadow-sm border border-outline">
+                                <div className="hotel-main relative flex max-sm:flex-wrap items-center justify-between rounded-2xl overflow-hidden box-shadow-sm border border-outline">
                                     <div className="thumb-img sm:absolute top-0 left-0 h-full 2xl:w-[30%] lg:w-1/3 md:w-[36%] sm:w-1/2 w-full overflow-hidden">
                                         <Swiper
                                             pagination={{
@@ -165,15 +185,15 @@ const TentItem: React.FC<Props> = ({ data, type }) => {
                                             modules={[Pagination]}
                                             className="mySwiper w-full h-full -left-[0.5px]"
                                         >
-                                            {data.listImage.map((img, index) => (
+                                            {image_array.map((img, index) => (
                                                 <SwiperSlide key={index} className='overflow-hidden'>
                                                     <div className="bg-img w-full h-full">
-                                                        <Image
+                                                        <img
                                                             src={img}
                                                             width={2000}
                                                             height={2000}
                                                             alt={img}
-                                                            priority={true}
+                                                            
                                                             className='w-full h-full object-cover'
                                                         />
                                                     </div>
@@ -224,4 +244,4 @@ const TentItem: React.FC<Props> = ({ data, type }) => {
     )
 }
 
-export default TentItem
+export default HotelItem

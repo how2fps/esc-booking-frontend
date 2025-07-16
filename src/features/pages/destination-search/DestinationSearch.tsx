@@ -1,16 +1,17 @@
 'use client'
 
-import Category from '../../components/Category/Category'
+import RecommendOne from '../../components/Recommend/RecommendOne'
 import Footer from '../../components/Footer/Footer'
 import HeaderOne from '../../components/Header/Header'
 import SliderOne from '../../components/Slider/Slider'
+import Hotels from "../../components/data/hotels.json" 
 const DestinationSearch = () => {
   return (
     <>
       <div className="page-one ">
         <HeaderOne />
         <SliderOne />
-        <Category />
+        <RecommendOne data={Hotels} start={0} end={8} />
         <Footer />
       </div>
     </>
