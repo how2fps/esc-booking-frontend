@@ -1,11 +1,21 @@
 import * as Icon from "phosphor-react";
 import "rc-slider/assets/index.css";
 import { useState } from "react";
+type Amenity = string;
+type PriceRange = { min: number; max: number };
+
+interface Hotel {
+       id: string;
+       name: string;
+       address: string;
+       amenities: Set<Amenity>;
+       priceRange: PriceRange;
+}
 
 type FilterCheckboxProps = {
        header: string;
        options: string[];
-       setFilters: React.Dispatch<React.SetStateAction<string[]>>;
+       setFilters: React.Dispatch<React.SetStateAction<Hotel>>;
 };
 
 export const FilterCheckbox = ({ header, options, setFilters }: FilterCheckboxProps) => {
@@ -18,7 +28,9 @@ export const FilterCheckbox = ({ header, options, setFilters }: FilterCheckboxPr
                      newSet.add(option);
               }
               setSelectedOptionsSet(newSet);
-              setFilters(Array.from(newSet));
+              setFilters((prev) => {
+                     return { ...prev, amenities: newSet };
+              });
        };
 
        return (
