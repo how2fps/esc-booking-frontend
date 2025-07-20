@@ -6,6 +6,7 @@ import HotelDetails from "./features/pages/hotel-detail/HotelDetails";
 import Listings from "./features/pages/hotel-listings/HotelListings";
 import Login from "./features/pages/login/LoginForm";
 import SignupForm from "./features/pages/signup-form/SignupForm";
+
 const AppRoutes: React.FC = () => {
        return (
               <Routes>
