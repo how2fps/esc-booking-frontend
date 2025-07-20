@@ -18,7 +18,7 @@ const Login = () => {
 			const response = await fetch("http://localhost:3000/api/users/login", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				credentials: "include", // ✅ important for session cookies
+				credentials: "include",
 				body: JSON.stringify({ email, password }),
 			});
 			const data = await response.json();
@@ -40,7 +40,7 @@ const Login = () => {
 				<div className="container">
 					<div className="content flex items-center justify-center">
 						<div id="form-login" className='xl:basis-1/3 lg:basis-1/2 sm:basis-2/3 max-sm:w-full'>
-							<div className="heading3 text-center">Login</div>
+							<div className="heading3 text-center font-sans">Login</div>
 							<form className="md:mt-10 mt-6" onSubmit={handleSubmit}>
 								<div className="email">
 									<label htmlFor="username" className='text-variant1'>
@@ -84,13 +84,13 @@ const Login = () => {
 								{error && <p className="text-red-500 mt-4">{error}</p>}
 
 								<div className="block-button mt-6">
-									<button type="submit" className="button-main w-full text-center">Login</button>
+									<button type="submit" className="button-main w-full text-center font-sans">Login</button>
 								</div>
 							</form>
 
 							<div className="flex items-center justify-center gap-2 mt-5">
-								<div className="caption1 text-variant1">Not registered yet?</div>
-								<Link to={'/signup'} className='text-button-sm text-black has-line'>Register</Link>
+								<div className="caption1 text-variant1 font-sans">Not registered yet?</div>
+								<Link to={'/signup'} className='text-button-sm text-black has-line font-sans'>Register</Link>
 							</div>
 						</div>
 					</div>

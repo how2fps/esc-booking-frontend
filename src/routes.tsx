@@ -1,7 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import DestinationSearch from "./features/pages/destination-search/DestinationSearch";
-import HomePage from "./features/pages/home/HomePage";
 import HotelDetails from "./features/pages/hotel-detail/HotelDetails";
 import Listings from "./features/pages/hotel-listings/HotelListings";
 import Login from "./features/pages/login/LoginForm";
@@ -11,15 +10,11 @@ const AppRoutes: React.FC = () => {
               <Routes>
                      <Route
                             path="/"
-                            element={<HomePage />}
+                            element={<DestinationSearch />}
                      />
                      <Route
                             path="/signup"
                             element={<SignupForm />}
-                     />
-                     <Route
-                            path="/dashboard"
-                            element={<DestinationSearch />}
                      />
                      <Route
                             path="/hotel"

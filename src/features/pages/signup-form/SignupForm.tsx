@@ -67,7 +67,7 @@ const SignupForm = () => {
                                           <div
                                                  id="form-signup"
                                                  className="xl:basis-1/3 lg:basis-1/2 sm:basis-2/3 max-sm:w-full">
-                                                 <span className="heading3 text-center">Sign Up</span>
+                                                 <span className="heading3 text-center font-sans">Sign Up</span>
                                                  <form
                                                         className="md:mt-10 mt-6"
                                                         onSubmit={handleSubmit}>
@@ -195,10 +195,10 @@ const SignupForm = () => {
                                                  </form>
 
                                                  <div className="flex items-center justify-center gap-2 mt-5">
-                                                        <div className="caption1 text-variant1">Already have an account?</div>
+                                                        <div className="caption1 text-variant1 font-sans">Already have an account?</div>
                                                         <Link
                                                                to = "/login"
-                                                               className = "text-button-sm text-black has-line">
+                                                               className = "text-button-sm text-black has-line font-sans">
                                                                Login
                                                         </Link>
                                                  </div>

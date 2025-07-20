@@ -9,6 +9,7 @@ import AsyncSelect from "react-select/async";
 import Destination from "../data/destinations.json";
 import MicroSpellingCorrecter from "micro-spelling-correcter";
 import { AsyncPaginate } from 'react-select-async-paginate';
+
 interface DestinationType {
        term: string;
        uid: string;
@@ -24,6 +25,12 @@ interface GuestType {
        room: number;
 }
 
+const images = [
+       '/images/home/mountainhero.jpg',
+       '/images/home/riverhero.jpg',
+       '/images/home/sandhero.jpg',
+];
+
 const options: DestinationType[] = (Array.isArray(Destination) ? Destination : Object.values(Destination)).map((d: any) => ({
        ...d,
        state: typeof d.state === "string" ? d.state : "",
@@ -33,13 +40,8 @@ const options: DestinationType[] = (Array.isArray(Destination) ? Destination : O
 
 
 const tokenizedOptions = options.map(option =>(option.term || '').match(/\w+/g) || []);
-
 const Common_typos = new Set(tokenizedOptions.flat().filter(word => word.length > 3));
-
-
 const correcter = new MicroSpellingCorrecter( Common_typos, 2 );
-
-
 
 const noOptionsMessage = (input: { inputValue: string }) => {
        if (input.inputValue.length === 0) {
@@ -49,7 +51,6 @@ const noOptionsMessage = (input: { inputValue: string }) => {
        }
        return "No options";
 };
-
 
 const optionsPerPage = 10;
 
@@ -77,8 +78,6 @@ const loadOptions = async (search: string, page: number) => {
   };
 };
 
-
-
 const defaultAdditional = {
   page: 1
 };
@@ -105,6 +104,14 @@ const DestinationSearch = () => {
               type: "",
               state: "",
        });
+
+       const [index, setIndex] = useState(0);
+       useEffect(() => {
+              const timer = setInterval(() => {
+                     setIndex((prev) => (prev + 1) % 3);
+              }, 6000);
+              return () => clearInterval(timer);
+       }, []);
 
        const [state, setState] = useState([
               {
@@ -176,24 +183,26 @@ const DestinationSearch = () => {
        return (
               <>
                      <div className="slider-block style-one relative h-[620px]">
-                            <div className="bg-img absolute top-0 left-0 w-full h-full">
+                            <div className="bg-img absolute top-0 left-0 w-full h-full z-0">
+                            {['/images/home/mountainhero.jpg', '/images/home/riverhero.jpg', '/images/home/sandhero.jpg'].map((src, i) => (
                                    <img
-                                          src={"/images/slider/hotel-lobby-2024-12-05-23-25-27-utc.jpg"}
-                                          width={5000}
-                                          height={3000}
-                                          alt="slider"
-                                          className="w-full h-full object-cover"
+                                          key={i}
+                                          src={src}
+                                          alt={`Slide ${i}`}
+                                          className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
+                                                 i === index ? 'opacity-100 z-10' : 'opacity-0 z-0'
+                                          }`}
                                           style={{
-                                                 filter: "brightness(0.5)",
-                                                 WebkitFilter: "brightness(0.5)",
-                                                 position: "relative",
+                                                 filter: 'brightness(0.5)',
+                                                 WebkitFilter: 'brightness(0.5)',
                                           }}
                                    />
+                            ))}
                             </div>
-                            <div className="container py-[176px]">
+                            <div className="container py-[176px] relative z-20">
                                    <div className="content w-full relative">
                                           <div className="heading flex-col items-center justify-center">
-                                                 <div className="heading2 text-white text-center">Unlock Unique Stays at Exclusive Prices</div>
+                                                 <div className="heading2 text-white text-center font-sans">Unlock Unique Stays at Exclusive Prices</div>
                                           </div>
 
                                           <div className="form-search md:mt-10 mt-6 w-full">
@@ -321,7 +330,7 @@ const DestinationSearch = () => {
                                                                       </div>
 
                                                                       <div
-                                                                             className="button-main w-full text-center"
+                                                                             className="button-main w-full text-center font-sans"
                                                                              onClick={() => setOpenGuest(false)}>
                                                                              Done
                                                                       </div>
@@ -329,7 +338,7 @@ const DestinationSearch = () => {
                                                         </div>
 
                                                         <div className="button-block flex-shrink-0 max-lg:w-[48%] max-md:w-full">
-                                                               <div className="button-main max-lg:w-full">
+                                                               <div className="button-main max-lg:w-full font-sans">
                                                                       <Link to={`/hotels/topmap-grid?location=${location ? location.uid : "None"}&startDate=${state[0].startDate.toLocaleDateString()}&endDate=${state[0].endDate.toLocaleDateString()}&adult=${guest.adult}&children=${guest.children}&room=${guest.room}`}>Search</Link>
                                                                </div>
                                                         </div>

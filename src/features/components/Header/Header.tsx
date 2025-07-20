@@ -54,15 +54,15 @@ const HeaderOne = () => {
 					<ul className="flex items-center xl:gap-[50px] gap-10 h-full">
 						<li className="h-full relative">
 							<Link
-								to="/dashboard"
-								className={`text-button duration-300 h-full flex items-center justify-center gap-1 ${pathname === '/dashboard' ? 'active' : ''}`}>
+								to="/"
+								className={`text-button duration-300 h-full flex items-center justify-center gap-1 ${pathname === '/' ? 'active' : ''} font-sans`}>
 								Home
 							</Link>
 						</li>
 						<li className="h-full relative">
 							<Link
-								to="/"
-								className={`text-button duration-300 h-full flex items-center justify-center gap-1 ${pathname === '/' ? 'active' : ''}`}>
+								to="/HotelDetails"
+								className={`text-button duration-300 h-full flex items-center justify-center gap-1 ${pathname === '/HotelDetails' ? 'active' : ''} font-sans`}>
 								Hotel
 							</Link>
 						</li>
@@ -71,11 +71,11 @@ const HeaderOne = () => {
 
 				<div className="right flex items-center gap-3">
 					{user ? (
-						<span className="text-button max-sm:hidden">Hello, {user.name}</span>
+						<span className="text-button max-sm:hidden font-sans">Hello, {user.name}</span>
 					) : (
 						<>
-							<Link to="/login" className="text-button max-sm:hidden">Log In</Link>
-							<Link to="/signup" className="text-button max-sm:hidden">Sign Up</Link>
+							<Link to="/login" className="text-button max-sm:hidden font-sans">Log In</Link>
+							<Link to="/signup" className="text-button max-sm:hidden font-sans">Sign Up</Link>
 						</>
 					)}
 				</div>

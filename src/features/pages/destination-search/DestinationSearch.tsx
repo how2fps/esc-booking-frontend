@@ -8,7 +8,7 @@ import Hotels from "../../components/data/hotels.json"
 const DestinationSearch = () => {
   return (
     <>
-      <div className="page-one ">
+      <div className="page-one font-sans">
         <HeaderOne />
         <SliderOne />
         <RecommendOne data={Hotels} start={0} end={8} />
