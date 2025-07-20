@@ -1,14 +1,13 @@
 import { addDays } from "date-fns";
+import MicroSpellingCorrecter from "micro-spelling-correcter";
 import * as Icon from "phosphor-react";
 import { useCallback, useEffect, useState } from "react";
 import { DateRangePicker } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { Link } from "react-router-dom";
-import AsyncSelect from "react-select/async";
+import { AsyncPaginate } from "react-select-async-paginate";
 import Destination from "../data/destinations.json";
-import MicroSpellingCorrecter from "micro-spelling-correcter";
-import { AsyncPaginate } from 'react-select-async-paginate';
 interface DestinationType {
        term: string;
        uid: string;
@@ -31,15 +30,11 @@ const options: DestinationType[] = (Array.isArray(Destination) ? Destination : O
 
 //const mappedOptions = options.map((option) => ({ value: option.uid, label: option.term }));
 
+const tokenizedOptions = options.map((option) => (option.term || "").match(/\w+/g) || []);
 
-const tokenizedOptions = options.map(option =>(option.term || '').match(/\w+/g) || []);
+const Common_typos = new Set(tokenizedOptions.flat().filter((word) => word.length > 3));
 
-const Common_typos = new Set(tokenizedOptions.flat().filter(word => word.length > 3));
-
-
-const correcter = new MicroSpellingCorrecter( Common_typos, 2 );
-
-
+const correcter = new MicroSpellingCorrecter(Common_typos, 2);
 
 const noOptionsMessage = (input: { inputValue: string }) => {
        if (input.inputValue.length === 0) {
@@ -50,48 +45,42 @@ const noOptionsMessage = (input: { inputValue: string }) => {
        return "No options";
 };
 
-
 const optionsPerPage = 10;
 
 const loadOptions = async (search: string, page: number) => {
-  if (!search || search.length < 3) {
-    return {
-      options: [],
-      hasMore: false
-    };
-  }
-  const corrected = correcter.correct?.(search) || search;
+       if (!search || search.length < 3) {
+              return {
+                     options: [],
+                     hasMore: false,
+              };
+       }
+       const corrected = correcter.correct?.(search) || search;
 
-  const filteredOptions = options.filter((i) => i.term && (i.term.toLowerCase().includes(search.toLowerCase()) || i.term.toLowerCase().includes(corrected.toLowerCase())));
-  
-  const hasMore = Math.ceil(filteredOptions.length / optionsPerPage) > page;
+       const filteredOptions = options.filter((i) => i.term && (i.term.toLowerCase().includes(search.toLowerCase()) || i.term.toLowerCase().includes(corrected.toLowerCase())));
 
-  const slicedOptions = filteredOptions.slice(   
-    (page - 1) * optionsPerPage,
-    page * optionsPerPage
-  );
+       const hasMore = Math.ceil(filteredOptions.length / optionsPerPage) > page;
 
-  return {
-    options: slicedOptions,
-    hasMore
-  };
+       const slicedOptions = filteredOptions.slice((page - 1) * optionsPerPage, page * optionsPerPage);
+
+       return {
+              options: slicedOptions,
+              hasMore,
+       };
 };
 
-
-
 const defaultAdditional = {
-  page: 1
+       page: 1,
 };
 
 const loadPageOptions = async (q: string, additional = defaultAdditional) => {
-  const { page } = { page: 1 }
-       
-  const { options, hasMore } = await loadOptions(q, page);
- 
-  return {
-    options,
-    hasMore
-  };
+       const { page } = { page: 1 };
+
+       const { options, hasMore } = await loadOptions(q, page);
+
+       return {
+              options,
+              hasMore,
+       };
 };
 
 const DestinationSearch = () => {
@@ -200,15 +189,14 @@ const DestinationSearch = () => {
                                                  <form className="bg-white rounded-lg p-5 flex max-lg:flex-wrap items-center justify-between gap-5 relative">
                                                         <div className="select-block lg:w-full md:w-[48%] w-full">
                                                                <AsyncPaginate
-                                                                      debounceTimeout={100} 
+                                                                      debounceTimeout={100}
                                                                       data-testid="async-select"
                                                                       additional={{ page: 1 }}
                                                                       loadOptions={loadPageOptions}
                                                                       getOptionLabel={(i: DestinationType) => i.term}
-                                                                     getOptionValue={(i: DestinationType) => i.uid}
+                                                                      getOptionValue={(i: DestinationType) => i.uid}
                                                                       noOptionsMessage={noOptionsMessage}
-                                                                      onChange={setLocation}  
-                                                                                                                                           
+                                                                      onChange={setLocation}
                                                                       styles={{
                                                                              control: (provided) => ({
                                                                                     ...provided,
@@ -328,7 +316,7 @@ const DestinationSearch = () => {
                                                         </div>
                                                         <div className="button-block flex-shrink-0 max-lg:w-[48%] max-md:w-full">
                                                                <div className="button-main max-lg:w-full">
-                                                                      <Link to={`/hotels/topmap-grid?location=${location ? location.uid : "None"}&startDate=${state[0].startDate.toLocaleDateString()}&endDate=${state[0].endDate.toLocaleDateString()}&adult=${guest.adult}&children=${guest.children}&room=${guest.room}`}>Search</Link>
+                                                                      <Link to={`/hotels?location=${location ? location.uid : "None"}&startDate=${state[0].startDate.toLocaleDateString()}&endDate=${state[0].endDate.toLocaleDateString()}&adult=${guest.adult}&children=${guest.children}&room=${guest.room}`}>Search</Link>
                                                                </div>
                                                         </div>
                                                  </form>

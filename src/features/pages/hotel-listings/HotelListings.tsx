@@ -15,35 +15,20 @@ import TentItem from "../../components/Tent/TentItem";
 import { Link } from "react-router-dom";
 import { FilterCheckbox } from "./FilterCheckbox";
 
-type Service = string;
 type Amenity = string;
-type Activity = string;
-type Terrain = string;
 type PriceRange = { min: number; max: number };
 
 interface Hotel {
        id: string;
        name: string;
        address: string;
-       amenities: Amenity[];
-       service: Service[];
-       activities: Activity[];
-       terrain: Terrain[];
+       amenities: Set<Amenity>;
        priceRange: PriceRange;
-       category: string | null;
-       continents: string | null;
-       country: string | null;
 }
-
-function getParams() {
-       const [searchParams, setSearchParams] = useSearchParams();
-       return searchParams;
-}
+//?location=RsBU&startDate=7/20/2025&endDate=7/27/2025&adult=1&children=1&room=2
 const HotelListings = () => {
-       const params = getParams();
-       const categoryParams = params.get("category");
-       const continentsParams = params.get("continents");
-       const countryParams = params.get("country");
+       const [searchParams, setSearchParams] = useSearchParams();
+       const destination_id = searchParams.get("location");
        const [pageCount, setPageCount] = useState<number>(1);
        const [filteredHotels, setFilteredHotels] = useState<Hotel[]>([]);
 
@@ -52,17 +37,18 @@ const HotelListings = () => {
               id: "",
               name: "",
               address: "",
-              service: [] as Service[],
-              amenities: [] as Amenity[],
-              activities: [] as Activity[],
-              terrain: [] as Terrain[],
+              amenities: new Set(),
               priceRange: { min: 0, max: 500 },
-              category: categoryParams,
-              continents: continentsParams,
-              country: countryParams,
        });
 
-       useEffect(() => {});
+       useEffect(() => {
+              const fetchHotelsByDestination = async () => {
+                     const response = await fetch(`http://localhost:3000/api/hotels?destination_id=${destination_id}`);
+                     const hotelResults = await response.json();
+                     console.log(hotelResults);
+              };
+              fetchHotelsByDestination();
+       }, [destination_id]);
 
        // const tentsPerPage = tentPerPage;
        // const offset = currentPage * tentsPerPage;
@@ -162,16 +148,9 @@ const HotelListings = () => {
                                                                       </div>
                                                                </div>
                                                                <FilterCheckbox
+                                                                      setFilters={setFilters}
                                                                       header={"Services"}
                                                                       options={["reception desk", "pet allowed", "tour guide", "breakfast", "currency exchange", "self-service laundry", "cooking service", "relaxation service", "cleaning service"]}
-                                                               />
-                                                               <FilterCheckbox
-                                                                      header={"Amenities"}
-                                                                      options={["parking", "wifi", "tv", "toilet", "bathtub", "campfire", "picnic table", "trash", "cooking equipment", "refrigerator", "microwave", "dishwasher", "coffee maker"]}
-                                                               />
-                                                               <FilterCheckbox
-                                                                      header={"Activities"}
-                                                                      options={["hiking", "swimming", "fishing", "wildlife watching", "biking", "boating", "climbing", "snow sports", "horseback riding", "surfing", "wind sports"]}
                                                                />
                                                         </div>
                                                  </div>
