@@ -25,10 +25,21 @@ interface Hotel {
        amenities: Set<Amenity>;
        priceRange: PriceRange;
 }
+const formatDate = (dateString: string): string => {
+       //Input: "7/20/2025" Output: "2025-7-20"
+       const date = new Date(dateString);
+       const year = date.getFullYear();
+       const month = date.getMonth() + 1;
+       const day = date.getDate();
+       return `${year}-${month}-${day}`;
+};
+
 //?location=RsBU&startDate=7/20/2025&endDate=7/27/2025&adult=1&children=1&room=2
 const HotelListings = () => {
        const [searchParams, setSearchParams] = useSearchParams();
        const destination_id = searchParams.get("location");
+       const checkIn = formatDate(searchParams.get("startDate") as string);
+       const checkOut = formatDate(searchParams.get("endDate") as string);
        const [pageCount, setPageCount] = useState<number>(1);
        const [filteredHotels, setFilteredHotels] = useState<Hotel[]>([]);
 
@@ -43,9 +54,35 @@ const HotelListings = () => {
 
        useEffect(() => {
               const fetchHotelsByDestination = async () => {
-                     const response = await fetch(`http://localhost:3000/api/hotels?destination_id=${destination_id}`);
-                     const hotelResults = await response.json();
-                     console.log(hotelResults);
+                     try {
+                            console.log("Starting hotel fetch...");
+                            const controller = new AbortController();
+                            const timeoutId = setTimeout(() => controller.abort(), 90000);
+
+                            const response = await fetch(`http://localhost:3000/api/hotels/prices?destination_id=${destination_id}&checkin=${checkIn}&checkout=${checkOut}&lang=${"en_US"}&currency=${"SGD"}&country_code=${"SG"}&guests=${2}&partner_id=${1}`, {
+                                   signal: controller.signal,
+                                   method: "GET",
+                                   headers: {
+                                          "Content-Type": "application/json",
+                                   },
+                            });
+                            clearTimeout(timeoutId);
+
+                            const hotelResults = await response.json();
+                            console.log(hotelResults);
+                     } catch (error) {
+                            console.error("Fetch error details:", {
+                                   name: error.name,
+                                   message: error.message,
+                                   stack: error.stack,
+                            });
+
+                            if (error.name === "AbortError") {
+                                   console.log("Request was aborted (timeout)");
+                            } else if (error.message.includes("Failed to fetch")) {
+                                   console.log("Network error - check if backend is running and CORS is enabled");
+                            }
+                     }
               };
               fetchHotelsByDestination();
        }, [destination_id]);
