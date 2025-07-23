@@ -7,7 +7,7 @@ export interface Hotel {
        id: string;
        name: string;
        address: string;
-       amenities: Array<string>;
+       amenities: object;
        priceRange: { min: number; max: number };
        latitude: number;
        longitude: number;
@@ -46,14 +46,20 @@ export interface HotelPrice {
        free_cancellation: boolean;
        rooms_available: number;
        max_cash_payment: number;
-       coverted_max_cash_payment: number; // Note: this seems to be a typo for "converted"
+       coverted_max_cash_payment: number;
        points: number;
        bonuses: number;
-       bonus_programs: string[]; // or any[] if the programs can be objects
-       bonus_tiers: string[]; // or any[] if the tiers can be objects
+       bonus_programs: string[];
+       bonus_tiers: string[];
        lowest_price: number;
        price: number;
        converted_price: number;
        lowest_converted_price: number;
-       market_rates: any[]; // or define a specific type for market rates if you know the structure
+       market_rates: any[];
+}
+
+export interface HotelFilter {
+       amenities: Set<string>;
+       priceRange: { min: number; max: number };
+       minimumRating: number;
 }
