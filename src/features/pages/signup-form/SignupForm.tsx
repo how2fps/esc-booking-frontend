@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "react-router-dom";
 import { Eye, EyeSlash } from "phosphor-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -47,6 +47,7 @@ const SignupForm = () => {
                             });
                             const data = await response.json();
                             if (data.success) {
+                                   alert("Registration successful! Redirecting to login...");
                                    navigate("/login");
                             }
                      } catch (error) {
@@ -196,8 +197,8 @@ const SignupForm = () => {
                                                  <div className="flex items-center justify-center gap-2 mt-5">
                                                         <div className="caption1 text-variant1">Already have an account?</div>
                                                         <Link
-                                                               href={"/login"}
-                                                               className="text-button-sm text-black has-line">
+                                                               to = "/login"
+                                                               className = "text-button-sm text-black has-line">
                                                                Login
                                                         </Link>
                                                  </div>
