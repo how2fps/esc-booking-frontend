@@ -9,24 +9,14 @@ import { Suspense } from "react";
 import { useSearchParams } from "react-router";
 import Footer from "../../components/Footer/Footer";
 import HeaderOne from "../../components/Header/Header";
+import HotelItem from "../../components/HotelItem/HotelItem";
 import HandlePagination from "../../components/Other/HandlePagination";
-import TentItem from "../../components/Tent/TentItem";
 
 import { Link } from "react-router-dom";
+import { Hotel } from "../../type/HotelType";
 import { FilterCheckbox } from "./FilterCheckbox";
 
-type Amenity = string;
-type PriceRange = { min: number; max: number };
-
-interface Hotel {
-       id: string;
-       name: string;
-       address: string;
-       amenities: Set<Amenity>;
-       priceRange: PriceRange;
-}
 const formatDate = (dateString: string): string => {
-       //Input: "7/20/2025" Output: "2025-7-20"
        const date = new Date(dateString);
        const year = date.getFullYear();
        const month = date.getMonth() + 1;
@@ -40,10 +30,15 @@ const HotelListings = () => {
        const destination_id = searchParams.get("location");
        const checkIn = formatDate(searchParams.get("startDate") as string);
        const checkOut = formatDate(searchParams.get("endDate") as string);
-       const [pageCount, setPageCount] = useState<number>(1);
+
+       const [allHotels, setAllHotels] = useState<Hotel[]>([]);
+       const [hotelPrices, setHotelPrices] = useState([]);
        const [filteredHotels, setFilteredHotels] = useState<Hotel[]>([]);
 
-       const [page, setPage] = useState<number>(1);
+       const [currentPage, setCurrentPage] = useState<number>(1);
+       const [pageCount, setPageCount] = useState<number>(1);
+       const [itemsPerPage, setItemsPerPage] = useState<number>(12);
+
        const [filters, setFilters] = useState<Hotel>({
               id: "",
               name: "",
@@ -52,10 +47,54 @@ const HotelListings = () => {
               priceRange: { min: 0, max: 500 },
        });
 
+       const getCurrentPageItems = () => {
+              const startIndex = (currentPage - 1) * itemsPerPage;
+              const endIndex = startIndex + itemsPerPage;
+              return filteredHotels.slice(startIndex, endIndex);
+       };
+
+       const handlePageChange = (selected: number) => {
+              setCurrentPage(selected + 1);
+              window.scrollTo({ top: 0, behavior: "smooth" });
+       };
+
+       const handleItemsPerPageChange = (newItemsPerPage: number) => {
+              setItemsPerPage(newItemsPerPage);
+              setCurrentPage(1);
+              setPageCount(Math.ceil(filteredHotels.length / newItemsPerPage));
+       };
+
        useEffect(() => {
               const fetchHotelsByDestination = async () => {
                      try {
                             console.log("Starting hotel fetch...");
+                            const response = await fetch(`http://localhost:3000/api/hotels?destination_id=${destination_id}&checkin=${checkIn}&checkout=${checkOut}&lang=${"en_US"}&currency=${"SGD"}&country_code=${"SG"}&guests=${2}&partner_id=${1}`, {
+                                   method: "GET",
+                                   headers: {
+                                          "Content-Type": "application/json",
+                                   },
+                            });
+                            const hotelResults = await response.json();
+                            setAllHotels(hotelResults);
+                            setFilteredHotels(hotelResults);
+                            console.log(hotelResults);
+                     } catch (error: unknown) {
+                            if (error instanceof Error) {
+                                   console.error("Fetch error details:", {
+                                          name: error.name,
+                                          message: error.message,
+                                          stack: error.stack,
+                                   });
+                            }
+                     }
+              };
+              fetchHotelsByDestination();
+       }, [checkIn, checkOut, destination_id]);
+
+       useEffect(() => {
+              const fetchHotelsByDestination = async () => {
+                     try {
+                            console.log("Starting hotel poll...");
                             const controller = new AbortController();
                             const timeoutId = setTimeout(() => controller.abort(), 90000);
 
@@ -67,25 +106,28 @@ const HotelListings = () => {
                                    },
                             });
                             clearTimeout(timeoutId);
-
                             const hotelResults = await response.json();
-                            console.log(hotelResults);
+                            setHotelPrices(hotelResults);
                      } catch (error) {
-                            console.error("Fetch error details:", {
-                                   name: error.name,
-                                   message: error.message,
-                                   stack: error.stack,
-                            });
-
-                            if (error.name === "AbortError") {
-                                   console.log("Request was aborted (timeout)");
-                            } else if (error.message.includes("Failed to fetch")) {
-                                   console.log("Network error - check if backend is running and CORS is enabled");
+                            if (error instanceof Error) {
+                                   console.error("Fetch error details:", {
+                                          name: error.name,
+                                          message: error.message,
+                                          stack: error.stack,
+                                   });
                             }
                      }
               };
               fetchHotelsByDestination();
-       }, [destination_id]);
+       }, [checkIn, checkOut, destination_id]);
+
+       useEffect(() => {
+              setFilteredHotels(allHotels);
+              setCurrentPage(1);
+              console.log(allHotels);
+       }, [filters, allHotels, itemsPerPage]);
+
+       const currentPageItems = getCurrentPageItems();
 
        // const tentsPerPage = tentPerPage;
        // const offset = currentPage * tentsPerPage;
@@ -135,21 +177,11 @@ const HotelListings = () => {
 
        // const pageCount = Math.ceil(filteredData.length / tentsPerPage);
 
-       // if (pageCount === 0) {
-       //        setCurrentPage(0);
-       // }
-
-       // let currentTents: TentType[];
-
        // if (filteredData.length > 0) {
        //        currentTents = filteredData.slice(offset, offset + tentsPerPage);
        // } else {
        //        currentTents = [];
        // }
-
-       // const handlePageChange = (selected: number) => {
-       //        setCurrentPage(selected);
-       // };
 
        return (
               <Suspense fallback={<div>Loading...</div>}>
@@ -217,7 +249,10 @@ const HotelListings = () => {
                                                                                     id="select-filter"
                                                                                     name="select-filter"
                                                                                     className="custom-select"
-                                                                                    onChange={(e) => {}}
+                                                                                    onChange={(e) => {
+                                                                                           handleItemsPerPageChange(Number.parseInt(e.target.value));
+                                                                                    }}
+                                                                                    value={itemsPerPage}
                                                                                     defaultValue={"12"}>
                                                                                     <option value="8">8 Per Page</option>
                                                                                     <option value="9">9 Per Page</option>
@@ -249,64 +284,21 @@ const HotelListings = () => {
                                                         </div>
 
                                                         <div className="list-tent md:mt-10 mt-6 grid lg:grid-cols-3 md:grid-cols-2 min-[360px]:grid-cols-2 lg:gap-[30px] gap-4 gap-y-7">
-                                                               {filteredHotels.map((item) =>
-                                                                      item.id === "no-data" ? (
-                                                                             <div
-                                                                                    key={item.id}
-                                                                                    className="no-data-product">
-                                                                                    No tents match the selected criteria.
-                                                                             </div>
-                                                                      ) : (
-                                                                             <TentItem
-                                                                                    key={item.id}
-                                                                                    data={item}
-                                                                                    type="default"
-                                                                             />
-                                                                      )
-                                                               )}
+                                                               {currentPageItems.length > 0
+                                                                      ? currentPageItems.map((hotel) => (
+                                                                               <HotelItem
+                                                                                      key={hotel.id}
+                                                                                      hotelData={hotel}
+                                                                               />
+                                                                        ))
+                                                                      : ""}
                                                         </div>
 
-                                                        {pageCount > 1 && (
-                                                               <div className="list-pagination flex items-center md:mt-10 mt-7">
-                                                                      <HandlePagination
-                                                                             pageCount={1}
-                                                                             onPageChange={() => {}}
-                                                                      />
-                                                               </div>
-                                                        )}
-                                                 </div>
-                                          </div>
-                                   </div>
-                            </div>
-
-                            <div>
-                                   <div
-                                          className="sidebar-main"
-                                          onClick={(e) => {
-                                                 e.stopPropagation();
-                                          }}>
-                                          <div className="filter-price">
-                                                 <div className="heading6">Price Range</div>
-                                                 <Slider
-                                                        range
-                                                        defaultValue={[0, 500]}
-                                                        min={0}
-                                                        max={500}
-                                                        onChange={() => {}}
-                                                        className="mt-4"
-                                                 />
-                                                 <div className="price-block flex items-center justify-between flex-wrap mt-3">
-                                                        <div className="min flex items-center gap-1">
-                                                               <div>Min price:</div>
-                                                               <div className="price-min text-button">
-                                                                      $<span>{0}</span>
-                                                               </div>
-                                                        </div>
-                                                        <div className="max flex items-center gap-1">
-                                                               <div>Max price:</div>
-                                                               <div className="price-max text-button">
-                                                                      $<span>{1}</span>
-                                                               </div>
+                                                        <div className="">
+                                                               <HandlePagination
+                                                                      pageCount={1}
+                                                                      onPageChange={handlePageChange}
+                                                               />
                                                         </div>
                                                  </div>
                                           </div>
