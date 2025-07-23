@@ -1,35 +1,70 @@
-[
-       {
-              "id": "050G",
-              "imageCount": 62,
-              "latitude": 1.318685,
-              "longitude": 103.847882,
-              "name": "ST Residences Novena",
-              "address": "145A Moulmein Road",
-              "address1": "145A Moulmein Road",
-              "rating": 4.0,
-              "distance": 11546.94168557398,
-              "trustyou": { "id": "dede9a48-2f7c-49ae-9bd0-942a40e245e7", "score": { "overall": 85.0, "kaligo_overall": 4.3, "solo": 80.0, "couple": 86.0, "family": 80.0, "business": null } },
-              "categories": { "overall": { "name": "Overall", "score": 94, "popularity": 4.0 }, "romantic_hotel": { "name": "Romantic Hotel", "score": 72, "popularity": 8.615484615384615 }, "family_hotel": { "name": "Family Hotel", "score": 75, "popularity": 11.26431404682274 }, "business_hotel": { "name": "Business Hotel", "score": 85, "popularity": 23.84625384615385 } },
-              "amenities_ratings": [
-                     { "name": "Food", "score": 100 },
-                     { "name": "WiFi", "score": 100 },
-                     { "name": "Service", "score": 99 },
-                     { "name": "Amenities", "score": 98 },
-                     { "name": "Location", "score": 97 },
-                     { "name": "Comfort", "score": 92 },
-                     { "name": "Breakfast", "score": 80 },
-                     { "name": "Room", "score": 79 }
-              ],
-              "description": "Take advantage of recreation opportunities including an outdoor pool and a 24-hour fitness center. Additional amenities at this aparthotel include complimentary wireless internet access, concierge services, and a communal living room.\n\nFeatured amenities include dry cleaning/laundry services, a 24-hour front desk, and luggage storage. Free self parking is available onsite.\n\nMake yourself at home in one of the 38 individually furnished guestrooms, featuring kitchenettes with refrigerators and microwaves. 40-inch LED televisions with cable programming provide entertainment, while complimentary wireless internet access keeps you connected. Conveniences include safes and desks, and housekeeping is provided weekly.\n\nDistances are displayed to the nearest 0.1 mile and kilometer. <br /> <p>Mount Elizabeth Novena Hospital - 0.7 km / 0.4 mi <br /> City Square Mall - 1.5 km / 0.9 mi <br /> Mustafa Centre - 1.6 km / 1 mi <br /> The Paragon - 2.5 km / 1.6 mi <br /> Bugis Street Shopping District - 2.6 km / 1.6 mi <br /> Mount Elizabeth Medical Center - 2.6 km / 1.6 mi <br /> Orchard Road - 2.6 km / 1.6 mi <br /> Takashimaya Shopping Centre - 2.7 km / 1.7 mi <br /> Orchard Central - 2.8 km / 1.7 mi <br /> Haji Lane - 2.8 km / 1.8 mi <br /> Sultan Mosque - 2.8 km / 1.8 mi <br /> Lucky Plaza - 2.9 km / 1.8 mi <br /> Bugis+ Shopping Center - 2.9 km / 1.8 mi <br /> Orchard Tower - 3 km / 1.8 mi <br /> Bugis Junction Shopping Center - 3 km / 1.8 mi <br /> </p><p>The nearest airports are:<br />Seletar Airport (XSP) - 13.7 km / 8.5 mi<br /> Singapore Changi Airport (SIN) - 21.4 km / 13.3 mi<br /> Senai International Airport (JHB) - 71 km / 44.1 mi<br /> </p><p></p>\n\nWith a stay at ST Residences Novena, you'll be centrally located in Singapore, within a 5-minute drive of Orchard Road and Mustafa Centre.  This boutique aparthotel is 3.3 mi (5.3 km) from Marina Bay Sands Skypark and 3.6 mi (5.8 km) from Marina Bay Sands Casino.\n\nIn Singapore (Novena)",
-              "amenities": { "airConditioning": true, "clothingIron": true, "continentalBreakfast": true, "dataPorts": true, "hairDryer": true, "kitchen": true, "outdoorPool": true, "parkingGarage": true, "safe": true, "tVInRoom": true, "voiceMail": true },
-              "original_metadata": { "name": null, "city": "Singapore", "state": null, "country": "SG" },
-              "image_details": { "suffix": ".jpg", "count": 62, "prefix": "https://d2ey9sqrvkqdfs.cloudfront.net/050G/" },
-              "hires_image_index": "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51",
-              "number_of_images": 54,
-              "default_image_index": 1,
-              "imgix_url": "https://kaligo-web-expedia.imgix.net",
-              "cloudflare_image_url": "https://www.kaligo-staging.xyz/images/new",
-              "checkin_time": "3:00 PM"
-       }
-]
+{
+       "id": "8dS6",
+       "imageCount": 0,
+       "latitude": 1.30408,
+       "longitude": 103.92337,
+       "name": "Goldkist Beach Resort",
+       "address": "1110 East Coast Parkway",
+       "address1": "1110 East Coast Parkway",
+       "rating": 3,
+       "distance": 11555.34242313931,
+       "trustyou": {
+              "id": null,
+              "score": {
+                     "overall": 50,
+                     "kaligo_overall": 2.5,
+                     "solo": null,
+                     "couple": 47,
+                     "family": null,
+                     "business": 44
+              }
+       },
+       "categories": {
+              "overall": {
+                     "name": "Overall",
+                     "score": 50,
+                     "popularity": 99
+              }
+       },
+       "amenities_ratings": [
+              {
+                     "name": "Beach",
+                     "score": 100
+              },
+              {
+                     "name": "Location",
+                     "score": 79
+              },
+              {
+                     "name": "Room",
+                     "score": 53
+              },
+              {
+                     "name": "Service",
+                     "score": 29
+              },
+              {
+                     "name": "Comfort",
+                     "score": 8
+              }
+       ],
+       "description": "This 3 star hotel is located in the city centre of Singapore. The Hotel has an outdoor swimming pool.",
+       "amenities": {},
+       "original_metadata": {
+              "name": null,
+              "city": "Singapore",
+              "state": "Singapore Island",
+              "country": "SG"
+       },
+       "image_details": {
+              "suffix": ".jpg",
+              "count": 0,
+              "prefix": "https://d2ey9sqrvkqdfs.cloudfront.net/8dS6/"
+       },
+       "hires_image_index": "",
+       "number_of_images": 0,
+       "default_image_index": 1,
+       "imgix_url": "https://kaligo-web-old.imgix.net",
+       "cloudflare_image_url": "https://www.kaligo-staging.xyz/images/new",
+       "checkin_time": ""
+}
