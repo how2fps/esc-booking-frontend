@@ -13,7 +13,7 @@ import HotelItem from "../../components/HotelItem/HotelItem";
 import HandlePagination from "../../components/Other/HandlePagination";
 
 import { Link } from "react-router-dom";
-import { Hotel } from "../../type/HotelType";
+import type { Hotel, HotelPrice } from "../../type/HotelType";
 import { FilterCheckbox } from "./FilterCheckbox";
 
 const formatDate = (dateString: string): string => {
@@ -32,7 +32,7 @@ const HotelListings = () => {
        const checkOut = formatDate(searchParams.get("endDate") as string);
 
        const [allHotels, setAllHotels] = useState<Hotel[]>([]);
-       const [hotelPrices, setHotelPrices] = useState([]);
+       const [hotelPrices, setHotelPrices] = useState<Map<string, HotelPrice>>(new Map());
        const [filteredHotels, setFilteredHotels] = useState<Hotel[]>([]);
 
        const [currentPage, setCurrentPage] = useState<number>(1);
@@ -44,7 +44,7 @@ const HotelListings = () => {
               name: "",
               address: "",
               amenities: new Set(),
-              priceRange: { min: 0, max: 500 },
+              priceRange: { min: 0, max: 10000 },
        });
 
        const getCurrentPageItems = () => {
@@ -67,7 +67,6 @@ const HotelListings = () => {
        useEffect(() => {
               const fetchHotelsByDestination = async () => {
                      try {
-                            console.log("Starting hotel fetch...");
                             const response = await fetch(`http://localhost:3000/api/hotels?destination_id=${destination_id}&checkin=${checkIn}&checkout=${checkOut}&lang=${"en_US"}&currency=${"SGD"}&country_code=${"SG"}&guests=${2}&partner_id=${1}`, {
                                    method: "GET",
                                    headers: {
@@ -76,7 +75,7 @@ const HotelListings = () => {
                             });
                             const hotelResults = await response.json();
                             setAllHotels(hotelResults);
-                            setFilteredHotels(hotelResults);
+
                             console.log(hotelResults);
                      } catch (error: unknown) {
                             if (error instanceof Error) {
@@ -92,12 +91,11 @@ const HotelListings = () => {
        }, [checkIn, checkOut, destination_id]);
 
        useEffect(() => {
-              const fetchHotelsByDestination = async () => {
+              const fetchHotelPrices = async () => {
                      try {
                             console.log("Starting hotel poll...");
                             const controller = new AbortController();
                             const timeoutId = setTimeout(() => controller.abort(), 90000);
-
                             const response = await fetch(`http://localhost:3000/api/hotels/prices?destination_id=${destination_id}&checkin=${checkIn}&checkout=${checkOut}&lang=${"en_US"}&currency=${"SGD"}&country_code=${"SG"}&guests=${2}&partner_id=${1}`, {
                                    signal: controller.signal,
                                    method: "GET",
@@ -106,8 +104,24 @@ const HotelListings = () => {
                                    },
                             });
                             clearTimeout(timeoutId);
-                            const hotelResults = await response.json();
-                            setHotelPrices(hotelResults);
+                            const hotelPricesArray = await response.json();
+                            if (hotelPricesArray.complete) {
+                            }
+                            const priceMap = new Map<string, HotelPrice>();
+                            hotelPricesArray.forEach((price: HotelPrice) => {
+                                   priceMap.set(price.id, price);
+                            });
+                            setHotelPrices(priceMap);
+
+                            setAllHotels((prev) =>
+                                   prev.map((hotel) => {
+                                          const priceData = priceMap.get(hotel.id);
+                                          return {
+                                                 ...hotel,
+                                                 price: priceData?.price ?? hotel.price,
+                                          };
+                                   })
+                            );
                      } catch (error) {
                             if (error instanceof Error) {
                                    console.error("Fetch error details:", {
@@ -118,19 +132,17 @@ const HotelListings = () => {
                             }
                      }
               };
-              fetchHotelsByDestination();
+              fetchHotelPrices();
        }, [checkIn, checkOut, destination_id]);
 
        useEffect(() => {
               setFilteredHotels(allHotels);
+              setPageCount(Math.ceil(allHotels.length / itemsPerPage));
               setCurrentPage(1);
               console.log(allHotels);
        }, [filters, allHotels, itemsPerPage]);
 
        const currentPageItems = getCurrentPageItems();
-
-       // const tentsPerPage = tentPerPage;
-       // const offset = currentPage * tentsPerPage;
 
        // let filteredData = tentData.filter((tent) => {});
 
@@ -174,8 +186,6 @@ const HotelListings = () => {
        //               },
        //        ];
        // }
-
-       // const pageCount = Math.ceil(filteredData.length / tentsPerPage);
 
        // if (filteredData.length > 0) {
        //        currentTents = filteredData.slice(offset, offset + tentsPerPage);
@@ -296,7 +306,7 @@ const HotelListings = () => {
 
                                                         <div className="">
                                                                <HandlePagination
-                                                                      pageCount={1}
+                                                                      pageCount={pageCount}
                                                                       onPageChange={handlePageChange}
                                                                />
                                                         </div>
