@@ -6,20 +6,8 @@ import { Link } from "react-router-dom";
 
 const HeaderOne = () => {
        const pathname = usePathname();
-       const [fixedHeader, setFixedHeader] = useState(false);
-       const [lastScrollPosition, setLastScrollPosition] = useState(0);
-       const [user, setUser] = useState<{ name: string } | null>(null);
 
-       // Handle scroll effect
-       useEffect(() => {
-              const handleScroll = () => {
-                     const scrollPosition = window.scrollY;
-                     setFixedHeader(scrollPosition > 10);
-                     setLastScrollPosition(scrollPosition);
-              };
-              window.addEventListener("scroll", handleScroll);
-              return () => window.removeEventListener("scroll", handleScroll);
-       }, [lastScrollPosition]);
+       const [user, setUser] = useState<{ name: string } | null>(null);
 
        // Fetch session
        useEffect(() => {
@@ -43,7 +31,7 @@ const HeaderOne = () => {
               <div
                      id="header"
                      className="header">
-                     <div className={`header-main h-20 w-full bg-white min-[1322px]:px-5 px-4 flex items-center justify-between ${fixedHeader ? "fixed box-shadow" : ""}`}>
+                     <div className={`header-main h-20 w-full bg-white min-[1322px]:px-5 px-4 flex items-center justify-between`}>
                             <Link
                                    to="/"
                                    className="logo">

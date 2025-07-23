@@ -10,9 +10,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import PlaceholderCat from "../../../assets/Placeholder_Cat.png";
 import type { Hotel } from "../../type/HotelType";
 
-interface Props {
-       hotelData: Hotel;
-}
 const iconlist = {
        dryCleaning: <WashingMachineIcon />,
        outdoorPool: <SwimmingPoolIcon />,
@@ -23,7 +20,7 @@ const iconlist = {
        inHouseBar: <MartiniIcon />,
 };
 
-const HotelItem: React.FC<Props> = ({ hotelData }) => {
+const HotelItem: React.FC<{ hotelData: Hotel }> = ({ hotelData }) => {
        const router = useNavigate();
        const prefix = hotelData.image_details?.prefix || "";
        const suffix = hotelData.image_details?.suffix || "";
@@ -43,7 +40,7 @@ const HotelItem: React.FC<Props> = ({ hotelData }) => {
 
        const allImagesFailed = imageArray.length > 0 && failedImages.size === imageArray.length;
        const handleClickItem = (id: string) => {
-              router(`/camp/hotel-details?id=${id}`);
+              router(`/hotel-details?id=${id}`);
        };
        return (
               <div
