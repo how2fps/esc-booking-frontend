@@ -70,6 +70,8 @@ const loadOptions = async (search: string, page: number) => {
     (page - 1) * optionsPerPage,
     page * optionsPerPage
   );
+  console.log('page:', page, 'filteredOptions.length:', filteredOptions.length, 'hasMore:', hasMore);
+  console.log('Page:', page, 'options count:', slicedOptions);
 
   return {
     options: slicedOptions,
@@ -78,21 +80,25 @@ const loadOptions = async (search: string, page: number) => {
 };
 
 
+const defaultAdditional = { page: 1 };
 
-const defaultAdditional = {
-  page: 1
-};
+const loadPageOptions = async (
+  q: string,
+  loadedOptions: DestinationType[],
+  additional = defaultAdditional
+) => {
+  const { page = 1 } = additional;
+  console.log('Fetching page:', page, 'query:', q);
 
-const loadPageOptions = async (q: string, additional = defaultAdditional) => {
-  const { page } = { page: 1 }
-       
   const { options, hasMore } = await loadOptions(q, page);
- 
+
   return {
     options,
-    hasMore
+    hasMore,
+    additional: { page: page + 1 }
   };
 };
+
 
 const DestinationSearch = () => {
        const [openDate, setOpenDate] = useState(false);
@@ -200,12 +206,12 @@ const DestinationSearch = () => {
                                                  <form className="bg-white rounded-lg p-5 flex max-lg:flex-wrap items-center justify-between gap-5 relative">
                                                         <div className="select-block lg:w-full md:w-[48%] w-full">
                                                                <AsyncPaginate
-                                                                      debounceTimeout={100} 
+                                                                      debounceTimeout={200} 
                                                                       data-testid="async-select"
-                                                                      additional={{ page: 1 }}
+                                                                      additional={{ page: 1}}
                                                                       loadOptions={loadPageOptions}
                                                                       getOptionLabel={(i: DestinationType) => i.term}
-                                                                     getOptionValue={(i: DestinationType) => i.uid}
+                                                                      getOptionValue={(i: DestinationType) => i.uid}
                                                                       noOptionsMessage={noOptionsMessage}
                                                                       onChange={setLocation}  
                                                                                                                                            
@@ -220,7 +226,7 @@ const DestinationSearch = () => {
                                                                              }),
                                                                       }}
                                                                />
-                                                               <p data-testid="uid">Selected: {location ? location.uid : "None"}</p>
+                                                              
                                                         </div>
                                                         <div className="relative lg:w-full md:w-[48%] w-full">
                                                                <div
