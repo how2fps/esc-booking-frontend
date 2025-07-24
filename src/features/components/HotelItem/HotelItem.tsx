@@ -64,6 +64,7 @@ const HotelItem: React.FC<{ hotelData: Hotel }> = ({ hotelData }) => {
                                                         <div className="bg-img w-full aspect-[16/11]">
                                                                {failedImages.has(img) ? (
                                                                       <img
+                                                                             loading="lazy"
                                                                              src={PlaceholderCat}
                                                                              width={2500}
                                                                              height={2500}
