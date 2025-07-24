@@ -32,7 +32,7 @@ export const AmenityFilter = ({ setFilters }: FilterCheckboxProps) => {
        ];
 
        return (
-              <div className="filter-amenities mt-7">
+              <div className="border-2 border-black rounded-[12px] p-4 mt-8">
                      <div className="heading6">Amenities</div>
                      <div className="list-amenities flex flex-col gap-3 mt-3">
                             {amenityOptions.map((amenity) => (

@@ -12,6 +12,7 @@ import HeaderOne from "../../components/Header/Header";
 import HotelItem from "../../components/HotelItem/HotelItem";
 import HandlePagination from "../../components/Other/HandlePagination";
 
+import { StarIcon } from "@phosphor-icons/react";
 import type { Hotel, HotelFilter, HotelPrice } from "../../type/HotelType";
 import { AmenityFilter } from "./AmenityFilter";
 
@@ -157,11 +158,25 @@ const HotelListings = () => {
                             <HeaderOne />
                             <div className="lg:py-20 md:py-14 max-lg:mt-10 max-md:mt-40 py-10">
                                    <div className="container">
-                                          <div className="flex justify-between">
+                                          <div className="flex">
                                                  <div className="left lg:w-1/4 w-1/3 pr-[45px] max-md:hidden">
                                                         <div className="sidebar-main">
-                                                               <div className="filter-price">
+                                                               <div className="border-2 border-black rounded-[12px] p-4">
                                                                       <div className="heading6">Price Range</div>
+                                                                      <div className="price-block flex items-center justify-between flex-wrap mt-3">
+                                                                             <div className="min flex items-center gap-1">
+                                                                                    <div>Min:</div>
+                                                                                    <div className="price-min text-button">
+                                                                                           $<span>{4}</span>
+                                                                                    </div>
+                                                                             </div>
+                                                                             <div className="max flex items-center gap-1">
+                                                                                    <div>Max:</div>
+                                                                                    <div className="price-max text-button">
+                                                                                           $<span>{5}</span>
+                                                                                    </div>
+                                                                             </div>
+                                                                      </div>
                                                                       <Slider
                                                                              range
                                                                              defaultValue={[0, 500]}
@@ -169,20 +184,31 @@ const HotelListings = () => {
                                                                              max={500}
                                                                              className="mt-4"
                                                                       />
+                                                               </div>
+                                                               <div className="border-2 border-black rounded-[12px] p-4 mt-8">
+                                                                      <div className="heading6">Rating</div>
                                                                       <div className="price-block flex items-center justify-between flex-wrap mt-3">
                                                                              <div className="min flex items-center gap-1">
-                                                                                    <div>Min price:</div>
-                                                                                    <div className="price-min text-button">
-                                                                                           $<span>{4}</span>
-                                                                                    </div>
-                                                                             </div>
-                                                                             <div className="max flex items-center gap-1">
-                                                                                    <div>Max price:</div>
-                                                                                    <div className="price-max text-button">
-                                                                                           $<span>{5}</span>
-                                                                                    </div>
+                                                                                    {filters.minimumRating}
+                                                                                    <StarIcon
+                                                                                           className="text-yellow"
+                                                                                           weight="fill"
+                                                                                    />
                                                                              </div>
                                                                       </div>
+                                                                      <Slider
+                                                                             value={filters.minimumRating}
+                                                                             min={0}
+                                                                             max={5}
+                                                                             step={0.5}
+                                                                             className="mt-4"
+                                                                             onChange={(value) =>
+                                                                                    setFilters((prev) => ({
+                                                                                           ...prev,
+                                                                                           minimumRating: typeof value === "number" ? value : prev.minimumRating,
+                                                                                    }))
+                                                                             }
+                                                                      />
                                                                </div>
                                                                <AmenityFilter setFilters={setFilters} />
                                                         </div>
