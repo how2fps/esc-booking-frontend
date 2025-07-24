@@ -10,6 +10,7 @@ import HotelItem from "../../components/HotelItem/HotelItem";
 import HandlePagination from "../../components/Other/HandlePagination";
 
 import { StarIcon } from "@phosphor-icons/react";
+import { APIProvider, Map as GoogleMap } from "@vis.gl/react-google-maps";
 import type { Hotel, HotelFilter, HotelPrice } from "../../type/HotelType";
 import { AmenityFilter } from "./AmenityFilter";
 
@@ -151,6 +152,15 @@ const HotelListings = () => {
 
        return (
               <div className="lg:py-20 md:py-14 max-lg:mt-10 max-md:mt-40 py-10">
+                     <APIProvider apiKey={"AIzaSyDvOOGtU4aEZVgsQ6dwZPZ0jVC0ETOo1CE"}>
+                            <GoogleMap
+                                   style={{ width: "100vw", height: "100vh" }}
+                                   defaultCenter={{ lat: 22.54992, lng: 0 }}
+                                   defaultZoom={3}
+                                   gestureHandling={"greedy"}
+                                   disableDefaultUI={true}
+                            />
+                     </APIProvider>
                      <div className="container">
                             <div className="flex">
                                    <div className="left lg:w-1/4 w-1/3 pr-[45px] max-md:hidden">
@@ -158,18 +168,7 @@ const HotelListings = () => {
                                                  <div className="border-2 border-black rounded-[12px] p-4">
                                                         <div className="heading6">Price Range</div>
                                                         <div className="price-block flex items-center justify-between flex-wrap mt-3">
-                                                               <div className="min flex items-center gap-1">
-                                                                      <div>Min:</div>
-                                                                      <div className="price-min text-button">
-                                                                             $<span>{filters.priceRange.min}</span>
-                                                                      </div>
-                                                               </div>
-                                                               <div className="max flex items-center gap-1">
-                                                                      <div>Max:</div>
-                                                                      <div className="price-max text-button">
-                                                                             $<span>{filters.priceRange.max}</span>
-                                                                      </div>
-                                                               </div>
+                                                               ${filters.priceRange.min} - ${filters.priceRange.max}
                                                         </div>
                                                         <Slider
                                                                range
@@ -191,7 +190,7 @@ const HotelListings = () => {
                                                  <div className="border-2 border-black rounded-[12px] p-4 mt-8">
                                                         <div className="heading6">Rating</div>
                                                         <div className="price-block flex items-center justify-between flex-wrap">
-                                                               <div className="min flex items-center gap-1">
+                                                               <div className="flex items-center gap-1">
                                                                       ≥ {filters.minimumRating}
                                                                       <StarIcon
                                                                              className="text-yellow"
