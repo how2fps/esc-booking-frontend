@@ -1,53 +1,145 @@
-import { render, screen, fireEvent,waitFor  } from '@testing-library/react';
+import { render, screen, fireEvent,waitFor, within   } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import  SliderOne  from '../src/features/components/Slider/Slider';
+import  Slider  from '../src/features/components/Slider/Slider';
 import { MemoryRouter } from 'react-router-dom';
 import userEvent  from '@testing-library/user-event';
 // Mock react-select/async for predictable testing
-// Example mock for AsyncSelect in your test
-vi.mock('react-select/async', () => ({
-  __esModule: true,
-  default: ({ onChange, value, ...props }) => (
-    <input
-      data-testid="async-select"
-      value={value?.label || ''}
-      onChange={e => {
-        // Simulate selecting "Italy" with its real ID
-        if (e.target.value === 'Italy') {
-          onChange({ value: 'A6Dz', label: 'Italy' });
-        } else {
-          onChange({ value: e.target.value, label: e.target.value });
-        }
-      }}
-      {...props}
-    />
-  ),
-}));
 
 
-describe('SliderOne Component', () => {
-  it('updates location via AsyncSelect', async () => {
-    render(
-      <MemoryRouter>
-        <SliderOne />
-      </MemoryRouter>
-    );
-    const asyncSelect = screen.getByTestId('async-select');
+    it('renders AsyncPaginate and allows interaction', async() => {
+      render(
+        <MemoryRouter>
+          <Slider />
+        </MemoryRouter>
+      );
+
+    // Query the AsyncPaginate by data-testid
+
+    const asyncSelect =  await screen.findByTestId('async-select');
     expect(asyncSelect).toBeInTheDocument();
 
-    await userEvent.type(asyncSelect, 'Italy');
-    // Simulate the change event
-    fireEvent.change(asyncSelect, { target: { value: 'Italy' } });
-    fireEvent.keyDown(asyncSelect, { key: 'Enter', code: 'Enter', keyCode: 13 });
 
-    // Optionally, check the "Selected" text updates
-    expect(screen.getByTestId('uid')).toHaveTextContent('Selected: A6Dz');
+    const input = within(asyncSelect).getByRole('combobox');
+      // Assert input is indeed in the document
+      expect(input).toBeInTheDocument();
+
+      //check if the input is visible
+      expect(input).toBeVisible();
+
+    // Simulate typing to trigger async loadOptions
+     userEvent.type(input, 'Rome');
+
+    // Wait for option to appear asynchronously
+    const option =  await screen.findByText('Rome, Italy');
+    expect(option).toBeInTheDocument();
+
+    // Simulate selecting the option
+    userEvent.click(option);})
+
+
+  it('loads next page of options on scroll', async () => {
+    render(
+        <MemoryRouter>
+          <Slider />
+        </MemoryRouter>
+      );
+
+    // Focus or click input to load first options
+    const asyncSelect =  await screen.findByTestId('async-select');
+    expect(asyncSelect).toBeInTheDocument();
+
+
+    const input = within(asyncSelect).getByRole('combobox');
+    userEvent.type(input, 'Rome');
+ 
+    // Wait for the first page options to appear
+    expect(await screen.findByText('Rome, Italy')).toBeInTheDocument();
+  
+    const dropdownMenu = await screen.findByRole('listbox');
+    // Simulate scrolling to bottom to load next page
+    // In real test, you'd use MenuList ref or fire scroll event,
+    // but you can call loadPageOptions directly for simplicity:
+    //await waitFor(() => expect(loadPageOptions).toHaveBeenCalledWith('', expect.any(Array), { page: 2 }));
+    fireEvent.scroll(dropdownMenu, { target: { scrollTop: dropdownMenu.scrollHeight } });
+    // Wait for the second page options to appear
+    expect(await screen.findByText('Policlinico, Rome, Italy')).toBeInTheDocument();
+
+    // Ensure all four options are visible (not duplicated)
+    expect(screen.getAllByRole('option').map(el => el.textContent)).toEqual(
+      expect.arrayContaining(['Rome, Italy', 'Policlinico, Rome, Italy'])
+    );
   });
+
+  it('ends when no more item avaiable ', async () => {
+    render(
+        <MemoryRouter>
+          <Slider />
+        </MemoryRouter>
+      );
+
+    // Focus or click input to load first options
+    const asyncSelect =  await screen.findByTestId('async-select');
+    expect(asyncSelect).toBeInTheDocument();
+
+
+    const input = within(asyncSelect).getByRole('combobox');
+    userEvent.type(input, 'kiol');
+ 
+    // Wait for the first page options to appear
+    expect(await screen.findByText('Park Angiolina, Opatija, Croatia')).toBeInTheDocument();
+  
+    const dropdownMenu = await screen.findByRole('listbox');
+    // Simulate scrolling to bottom to load next page
+    // In real test, you'd use MenuList ref or fire scroll event,
+    // but you can call loadPageOptions directly for simplicity:
+    //await waitFor(() => expect(loadPageOptions).toHaveBeenCalledWith('', expect.any(Array), { page: 2 }));
+    fireEvent.scroll(dropdownMenu, { target: { scrollTop: dropdownMenu.scrollHeight } });
+    // Wait for the second page options to appear
+
+    // Ensure all four options are visible (not duplicated)
+    expect(screen.getAllByRole('option').map(el => el.textContent)).toEqual(
+      expect.arrayContaining(['Park Angiolina, Opatija, Croatia', 'Bodega Giol, Mendoza, MENDOZA, Argentina'])
+    );
+  });
+
+it('shows options corresponding only to latest rapid input after debounce', async () => {
+    render(
+      <MemoryRouter>
+        <Slider />
+      </MemoryRouter>
+    );
+  const asyncSelect =  await screen.findByTestId('async-select');
+  const input = within(asyncSelect).getByRole('combobox');
+
+  // Type 'a' then quickly 'ab', then 'abc' rapidly, all within less than debounce timeout
+  await userEvent.type(input, 'a', { delay: 10 });
+  await userEvent.type(input, 'b', { delay: 10 }); // input is now 'ab'
+  await userEvent.type(input, 'c', { delay: 10 }); // input is now 'abc'
+  await userEvent.type(input, 'd', { delay: 10 }); // input is now 'abcd'  
+  // Wait longer than debounce timeout + max artificial delay in your loadPageOptions (200ms + 100ms)
+  // to ensure last call settles
+
+  await waitFor(
+    async () => {
+      // The options for 'abcd' should be rendered, NOT options for 'abc'
+      expect(screen.getByText('Ubud, Indonesia')).toBeInTheDocument();
+      expect(screen.getByText('Kedewatan, Ubud, Indonesia')).toBeInTheDocument();
+
+      // Should NOT find options from previous inputs
+      expect(screen.queryByText('Abcoude, Netherlands')).not.toBeInTheDocument();
+      expect(screen.queryByText('ABC Stadium, Foz Do Iguacu')).not.toBeInTheDocument();
+    },
+    { timeout: 100 }
+  );
+});
+
+
+
 
   it('shows correct date range in input', () => {
     render(
       <MemoryRouter>
-        <SliderOne />
+        <Slider />
       </MemoryRouter>
     );
     const dateInput = screen.getByPlaceholderText('Add Dates');
@@ -64,7 +156,7 @@ describe('SliderOne Component', () => {
   it('increments and decrements guest counts', async () => {
     render(
       <MemoryRouter>
-        <SliderOne />
+        <Slider />
       </MemoryRouter>
     );
     const guestInput = screen.getByPlaceholderText('Add Guest');
@@ -99,4 +191,4 @@ describe('SliderOne Component', () => {
 });
 
   // Add similar tests for children and room if needed
-});
+
