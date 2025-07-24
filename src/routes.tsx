@@ -6,6 +6,8 @@ import HotelDetails from "./features/pages/hotel-detail/HotelDetails";
 import Listings from "./features/pages/hotel-listings/HotelListings";
 import Login from "./features/pages/login/LoginForm";
 import SignupForm from "./features/pages/signup-form/SignupForm";
+import BookingPage from "./features/pages/booking/BookingPage";
+
 const AppRoutes: React.FC = () => {
        return (
               <Routes>
@@ -32,6 +34,10 @@ const AppRoutes: React.FC = () => {
                      <Route
                             path="/login"
                             element={<Login />}
+                     />
+                     <Route
+                            path="/booking"
+                            element={<BookingPage />}
                      />
               </Routes>
        );
