@@ -92,23 +92,13 @@ const HotelListings = () => {
                             });
                             const hotelPricesResponse = await response.json();
                             const hotelPricesArray = hotelPricesResponse.data.hotels;
-                            console.log(hotelPricesArray);
                             clearTimeout(timeoutId);
                             const priceMap = new Map<string, HotelPrice>();
                             hotelPricesArray.forEach((price: HotelPrice) => {
                                    priceMap.set(price.id, price);
                             });
-                            // setHotelPrices(priceMap);
-
-                            // setAllHotels((prev) =>
-                            //        prev.map((hotel) => {
-                            //               const priceData = priceMap.get(hotel.id);
-                            //               return {
-                            //                      ...hotel,
-                            //                      price: priceData?.price ?? hotel.price,
-                            //               };
-                            //        })
-                            // );
+                            console.log(priceMap);
+                            setHotelPrices(priceMap);
                      } catch (error) {
                             if (error instanceof Error) {
                                    console.error("Fetch error details:", {
@@ -122,9 +112,19 @@ const HotelListings = () => {
               fetchHotelPrices();
        }, [checkIn, checkOut, destination_id]);
 
+       const mergedHotels = useMemo(() => {
+              return allHotels.map((hotel) => {
+                     const priceData = hotelPrices.get(hotel.id);
+                     return {
+                            ...hotel,
+                            price: priceData?.price ?? hotel.price,
+                     };
+              });
+       }, [allHotels, hotelPrices]);
+
        const filteredHotelsArray = useMemo(() => {
-              return allHotels.filter((hotel) => hotel.rating >= filters.minimumRating && [...filters.amenities].every((amenity) => hotel.amenities[amenity]));
-       }, [filters, allHotels]);
+              return mergedHotels.filter((hotel) => hotel.rating >= filters.minimumRating && [...filters.amenities].every((amenity) => hotel.amenities[amenity]));
+       }, [filters, mergedHotels]);
 
        const sortedHotelsArray = useMemo(() => {
               const arr = [...filteredHotelsArray];
