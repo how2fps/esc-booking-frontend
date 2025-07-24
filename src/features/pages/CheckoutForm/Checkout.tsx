@@ -12,7 +12,7 @@ import {
   Routes,
   Navigate
 } from "react-router-dom";
-const stripePromise = loadStripe("pk_test_51RlnqVCRemnaR0EMcYPAKo8USAa7Qhyx8drdhnG2XG4KOp8PrGqOu9D61azLwFxfiaAyOWLcCRIY93W8Z1DXsqAF00z6jI9LR0");
+const stripePromise = loadStripe("");
 
 const CheckoutForm = () => {
   const fetchClientSecret = useCallback(() => {
