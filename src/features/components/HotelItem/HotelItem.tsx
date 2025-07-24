@@ -69,7 +69,7 @@ const HotelItem: React.FC<{ hotelData: Hotel }> = ({ hotelData }) => {
                                                                              width={2500}
                                                                              height={2500}
                                                                              alt="Placeholder image"
-                                                                             className="w-full h-full object-scale-down"
+                                                                             className="w-full h-full object-cover"
                                                                       />
                                                                ) : (
                                                                       <img
@@ -77,7 +77,7 @@ const HotelItem: React.FC<{ hotelData: Hotel }> = ({ hotelData }) => {
                                                                              width={2000}
                                                                              height={2000}
                                                                              alt="Hotel image"
-                                                                             className="w-full h-full object-scale-down"
+                                                                             className="w-full h-full object-cover"
                                                                              onError={() => handleImageError(img)}
                                                                       />
                                                                )}
