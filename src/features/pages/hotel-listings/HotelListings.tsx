@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import * as Icon from "phosphor-react";
 import Slider from "rc-slider";
@@ -32,11 +32,9 @@ const HotelListings = () => {
 
        const [allHotels, setAllHotels] = useState<Hotel[]>([]);
        const [hotelPrices, setHotelPrices] = useState<Map<string, HotelPrice>>(new Map());
-       const [filteredHotels, setFilteredHotels] = useState<Hotel[]>([]);
        const [sortOption, setSortOption] = useState<string>();
 
        const [currentPage, setCurrentPage] = useState<number>(1);
-       const [pageCount, setPageCount] = useState<number>(1);
        const [itemsPerPage, setItemsPerPage] = useState<number>(12);
 
        const [filters, setFilters] = useState<HotelFilter>({
@@ -44,12 +42,6 @@ const HotelListings = () => {
               priceRange: { min: 0, max: 10000 },
               minimumRating: 0,
        });
-
-       const getCurrentPageItems = () => {
-              const startIndex = (currentPage - 1) * itemsPerPage;
-              const endIndex = startIndex + itemsPerPage;
-              return filteredHotels.slice(startIndex, endIndex);
-       };
 
        const handlePageChange = (selected: number) => {
               setCurrentPage(selected + 1);
@@ -59,7 +51,6 @@ const HotelListings = () => {
        const handleItemsPerPageChange = (newItemsPerPage: number) => {
               setItemsPerPage(newItemsPerPage);
               setCurrentPage(1);
-              setPageCount(Math.ceil(filteredHotels.length / newItemsPerPage));
        };
 
        useEffect(() => {
@@ -98,9 +89,9 @@ const HotelListings = () => {
                                           "Content-Type": "application/json",
                                    },
                             });
-                            const hotelPricesArray = await response.json();
-                            if (hotelPricesArray.complete) {
-                            }
+                            const hotelPricesResponse = await response.json();
+                            const hotelPricesArray = hotelPricesResponse.data.hotels;
+                            console.log(hotelPricesArray);
                             clearTimeout(timeoutId);
                             const priceMap = new Map<string, HotelPrice>();
                             hotelPricesArray.forEach((price: HotelPrice) => {
@@ -130,24 +121,35 @@ const HotelListings = () => {
               fetchHotelPrices();
        }, [checkIn, checkOut, destination_id]);
 
-       useEffect(() => {
-              let filteredHotelsArray = allHotels.filter((hotel) => [...filters.amenities].every((amenity) => hotel.amenities[amenity]));
+       const filteredHotelsArray = useMemo(() => {
+              const arr = allHotels.filter((hotel) => [...filters.amenities].every((amenity) => hotel.amenities[amenity]));
+
+              return arr;
+       }, [filters, allHotels]);
+
+       const sortedHotelsArray = useMemo(() => {
+              const arr = [...filteredHotelsArray];
               if (sortOption === "starHighToLow") {
-                     filteredHotelsArray = filteredHotelsArray.sort((a, b) => b.rating - a.rating);
+                     return arr.sort((a, b) => b.rating - a.rating);
               }
               if (sortOption === "priceHighToLow") {
-                     filteredHotelsArray = filteredHotelsArray.sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
+                     return arr.sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
               }
               if (sortOption === "priceLowToHigh") {
-                     filteredHotelsArray = filteredHotelsArray.sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
+                     return arr.sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
               }
+              return arr;
+       }, [filteredHotelsArray, sortOption]);
 
-              setFilteredHotels(filteredHotelsArray);
-              setPageCount(Math.ceil(filteredHotelsArray.length / itemsPerPage));
-              setCurrentPage(1);
-       }, [filters, allHotels, itemsPerPage, sortOption]);
+       const pageCount = useMemo(() => {
+              return Math.ceil(sortedHotelsArray.length / itemsPerPage) || 1;
+       }, [sortedHotelsArray, itemsPerPage]);
 
-       const currentPageItems = getCurrentPageItems();
+       const currentPageHotels = useMemo(() => {
+              const startIndex = (currentPage - 1) * itemsPerPage;
+              const endIndex = startIndex + itemsPerPage;
+              return sortedHotelsArray.slice(startIndex, endIndex);
+       }, [itemsPerPage, currentPage, sortedHotelsArray]);
 
        return (
               <Suspense fallback={<div>Loading...</div>}>
@@ -229,8 +231,8 @@ const HotelListings = () => {
                                                         </div>
 
                                                         <div className="list-tent md:mt-10 mt-6 grid lg:grid-cols-3 md:grid-cols-2 min-[360px]:grid-cols-2 lg:gap-[30px] gap-4 gap-y-7">
-                                                               {currentPageItems.length > 0 ? (
-                                                                      currentPageItems.map((hotel) => (
+                                                               {currentPageHotels.length > 0 ? (
+                                                                      currentPageHotels.map((hotel) => (
                                                                              <HotelItem
                                                                                     key={hotel.id}
                                                                                     hotelData={hotel}
@@ -240,7 +242,7 @@ const HotelListings = () => {
                                                                       <div>No results available.</div>
                                                                )}
                                                         </div>
-                                                        {currentPageItems.length > 0 ? (
+                                                        {currentPageHotels.length > 0 ? (
                                                                <HandlePagination
                                                                       pageCount={pageCount}
                                                                       onPageChange={handlePageChange}
