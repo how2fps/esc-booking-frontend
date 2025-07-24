@@ -5,7 +5,7 @@ import { DateRangePicker } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { Link } from "react-router-dom";
-import AsyncSelect from "react-select/async";
+
 import Destination from "../data/destinations.json";
 import MicroSpellingCorrecter from "micro-spelling-correcter";
 import { AsyncPaginate } from 'react-select-async-paginate';
@@ -204,10 +204,10 @@ const DestinationSearch = () => {
 
                                           <div className="form-search md:mt-10 mt-6 w-full">
                                                  <form className="bg-white rounded-lg p-5 flex max-lg:flex-wrap items-center justify-between gap-5 relative">
-                                                        <div className="select-block lg:w-full md:w-[48%] w-full">
+                                                        <div className="select-block lg:w-full md:w-[48%] w-full" data-testid="async-select">
                                                                <AsyncPaginate
-                                                                      debounceTimeout={200} 
-                                                                      data-testid="async-select"
+                                                                      debounceTimeout={100} 
+                                                                      
                                                                       additional={{ page: 1}}
                                                                       loadOptions={loadPageOptions}
                                                                       getOptionLabel={(i: DestinationType) => i.term}
