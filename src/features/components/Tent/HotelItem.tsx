@@ -6,7 +6,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import { Pagination, Navigation } from "swiper/modules";
+import { Pagination } from "swiper/modules";
 import {  useNavigate } from "react-router-dom";
 import type  { HotelType } from '../../type/HotelType'
 
@@ -31,7 +31,7 @@ const HotelItem: React.FC<Props> = ({ data, type }) => {
     
     const router = useNavigate()
     const prefix = data.image_details["prefix"]
-    const image_count = Math.min(data.image_details["count"],10)
+    //const image_count = Math.min(data.image_details["count"],10)
     const image_array: string[] = []
     for (let i = 0; i < 10; i++) {
      image_array.push(prefix+i+".jpg")
