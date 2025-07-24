@@ -54,7 +54,7 @@ const HotelItem: React.FC<{ hotelData: Hotel }> = ({ hotelData }) => {
                                           pagination={{
                                                  type: "fraction",
                                           }}
-                                          loop={true}
+                                          loop={imageArray.length > 1}
                                           modules={[Pagination]}
                                           className="mySwiper rounded-xl">
                                           {imageArray.map((img, index) => (

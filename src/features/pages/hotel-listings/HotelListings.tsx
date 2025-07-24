@@ -36,7 +36,7 @@ const HotelListings = () => {
        const [sortOption, setSortOption] = useState<string>();
 
        const [currentPage, setCurrentPage] = useState<number>(1);
-       const [itemsPerPage, setItemsPerPage] = useState<number>(12);
+       const [itemsPerPage, setItemsPerPage] = useState<number>(8);
 
        const [filters, setFilters] = useState<HotelFilter>({
               amenities: new Set(),
@@ -97,7 +97,6 @@ const HotelListings = () => {
                             hotelPricesArray.forEach((price: HotelPrice) => {
                                    priceMap.set(price.id, price);
                             });
-                            console.log(priceMap);
                             setHotelPrices(priceMap);
                      } catch (error) {
                             if (error instanceof Error) {
@@ -165,21 +164,30 @@ const HotelListings = () => {
                                                                              <div className="min flex items-center gap-1">
                                                                                     <div>Min:</div>
                                                                                     <div className="price-min text-button">
-                                                                                           $<span>{4}</span>
+                                                                                           $<span>{filters.priceRange.min}</span>
                                                                                     </div>
                                                                              </div>
                                                                              <div className="max flex items-center gap-1">
                                                                                     <div>Max:</div>
                                                                                     <div className="price-max text-button">
-                                                                                           $<span>{5}</span>
+                                                                                           $<span>{filters.priceRange.max}</span>
                                                                                     </div>
                                                                              </div>
                                                                       </div>
                                                                       <Slider
                                                                              range
-                                                                             defaultValue={[0, 500]}
+                                                                             value={[filters.priceRange.min, filters.priceRange.max]}
                                                                              min={0}
-                                                                             max={500}
+                                                                             max={30000}
+                                                                             onChange={(value) => {
+                                                                                    if (Array.isArray(value) && value.length === 2) {
+                                                                                           const [min, max] = value;
+                                                                                           setFilters((prev) => ({
+                                                                                                  ...prev,
+                                                                                                  priceRange: { min, max },
+                                                                                           }));
+                                                                                    }
+                                                                             }}
                                                                              className="mt-4"
                                                                       />
                                                                </div>
@@ -222,8 +230,7 @@ const HotelListings = () => {
                                                                                     onChange={(e) => {
                                                                                            handleItemsPerPageChange(Number.parseInt(e.target.value));
                                                                                     }}
-                                                                                    value={itemsPerPage}
-                                                                                    defaultValue={"12"}>
+                                                                                    value={itemsPerPage}>
                                                                                     <option value="8">8 Per Page</option>
                                                                                     <option value="9">9 Per Page</option>
                                                                                     <option value="12">12 Per Page</option>
