@@ -6,7 +6,7 @@ import * as Icon from "phosphor-react";
 const Footer = () => {
     return (
         <>
-            <div id="footer" className='footer'>
+            <div id="footer" className='footer' data-testid = "footer">
                 <div className="bg-surface lg:pt-15 md:pt-12 pt-8">
                     <div className="container">
                         <div className="footer-heading flex items-center justify-between flex-wrap gap-6 pb-[30px] border-b border-outline">
