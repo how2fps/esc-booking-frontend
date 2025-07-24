@@ -5,10 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import * as Icon from "phosphor-react";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
-import { Suspense } from "react";
 import { useSearchParams } from "react-router";
-import Footer from "../../components/Footer/Footer";
-import HeaderOne from "../../components/Header/Header";
 import HotelItem from "../../components/HotelItem/HotelItem";
 import HandlePagination from "../../components/Other/HandlePagination";
 
@@ -37,6 +34,8 @@ const HotelListings = () => {
 
        const [currentPage, setCurrentPage] = useState<number>(1);
        const [itemsPerPage, setItemsPerPage] = useState<number>(8);
+
+       const [isLoading, setIsLoading] = useState<boolean>(true);
 
        const [filters, setFilters] = useState<HotelFilter>({
               amenities: new Set(),
@@ -91,6 +90,7 @@ const HotelListings = () => {
                                    },
                             });
                             const hotelPricesResponse = await response.json();
+                            console.log(hotelPricesResponse);
                             const hotelPricesArray = hotelPricesResponse.data.hotels;
                             clearTimeout(timeoutId);
                             const priceMap = new Map<string, HotelPrice>();
@@ -150,144 +150,138 @@ const HotelListings = () => {
        }, [itemsPerPage, currentPage, sortedHotelsArray]);
 
        return (
-              <Suspense fallback={<div>Loading...</div>}>
-                     <div className="overflow-hidden">
-                            <HeaderOne />
-                            <div className="lg:py-20 md:py-14 max-lg:mt-10 max-md:mt-40 py-10">
-                                   <div className="container">
-                                          <div className="flex">
-                                                 <div className="left lg:w-1/4 w-1/3 pr-[45px] max-md:hidden">
-                                                        <div className="sidebar-main">
-                                                               <div className="border-2 border-black rounded-[12px] p-4">
-                                                                      <div className="heading6">Price Range</div>
-                                                                      <div className="price-block flex items-center justify-between flex-wrap mt-3">
-                                                                             <div className="min flex items-center gap-1">
-                                                                                    <div>Min:</div>
-                                                                                    <div className="price-min text-button">
-                                                                                           $<span>{filters.priceRange.min}</span>
-                                                                                    </div>
-                                                                             </div>
-                                                                             <div className="max flex items-center gap-1">
-                                                                                    <div>Max:</div>
-                                                                                    <div className="price-max text-button">
-                                                                                           $<span>{filters.priceRange.max}</span>
-                                                                                    </div>
-                                                                             </div>
+              <div className="lg:py-20 md:py-14 max-lg:mt-10 max-md:mt-40 py-10">
+                     <div className="container">
+                            <div className="flex">
+                                   <div className="left lg:w-1/4 w-1/3 pr-[45px] max-md:hidden">
+                                          <div className="sidebar-main">
+                                                 <div className="border-2 border-black rounded-[12px] p-4">
+                                                        <div className="heading6">Price Range</div>
+                                                        <div className="price-block flex items-center justify-between flex-wrap mt-3">
+                                                               <div className="min flex items-center gap-1">
+                                                                      <div>Min:</div>
+                                                                      <div className="price-min text-button">
+                                                                             $<span>{filters.priceRange.min}</span>
                                                                       </div>
-                                                                      <Slider
-                                                                             range
-                                                                             value={[filters.priceRange.min, filters.priceRange.max]}
-                                                                             min={0}
-                                                                             max={30000}
-                                                                             onChange={(value) => {
-                                                                                    if (Array.isArray(value) && value.length === 2) {
-                                                                                           const [min, max] = value;
-                                                                                           setFilters((prev) => ({
-                                                                                                  ...prev,
-                                                                                                  priceRange: { min, max },
-                                                                                           }));
-                                                                                    }
-                                                                             }}
-                                                                             className="mt-4"
+                                                               </div>
+                                                               <div className="max flex items-center gap-1">
+                                                                      <div>Max:</div>
+                                                                      <div className="price-max text-button">
+                                                                             $<span>{filters.priceRange.max}</span>
+                                                                      </div>
+                                                               </div>
+                                                        </div>
+                                                        <Slider
+                                                               range
+                                                               value={[filters.priceRange.min, filters.priceRange.max]}
+                                                               min={0}
+                                                               max={30000}
+                                                               onChange={(value) => {
+                                                                      if (Array.isArray(value) && value.length === 2) {
+                                                                             const [min, max] = value;
+                                                                             setFilters((prev) => ({
+                                                                                    ...prev,
+                                                                                    priceRange: { min, max },
+                                                                             }));
+                                                                      }
+                                                               }}
+                                                               className="mt-4"
+                                                        />
+                                                 </div>
+                                                 <div className="border-2 border-black rounded-[12px] p-4 mt-8">
+                                                        <div className="heading6">Rating</div>
+                                                        <div className="price-block flex items-center justify-between flex-wrap">
+                                                               <div className="min flex items-center gap-1">
+                                                                      ≥ {filters.minimumRating}
+                                                                      <StarIcon
+                                                                             className="text-yellow"
+                                                                             weight="fill"
                                                                       />
                                                                </div>
-                                                               <div className="border-2 border-black rounded-[12px] p-4 mt-8">
-                                                                      <div className="heading6">Rating</div>
-                                                                      <div className="price-block flex items-center justify-between flex-wrap mt-3">
-                                                                             <div className="min flex items-center gap-1">
-                                                                                    {filters.minimumRating}
-                                                                                    <StarIcon
-                                                                                           className="text-yellow"
-                                                                                           weight="fill"
-                                                                                    />
-                                                                             </div>
-                                                                      </div>
-                                                                      <Slider
-                                                                             value={filters.minimumRating}
-                                                                             min={0}
-                                                                             max={5}
-                                                                             step={0.5}
-                                                                             className="mt-4"
-                                                                             onChange={(value) =>
-                                                                                    setFilters((prev) => ({
-                                                                                           ...prev,
-                                                                                           minimumRating: typeof value === "number" ? value : prev.minimumRating,
-                                                                                    }))
-                                                                             }
-                                                                      />
-                                                               </div>
-                                                               <AmenityFilter setFilters={setFilters} />
                                                         </div>
+                                                        <Slider
+                                                               value={filters.minimumRating}
+                                                               min={0}
+                                                               max={5}
+                                                               step={0.5}
+                                                               className="mt-2"
+                                                               onChange={(value) =>
+                                                                      setFilters((prev) => ({
+                                                                             ...prev,
+                                                                             minimumRating: typeof value === "number" ? value : prev.minimumRating,
+                                                                      }))
+                                                               }
+                                                        />
                                                  </div>
-                                                 <div className="right lg:w-3/4 md:w-2/3 md:pl-[15px]">
-                                                        <div className="heading flex items-center justify-between gap-6 flex-wrap">
-                                                               <div className="right flex items-center gap-3">
-                                                                      <div className="select-block relative cursor-pointer">
-                                                                             <select
-                                                                                    id="select-filter"
-                                                                                    name="select-filter"
-                                                                                    className="custom-select cursor-pointer"
-                                                                                    onChange={(e) => {
-                                                                                           handleItemsPerPageChange(Number.parseInt(e.target.value));
-                                                                                    }}
-                                                                                    value={itemsPerPage}>
-                                                                                    <option value="8">8 Per Page</option>
-                                                                                    <option value="9">9 Per Page</option>
-                                                                                    <option value="12">12 Per Page</option>
-                                                                                    <option value="16">16 Per Page</option>
-                                                                             </select>
-                                                                             <Icon.CaretDown className="text-xl absolute top-1/2 -translate-y-1/2 md:right-4 right-2 cursor-pointer" />
-                                                                      </div>
-                                                                      <div className="select-block relative cursor-pointer">
-                                                                             <select
-                                                                                    id="select-filter"
-                                                                                    name="select-filter"
-                                                                                    className="custom-select cursor-pointer"
-                                                                                    onChange={(e) => {
-                                                                                           setSortOption(e.target.value);
-                                                                                    }}
-                                                                                    defaultValue={"Sorting"}>
-                                                                                    <option
-                                                                                           value="Sorting"
-                                                                                           disabled>
-                                                                                           Sort by (Default)
-                                                                                    </option>
-                                                                                    <option value="starHighToLow">Best Review</option>
-                                                                                    <option value="priceHighToLow">Price High To Low</option>
-                                                                                    <option value="priceLowToHigh">Price Low To High</option>
-                                                                             </select>
-                                                                             <Icon.CaretDown className="text-xl absolute top-1/2 -translate-y-1/2 md:right-4 right-2" />
-                                                                      </div>
-                                                               </div>
-                                                        </div>
-
-                                                        <div className="list-tent md:mt-10 mt-6 grid lg:grid-cols-3 md:grid-cols-2 min-[360px]:grid-cols-2 lg:gap-[30px] gap-4 gap-y-7">
-                                                               {currentPageHotels.length > 0 ? (
-                                                                      currentPageHotels.map((hotel) => (
-                                                                             <HotelItem
-                                                                                    key={hotel.id}
-                                                                                    hotelData={hotel}
-                                                                             />
-                                                                      ))
-                                                               ) : (
-                                                                      <div>No results available.</div>
-                                                               )}
-                                                        </div>
-                                                        {currentPageHotels.length > 0 ? (
-                                                               <HandlePagination
-                                                                      pageCount={pageCount}
-                                                                      onPageChange={handlePageChange}
-                                                               />
-                                                        ) : (
-                                                               ""
-                                                        )}
-                                                 </div>
+                                                 <AmenityFilter setFilters={setFilters} />
                                           </div>
                                    </div>
+                                   <div className="right lg:w-3/4 md:w-2/3 md:pl-[15px]">
+                                          <div className="heading flex items-center justify-between gap-6 flex-wrap">
+                                                 <div className="right flex items-center gap-3">
+                                                        <div className="select-block relative cursor-pointer">
+                                                               <select
+                                                                      id="select-filter"
+                                                                      name="select-filter"
+                                                                      className="custom-select cursor-pointer"
+                                                                      onChange={(e) => {
+                                                                             handleItemsPerPageChange(Number.parseInt(e.target.value));
+                                                                      }}
+                                                                      value={itemsPerPage}>
+                                                                      <option value="8">8 Per Page</option>
+                                                                      <option value="9">9 Per Page</option>
+                                                                      <option value="12">12 Per Page</option>
+                                                                      <option value="16">16 Per Page</option>
+                                                               </select>
+                                                               <Icon.CaretDown className="text-xl absolute top-1/2 -translate-y-1/2 md:right-4 right-2 cursor-pointer" />
+                                                        </div>
+                                                        <div className="select-block relative cursor-pointer">
+                                                               <select
+                                                                      id="select-filter"
+                                                                      name="select-filter"
+                                                                      className="custom-select cursor-pointer"
+                                                                      onChange={(e) => {
+                                                                             setSortOption(e.target.value);
+                                                                      }}
+                                                                      defaultValue={"Sorting"}>
+                                                                      <option
+                                                                             value="Sorting"
+                                                                             disabled>
+                                                                             Sort by (Default)
+                                                                      </option>
+                                                                      <option value="starHighToLow">Best Review</option>
+                                                                      <option value="priceHighToLow">Price High To Low</option>
+                                                                      <option value="priceLowToHigh">Price Low To High</option>
+                                                               </select>
+                                                               <Icon.CaretDown className="text-xl absolute top-1/2 -translate-y-1/2 md:right-4 right-2" />
+                                                        </div>
+                                                 </div>
+                                          </div>
+
+                                          <div className="list-tent md:mt-10 mt-6 grid lg:grid-cols-3 md:grid-cols-2 min-[360px]:grid-cols-2 lg:gap-[30px] gap-4 gap-y-7">
+                                                 {currentPageHotels.length > 0 ? (
+                                                        currentPageHotels.map((hotel) => (
+                                                               <HotelItem
+                                                                      key={hotel.id}
+                                                                      hotelData={hotel}
+                                                               />
+                                                        ))
+                                                 ) : (
+                                                        <div>No results available.</div>
+                                                 )}
+                                          </div>
+                                          {currentPageHotels.length > 0 ? (
+                                                 <HandlePagination
+                                                        pageCount={pageCount}
+                                                        onPageChange={handlePageChange}
+                                                 />
+                                          ) : (
+                                                 ""
+                                          )}
+                                   </div>
                             </div>
-                            <Footer />
                      </div>
-              </Suspense>
+              </div>
        );
 };
 
