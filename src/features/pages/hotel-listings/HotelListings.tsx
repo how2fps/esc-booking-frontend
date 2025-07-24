@@ -123,9 +123,7 @@ const HotelListings = () => {
        }, [checkIn, checkOut, destination_id]);
 
        const filteredHotelsArray = useMemo(() => {
-              const arr = allHotels.filter((hotel) => [...filters.amenities].every((amenity) => hotel.amenities[amenity]));
-
-              return arr;
+              return allHotels.filter((hotel) => hotel.rating >= filters.minimumRating && [...filters.amenities].every((amenity) => hotel.amenities[amenity]));
        }, [filters, allHotels]);
 
        const sortedHotelsArray = useMemo(() => {
