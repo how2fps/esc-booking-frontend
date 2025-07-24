@@ -7,6 +7,8 @@ import Listings from "./features/pages/hotel-listings/HotelListings";
 import Login from "./features/pages/login/LoginForm";
 import SignupForm from "./features/pages/signup-form/SignupForm";
 import BookingPage from "./features/pages/booking/BookingPage";
+import ReturnForm from "./features/pages/returnForm/Return";
+import CheckoutForm from "./features/pages/CheckoutForm/Checkout";
 
 const AppRoutes: React.FC = () => {
        return (
@@ -39,6 +41,16 @@ const AppRoutes: React.FC = () => {
                             path="/booking"
                             element={<BookingPage />}
                      />
+                     <Route
+                            path="/return"
+                            element={<ReturnForm />}
+                     />
+
+                     <Route
+                            path="/checkout"
+                            element={<CheckoutForm />}
+                     />
+
               </Routes>
        );
 };
