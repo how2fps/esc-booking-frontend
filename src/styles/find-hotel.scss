@@ -153,10 +153,18 @@
         }
     }
 }
-
+.list-view{
+        display: flex;
+         flex-direction: column;
+        gap: 24px; /* spacing between each hotel-item */
+}
 .style-halfmap-list {
     .tent-item {
         &.style-list {
+                    display: flex;
+        flex-direction: column; /* Display cards vertically (list) */
+        gap: 1rem; /* Space between cards */
+        width: 100%;
             .tent-main .infor {
                 @media (min-width: 640px) {
                     margin-left: 50%;

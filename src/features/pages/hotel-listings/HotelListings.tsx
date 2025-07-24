@@ -11,17 +11,16 @@ import Footer from '../../components/Footer/Footer'
 import HeaderOne from '../../components/Header/Header'
 import HandlePagination from '../../components/Other/HandlePagination'
 import SliderTwo from '../../components/Slider/Slider'
-import TentItem from '../../components/Tent/TentItem'
-import tentData from '../../components/data/Tent.json'
-import type { TentType } from '../../type/HotelType'
 
-import { Link } from "react-router-dom"
+import HotelItem from '../../components/Tent/HotelItem'
+import Hotels from "../../components/data/hotels.json" 
+import type { HotelType } from '../../type/HotelType'
 
 
-type Service = string;
+
+
 type Amenities = string;
-type Activities = string;
-type Terrain = string;
+
 function getParams() {
   const [searchParams, setSearchParams] = useSearchParams();
   return searchParams;
@@ -29,17 +28,15 @@ function getParams() {
 const TopMapSidebarContent = () => {
   const params = getParams()
   const categoryParams = params.get('category')
-  const continentsParams = params.get('continents')
   const countryParams = params.get('country')
   const [openSidebar, setOpenSidebar] = useState(false)
-  const [sortOption, setSortOption] = useState('');
-  const [service, setService] = useState<Service[]>([])
+  const [sortOption, setSortOption] = useState('')
+  const [displayOption, setDisplayOption] = useState('default')
   const [amenities, setAmenities] = useState<Amenities[]>([])
-  const [activities, setActivities] = useState<Activities[]>([])
-  const [terrain, setTerrain] = useState<Terrain[]>([])
   const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({ min: 0, max: 500 });
+  const [ratingRange, setRatingRange] = useState<{ min: number; max: number }>({ min: 0, max: 5.0 });
   const [currentPage, setCurrentPage] = useState(0);
-  const [tentPerPage, setTentPerPage] = useState<number>(12);
+  const [tentPerPage, setHotelPerPage] = useState<number>(12);
   const tentsPerPage = tentPerPage;
   const offset = currentPage * tentsPerPage;
 
@@ -47,8 +44,8 @@ const TopMapSidebarContent = () => {
     setOpenSidebar(!openSidebar)
   }
 
-  const handleTentPerPage = (page: number) => {
-    setTentPerPage(page);
+  const handleHotelPerPage = (page: number) => {
+    setHotelPerPage(page);
     setCurrentPage(0);
   };
 
@@ -64,15 +61,11 @@ const TopMapSidebarContent = () => {
     }
   };
 
-  const handleService = (item: Service) => {
-    const isSelected = service.includes(item);
-
-    if (isSelected) {
-      setService(service.filter((service) => service !== item));
-    } else {
-      setService([...service, item]);
+  const handleRatingChange = (values: number | number[]) => {
+    if (Array.isArray(values)) {
+      setRatingRange({ min: values[0], max: values[1] });
+      setCurrentPage(0);
     }
-    setCurrentPage(0);
   };
 
   const handleAmenities = (item: Amenities) => {
@@ -86,78 +79,45 @@ const TopMapSidebarContent = () => {
     setCurrentPage(0);
   };
 
-  const handleActivities = (item: Activities) => {
-    const isSelected = activities.includes(item);
 
-    if (isSelected) {
-      setActivities(activities.filter((activities) => activities !== item));
-    } else {
-      setActivities([...activities, item]);
-    }
-    setCurrentPage(0);
-  };
 
-  const handleTerrain = (item: Terrain) => {
-    // check terrain selected
-    const isSelected = terrain.includes(item);
-
-    if (isSelected) {
-      setTerrain(terrain.filter((terrain) => terrain !== item));
-    } else {
-      setTerrain([...terrain, item]);
-    }
-    setCurrentPage(0);
-  };
-
-  let filteredData = tentData.filter(tent => {
+  let filteredData = Hotels.filter(Hotel => {
     let isDataCategoryMatch = true;
     if (categoryParams) {
-      isDataCategoryMatch = tent.category.toLowerCase() === categoryParams.toLowerCase()
+      isDataCategoryMatch = Hotel.categories.toLowerCase() === categoryParams.toLowerCase()
     }
 
-    let isDataContinentsMatch = true;
-    if (continentsParams) {
-      isDataContinentsMatch = tent.continents.toLowerCase() === continentsParams.toLowerCase()
-    }
+
 
     let isDataCountryMatch = true;
     if (countryParams) {
-      isDataCountryMatch = tent.country.toLowerCase() === countryParams.toLowerCase()
+      isDataCountryMatch = Hotel.id.toLowerCase() === countryParams.toLowerCase()
     }
 
     let isPriceRangeMatched = true;
     if (priceRange.min !== 0 || priceRange.max !== 500) {
-      isPriceRangeMatched = tent.price >= priceRange.min && tent.price <= priceRange.max;
+      isPriceRangeMatched = Hotel.price >= priceRange.min && Hotel.price <= priceRange.max;
+    }
+     let isRatingRangeMatched = true;
+    if (ratingRange.min !== 0 || ratingRange.max !== 5) {
+      isRatingRangeMatched = Hotel.rating >= ratingRange.min && Hotel.rating <= ratingRange.max;
     }
 
-    let isDataServiceMatched = true;
-    if (service.length > 0) {
-      isDataServiceMatched = service.every(item => tent.services.includes(item))
-    }
 
+  
     let isDataAmenitiesMatched = true;
     if (amenities.length > 0) {
-      isDataAmenitiesMatched = amenities.every(item => tent.amenities.includes(item))
+      isDataAmenitiesMatched = amenities.every(item => Hotel.amenities.includes(item))
     }
 
-    let isDataActivitiesMatched = true;
-    if (activities.length > 0) {
-      isDataActivitiesMatched = activities.every(item => tent.activities.includes(item))
-    }
-
-    let isDataTerrainMatched = true;
-    if (terrain.length > 0) {
-      isDataTerrainMatched = terrain.every(item => tent.terrain.includes(item))
-    }
-
-    return isDataCategoryMatch && isDataContinentsMatch && isDataCountryMatch && isPriceRangeMatched && isDataServiceMatched && isDataAmenitiesMatched && isDataActivitiesMatched && isDataTerrainMatched
+    return isDataCategoryMatch && isDataCountryMatch  && isDataAmenitiesMatched &&isRatingRangeMatched
   })
 
 
   let sortedData = [...filteredData];
 
   if (sortOption === 'starHighToLow') {
-    filteredData = sortedData.sort((a, b) => b.rate - a.rate)
+    filteredData = sortedData.sort((a, b) => b.rating - a.rating)
   }
 
   if (sortOption === 'priceHighToLow') {
@@ -186,10 +146,7 @@ const TopMapSidebarContent = () => {
       image: 'no-data',
       shortDesc: 'no-data',
       description: 'no-data',
-      services: [],
       amenities: [],
-      activities: [],
-      terrain: [],
     }];
   }
 
@@ -200,17 +157,26 @@ const TopMapSidebarContent = () => {
     setCurrentPage(0);
   }
 
-  let currentTents: TentType[];
+  let currentHotels: HotelType[];
+
 
   if (filteredData.length > 0) {
-    currentTents = filteredData.slice(offset, offset + tentsPerPage);
+    currentHotels = filteredData.slice(offset, offset + tentsPerPage);
   } else {
-    currentTents = []
+    currentHotels = []
   }
+  
 
   const handlePageChange = (selected: number) => {
     setCurrentPage(selected);
   };
+
+
+ const handleDisplayChange = (selected: string) => {
+    setDisplayOption(selected);
+  };
+
+
 
   return (
     <>
@@ -248,28 +214,33 @@ const TopMapSidebarContent = () => {
                     </div>
                   </div>
 
-                  <div className="filter-service mt-7">
-                    <div className="heading6">Services</div>
-                    <div className="list-service flex flex-col gap-3 mt-3">
-                      {['reception desk', 'pet allowed', 'tour guide', 'breakfast', 'currency exchange', 'self-service laundry', 'cooking service', 'relaxation service', 'cleaning service'].map((item, index) => (
-                        <div key={index} className="service-item flex items-center justify-between">
-                          <div className="left flex items-center cursor-pointer">
-                            <div className="block-input">
-                              <input
-                                type="checkbox"
-                                name={item}
-                                id={item}
-                                checked={service.includes(item)}
-                                onChange={() => handleService(item)}
-                              />
-                              <Icon.CheckSquare size={20} weight='fill' className='icon-checkbox text-primary' />
-                            </div>
-                            <label htmlFor={item} className="service-name capitalize pl-2 cursor-pointer">{item}</label>
-                          </div>
+                  <div className="filter-price">
+                    <div className="heading6">Rating Range</div>
+                    <Slider
+                      range
+                      defaultValue={[0, 5.0]}
+                      min={0}
+                      max={5}
+                      onChange={handleRatingChange}
+                      className='mt-4'
+                    />
+                    <div className="price-block flex items-center justify-between flex-wrap mt-3">
+                      <div className="min flex items-center gap-1">
+                        <div>Min rating:</div>
+                        <div className='price-min text-button'>
+                          <span>{ratingRange.min}</span>
                         </div>
-                      ))}
+                      </div>
+                      <div className="max flex items-center gap-1">
+                        <div>Max rating:</div>
+                        <div className='price-max text-button'>
+                          <span>{ratingRange.max}</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
+
+
 
                   <div className="filter-amenities mt-7">
                     <div className="heading6">Amenities</div>
@@ -294,51 +265,6 @@ const TopMapSidebarContent = () => {
                     </div>
                   </div>
 
-                  <div className="filter-activities mt-7">
-                    <div className="heading6">Activities</div>
-                    <div className="list-activities flex flex-col gap-3 mt-3">
-                      {['hiking', 'swimming', 'fishing', 'wildlife watching', 'biking', 'boating', 'climbing', 'snow sports', 'horseback riding', 'surfing', 'wind sports'].map((item, index) => (
-                        <div key={index} className="activities-item flex items-center justify-between">
-                          <div className="left flex items-center cursor-pointer">
-                            <div className="block-input">
-                              <input
-                                type="checkbox"
-                                name={item}
-                                id={item}
-                                checked={activities.includes(item)}
-                                onChange={() => handleActivities(item)}
-                              />
-                              <Icon.CheckSquare size={20} weight='fill' className='icon-checkbox text-primary' />
-                            </div>
-                            <label htmlFor={item} className="activities-name capitalize pl-2 cursor-pointer">{item}</label>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="filter-terrain mt-7">
-                    <div className="heading6">Terrain</div>
-                    <div className="list-terrain flex flex-col gap-3 mt-3">
-                      {['lake', 'beach', 'farm', 'forest', 'river', 'hot spring', 'swimming hole', 'desert', 'cave'].map((item, index) => (
-                        <div key={index} className="terrain-item flex items-center justify-between">
-                          <div className="left flex items-center cursor-pointer">
-                            <div className="block-input">
-                              <input
-                                type="checkbox"
-                                name={item}
-                                id={item}
-                                checked={terrain.includes(item)}
-                                onChange={() => handleTerrain(item)}
-                              />
-                              <Icon.CheckSquare size={20} weight='fill' className='icon-checkbox text-primary' />
-                            </div>
-                            <label htmlFor={item} className="terrain-name capitalize pl-2 cursor-pointer">{item}</label>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
                 </div>
               </div>
               <div className='right lg:w-3/4 md:w-2/3 md:pl-[15px]'>
@@ -352,15 +278,14 @@ const TopMapSidebarContent = () => {
                         <Icon.SlidersHorizontal className='text-xl' />
                         <p>Show Filters</p>
                       </div>
-                      <Link to={'/camp/topmap-grid'}>
-                        <Icon.SquaresFour className='text-3xl cursor-pointer text-black duration-300' />
-                      </Link>
-                      <Link to={'/camp/topmap-list'}>
-                        <Icon.Rows className='text-3xl cursor-pointer text-variant2 duration-300 hover:text-black' />
-                      </Link>
+                     
+                        <Icon.SquaresFour className='text-3xl cursor-pointer text-black duration-300' onClick={() => handleDisplayChange("default")}  />
+
+                        <Icon.Rows className='text-3xl cursor-pointer text-variant2 duration-300 hover:text-black' onClick={() => handleDisplayChange("list")}  />
+                  
                     </div>
                     <div className="line w-px h-7 bg-outline max-[400px]:hidden"></div>
-                    <div className="body2">Showing {filteredData[0].id === 'no-data' ? 0 : offset + 1}-{filteredData[0].id === 'no-data' ? 0 : offset + currentTents.length} of {filteredData[0].id === 'no-data' ? 0 : filteredData.length}</div>
+                    <div className="body2">Showing {filteredData[0].id === 'no-data' ? 0 : offset + 1}-{filteredData[0].id === 'no-data' ? 0 : offset + currentHotels.length} of {filteredData[0].id === 'no-data' ? 0 : filteredData.length}</div>
                   </div>
                   <div className="right flex items-center gap-3">
                     <div className="select-block relative">
@@ -368,7 +293,7 @@ const TopMapSidebarContent = () => {
                         id="select-filter"
                         name="select-filter"
                         className='custom-select'
-                        onChange={(e) => { handleTentPerPage(Number(e.target.value)) }}
+                        onChange={(e) => { handleHotelPerPage(Number(e.target.value)) }}
                         defaultValue={'12'}
                       >
                         <option value="8">8 Per Page</option>
@@ -397,22 +322,25 @@ const TopMapSidebarContent = () => {
                     </div>
                   </div>
                 </div>
-
-                <div className="list-tent md:mt-10 mt-6 grid lg:grid-cols-3 md:grid-cols-2 min-[360px]:grid-cols-2 lg:gap-[30px] gap-4 gap-y-7">
-                  {currentTents.map((item) => (
+              <div className="content-container min-h-[1500px] flex flex-col justify-between">
+                
+                <div className={`list-Hotel md:mt-10 mt-6 
+                ${displayOption === 'default' 
+                    ? 'grid lg:grid-cols-3 md:grid-cols-2 min-[360px]:grid-cols-2 lg:gap-[30px] gap-4 gap-y-7' 
+                    : 'flex flex-col gap-6'}`}>
+                  {currentHotels.map((item) => (
                     item.id === 'no-data' ? (
-                      <div key={item.id} className="no-data-product">No tents match the selected criteria.</div>
+                      <div key={item.id} className="no-data-product">No hotel match the selected criteria.</div>
                     ) : (
-                      <TentItem key={item.id} data={item} type='default' />
+                      <HotelItem key={item.id} data={item} type= {displayOption} />
                     )
                   ))}
                 </div>
-
-                {pageCount > 1 && (
-                  <div className="list-pagination flex items-center md:mt-10 mt-7">
-                    <HandlePagination pageCount={pageCount} onPageChange={handlePageChange} />
-                  </div>
-                )}
+                
+                <div className="list-pagination flex md:mt-11 mt-7">
+                  <HandlePagination pageCount={pageCount} onPageChange={handlePageChange} />
+                </div>
+              </div>
               </div>
             </div>
           </div>
@@ -449,29 +377,6 @@ const TopMapSidebarContent = () => {
               </div>
             </div>
 
-            <div className="filter-service mt-7">
-              <div className="heading6">Services</div>
-              <div className="list-service flex flex-col gap-3 mt-3">
-                {['reception desk', 'pet allowed', 'tour guide', 'breakfast', 'currency exchange', 'self-service laundry', 'cooking service', 'relaxation service', 'cleaning service'].map((item, index) => (
-                  <div key={index} className="service-item flex items-center justify-between">
-                    <div className="left flex items-center cursor-pointer">
-                      <div className="block-input">
-                        <input
-                          type="checkbox"
-                          name={item}
-                          id={item}
-                          checked={service.includes(item)}
-                          onChange={() => handleService(item)}
-                        />
-                        <Icon.CheckSquare size={20} weight='fill' className='icon-checkbox text-primary' />
-                      </div>
-                      <label htmlFor={item} className="service-name capitalize pl-2 cursor-pointer">{item}</label>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
             <div className="filter-amenities mt-7">
               <div className="heading6">Amenities</div>
               <div className="list-amenities flex flex-col gap-3 mt-3">
@@ -495,51 +400,7 @@ const TopMapSidebarContent = () => {
               </div>
             </div>
 
-            <div className="filter-activities mt-7">
-              <div className="heading6">Activities</div>
-              <div className="list-activities flex flex-col gap-3 mt-3">
-                {['hiking', 'swimming', 'fishing', 'wildlife watching', 'biking', 'boating', 'climbing', 'snow sports', 'horseback riding', 'surfing', 'wind sports'].map((item, index) => (
-                  <div key={index} className="activities-item flex items-center justify-between">
-                    <div className="left flex items-center cursor-pointer">
-                      <div className="block-input">
-                        <input
-                          type="checkbox"
-                          name={item}
-                          id={item}
-                          checked={activities.includes(item)}
-                          onChange={() => handleActivities(item)}
-                        />
-                        <Icon.CheckSquare size={20} weight='fill' className='icon-checkbox text-primary' />
-                      </div>
-                      <label htmlFor={item} className="activities-name capitalize pl-2 cursor-pointer">{item}</label>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="filter-terrain mt-7">
-              <div className="heading6">Terrain</div>
-              <div className="list-terrain flex flex-col gap-3 mt-3">
-                {['lake', 'beach', 'farm', 'forest', 'river', 'hot spring', 'swimming hole', 'desert', 'cave'].map((item, index) => (
-                  <div key={index} className="terrain-item flex items-center justify-between">
-                    <div className="left flex items-center cursor-pointer">
-                      <div className="block-input">
-                        <input
-                          type="checkbox"
-                          name={item}
-                          id={item}
-                          checked={terrain.includes(item)}
-                          onChange={() => handleTerrain(item)}
-                        />
-                        <Icon.CheckSquare size={20} weight='fill' className='icon-checkbox text-primary' />
-                      </div>
-                      <label htmlFor={item} className="terrain-name capitalize pl-2 cursor-pointer">{item}</label>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+           
           </div>
         </div>
         <Footer />

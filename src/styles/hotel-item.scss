@@ -1,6 +1,10 @@
 .hotel-item {
     &.style-list {
+
         .tent-main {
+                display: flex;
+                flex-direction: column;
+                gap: 1.5rem; /* or whatever spacing you want */
             .infor {
                 @media (min-width: 640px) {
                     margin-left: 50%;

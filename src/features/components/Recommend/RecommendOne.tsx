@@ -1,6 +1,4 @@
 import React, { useState,useEffect } from 'react';
-import Link from 'next/link'
-import * as Icon from 'phosphor-react'
 import TextHeading from '../TextHeading/TextHeading'
 import HotelItem from '../Tent/HotelItem'
 import type  { HotelType } from '../../type/HotelType'
@@ -21,7 +19,9 @@ const RecommendOne: React.FC<Props> = ({ data , start, end }) => {
         <div className="list-cate grid lg:grid-cols-4 md:grid-cols-3 min-[360px]:grid-cols-2 lg:gap-[30px] gap-4 gap-y-7 md:mt-10 mt-6">
           
           {data.slice(start, end).map(item => (
+            
             <HotelItem key={item.id} data={item} type='default' />
+            
           ))}
         </div>
       </div>
