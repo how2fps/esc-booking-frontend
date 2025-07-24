@@ -46,7 +46,7 @@ const HotelItem: React.FC<Props> = ({ data, type }) => {
         <>
             {type === "default" ? (
                 <div
-                    className="hotel-item hover-scale"
+                    className="hotel-item hover-scale" data-testid = "hotel-item"
                     onClick={() => { handleClickItem(data.id) }}
                 >
                     <div className="thumb-img relative">

@@ -181,7 +181,7 @@ const DestinationSearch = () => {
 
        return (
               <>
-                     <div className="slider-block style-one relative h-[620px]">
+                     <div className="slider-block style-one relative h-[620px]" data-testid="slider">
                             <div className="bg-img absolute top-0 left-0 w-full h-full">
                                    <img
                                           src={"/images/slider/hotel-lobby-2024-12-05-23-25-27-utc.jpg"}

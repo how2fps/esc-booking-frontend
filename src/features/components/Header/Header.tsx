@@ -40,7 +40,7 @@ const HeaderOne = () => {
 	}, []);
 
 	return (
-		<div id="header" className='header'>
+		<div id="header" className='header' data-testid = "header">
 			<div className={`header-main h-20 w-full bg-white min-[1322px]:px-5 px-4 flex items-center justify-between ${fixedHeader ? 'fixed box-shadow' : ''}`}>
 				<Link to="/" className="logo">
 					<img
