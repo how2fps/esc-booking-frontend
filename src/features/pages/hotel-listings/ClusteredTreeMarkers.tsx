@@ -1,7 +1,7 @@
-import { type Marker, MarkerClusterer } from "@googlemaps/markerclusterer";
+import { MarkerClusterer, type Marker } from "@googlemaps/markerclusterer";
 import { InfoWindow, useMap } from "@vis.gl/react-google-maps";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { TreeMarker } from "./TreeMarker";
+import { TreeMarker, type Tree } from "./TreeMarker";
 
 export type ClusteredTreeMarkersProps = {
        trees: Tree[];
@@ -23,8 +23,11 @@ export const ClusteredTreeMarkers = ({ trees }: ClusteredTreeMarkersProps) => {
        const clusterer = useMemo(() => {
               if (!map) return null;
 
-              return new MarkerClusterer({ map });
-       }, [map]);
+              return new MarkerClusterer({
+                     map,
+                     markers: Object.values(markers),
+              });
+       }, [map, markers]);
 
        useEffect(() => {
               if (!clusterer) return;

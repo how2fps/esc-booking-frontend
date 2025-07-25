@@ -4,7 +4,6 @@ import { useCallback } from "react";
 export type Tree = {
        key: string;
        name: string;
-       category: string;
        position: google.maps.LatLngLiteral;
 };
 export type TreeMarkerProps = {

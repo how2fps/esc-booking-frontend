@@ -11,7 +11,7 @@ import HandlePagination from "../../components/Other/HandlePagination";
 
 import { StarIcon } from "@phosphor-icons/react";
 import { APIProvider, Map as GoogleMap } from "@vis.gl/react-google-maps";
-import type { Hotel, HotelFilter, HotelPrice } from "../../type/HotelType";
+import type { Hotel, HotelFilter, HotelMarker, HotelPrice } from "../../type/HotelType";
 import { AmenityFilter } from "./AmenityFilter";
 import { ClusteredTreeMarkers } from "./ClusteredTreeMarkers";
 
@@ -30,7 +30,7 @@ const HotelListings = () => {
        const checkIn = formatDate(searchParams.get("startDate") as string);
        const checkOut = formatDate(searchParams.get("endDate") as string);
 
-       const [allHotels, setAllHotels] = useState<Hotel[]>([]);
+       const [allHotels, setAllHotels] = useState<HotelMarker[]>([]);
        const [hotelPrices, setHotelPrices] = useState<Map<string, HotelPrice>>(new Map());
        const [sortOption, setSortOption] = useState<string>();
 
@@ -64,9 +64,12 @@ const HotelListings = () => {
                                           "Content-Type": "application/json",
                                    },
                             });
-                            const hotelResults = await response.json();
-                            console.log(hotelResults);
-                            setAllHotels(hotelResults);
+                            const hotelResults: Hotel[] = await response.json();
+                            const updatedHotelResults: HotelMarker[] = hotelResults.map((hotel) => {
+                                   return { ...hotel, key: hotel.id, position: { lat: hotel.latitude, lng: hotel.longitude } };
+                            });
+                            console.log(updatedHotelResults);
+                            setAllHotels(updatedHotelResults);
                      } catch (error: unknown) {
                             if (error instanceof Error) {
                                    console.error("Fetch error details:", {
@@ -154,346 +157,15 @@ const HotelListings = () => {
 
        return (
               <div className="lg:py-20 md:py-14 max-lg:mt-10 max-md:mt-40 py-10">
-                     <APIProvider apiKey={""}>
+                     <APIProvider apiKey={"AIzaSyAb7h-Azds2hKTEeVfuGzcDy4uXSigGYzI"}>
                             <GoogleMap
                                    mapId={"23a74d563be6cbd9931b8972"}
                                    style={{ width: "100vw", height: "100vh" }}
-                                   defaultCenter={{ lat: 22.54992, lng: 0 }}
-                                   defaultZoom={3}
+                                   defaultCenter={{ lat: 1.43801, lng: 103.78877 }}
+                                   defaultZoom={12}
                                    gestureHandling={"greedy"}
                                    disableDefaultUI={true}>
-                                   <ClusteredTreeMarkers
-                                          trees={[
-                                                 {
-                                                        name: "Ash, green",
-                                                        category: "ash",
-                                                        position: {
-                                                               lat: 43.649536,
-                                                               lng: -79.416187,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Birch, white",
-                                                        category: "birch",
-                                                        position: {
-                                                               lat: 43.803719,
-                                                               lng: -79.354535,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Maple, Manitoba",
-                                                        category: "maple",
-                                                        position: {
-                                                               lat: 43.677625,
-                                                               lng: -79.27608,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Elm, American 'Valley Forge'",
-                                                        category: "elm",
-                                                        position: {
-                                                               lat: 43.743692,
-                                                               lng: -79.425206,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Spruce, Colorado blue",
-                                                        category: "spruce",
-                                                        position: {
-                                                               lat: 43.733889,
-                                                               lng: -79.315376,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Maple, Norway 'Schwedler'",
-                                                        category: "maple",
-                                                        position: {
-                                                               lat: 43.713252,
-                                                               lng: -79.551785,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Mulberry, white",
-                                                        category: "mulberry",
-                                                        position: {
-                                                               lat: 43.758245,
-                                                               lng: -79.377848,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Elm, Siberian",
-                                                        category: "elm",
-                                                        position: {
-                                                               lat: 43.692469,
-                                                               lng: -79.479295,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Kentucky coffee",
-                                                        category: "kentucky_coffee",
-                                                        position: {
-                                                               lat: 43.757918,
-                                                               lng: -79.569502,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Katsura, Japanese",
-                                                        category: "katsura",
-                                                        position: {
-                                                               lat: 43.64681,
-                                                               lng: -79.45259,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Elm, American",
-                                                        category: "elm",
-                                                        position: {
-                                                               lat: 43.735598,
-                                                               lng: -79.400083,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Maple, Norway",
-                                                        category: "maple",
-                                                        position: {
-                                                               lat: 43.671794,
-                                                               lng: -79.283123,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Oak, white",
-                                                        category: "oak",
-                                                        position: {
-                                                               lat: 43.705484,
-                                                               lng: -79.517828,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Honey locust, 'Skyline'",
-                                                        category: "honey_locust",
-                                                        position: {
-                                                               lat: 43.661668,
-                                                               lng: -79.569728,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Cherry",
-                                                        category: "cherry",
-                                                        position: {
-                                                               lat: 43.657817,
-                                                               lng: -79.408632,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Maple, Norway",
-                                                        category: "maple",
-                                                        position: {
-                                                               lat: 43.688379,
-                                                               lng: -79.389302,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Hackberry",
-                                                        category: "hackberry",
-                                                        position: {
-                                                               lat: 43.748501,
-                                                               lng: -79.505892,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Ash, green",
-                                                        category: "ash",
-                                                        position: {
-                                                               lat: 43.722747,
-                                                               lng: -79.400488,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Mulberry, white",
-                                                        category: "mulberry",
-                                                        position: {
-                                                               lat: 43.734214,
-                                                               lng: -79.596881,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Apple, Sargents",
-                                                        category: "apple",
-                                                        position: {
-                                                               lat: 43.810627,
-                                                               lng: -79.331971,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Mountain ash, European",
-                                                        category: "mountain_ash",
-                                                        position: {
-                                                               lat: 43.712975,
-                                                               lng: -79.437332,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Oak, white",
-                                                        category: "oak",
-                                                        position: {
-                                                               lat: 43.664408,
-                                                               lng: -79.362675,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Tulip tree",
-                                                        category: "tulip_tree",
-                                                        position: {
-                                                               lat: 43.781231,
-                                                               lng: -79.271087,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Honey locust, 'Shade master'",
-                                                        category: "honey_locust",
-                                                        position: {
-                                                               lat: 43.759238,
-                                                               lng: -79.572286,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Hackberry",
-                                                        category: "hackberry",
-                                                        position: {
-                                                               lat: 43.807349,
-                                                               lng: -79.203822,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Pear, 'Chanticleer'",
-                                                        category: "pear",
-                                                        position: {
-                                                               lat: 43.664706,
-                                                               lng: -79.379063,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Oak, red",
-                                                        category: "oak",
-                                                        position: {
-                                                               lat: 43.774533,
-                                                               lng: -79.433893,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Cedar, white",
-                                                        category: "cedar",
-                                                        position: {
-                                                               lat: 43.678174,
-                                                               lng: -79.386469,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Tulip tree",
-                                                        category: "tulip_tree",
-                                                        position: {
-                                                               lat: 43.714863,
-                                                               lng: -79.434395,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Spruce, Colorado blue",
-                                                        category: "spruce",
-                                                        position: {
-                                                               lat: 43.771956,
-                                                               lng: -79.350022,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Planetree, London",
-                                                        category: "planetree",
-                                                        position: {
-                                                               lat: 43.638764,
-                                                               lng: -79.399562,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Honey locust",
-                                                        category: "honey_locust",
-                                                        position: {
-                                                               lat: 43.65169,
-                                                               lng: -79.409355,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Maple, Norway 'Crimson King'",
-                                                        category: "maple",
-                                                        position: {
-                                                               lat: 43.597848,
-                                                               lng: -79.507864,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Ginkgo",
-                                                        category: "ginkgo",
-                                                        position: {
-                                                               lat: 43.629981,
-                                                               lng: -79.509956,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Maple, red",
-                                                        category: "maple",
-                                                        position: {
-                                                               lat: 43.717347,
-                                                               lng: -79.358774,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Falsecypress, Japanese",
-                                                        category: "falsecypress",
-                                                        position: {
-                                                               lat: 43.720001,
-                                                               lng: -79.259322,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Zelkova",
-                                                        category: "zelkova",
-                                                        position: {
-                                                               lat: 43.796296,
-                                                               lng: -79.329844,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Elm",
-                                                        category: "elm",
-                                                        position: {
-                                                               lat: 43.730184,
-                                                               lng: -79.338479,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Maple, Norway",
-                                                        category: "maple",
-                                                        position: {
-                                                               lat: 43.758978,
-                                                               lng: -79.415264,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Honey locust",
-                                                        category: "honey_locust",
-                                                        position: {
-                                                               lat: 43.633139,
-                                                               lng: -79.564972,
-                                                        },
-                                                 },
-                                                 {
-                                                        name: "Buckeye, yellow",
-                                                        category: "buckeye",
-                                                        position: {
-                                                               lat: 43.752687,
-                                                               lng: -79.465538,
-                                                        },
-                                                 },
-                                          ]}
-                                   />
+                                   <ClusteredTreeMarkers trees={filteredHotelsArray} />
                             </GoogleMap>
                      </APIProvider>
                      <div className="container">

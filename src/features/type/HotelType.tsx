@@ -63,3 +63,8 @@ export interface HotelFilter {
        priceRange: { min: number; max: number };
        minimumRating: number;
 }
+
+export interface HotelMarker extends Hotel {
+       key: string;
+       position: google.maps.LatLngLiteral;
+}
