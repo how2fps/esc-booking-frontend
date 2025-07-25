@@ -1,21 +1,18 @@
 import { MarkerClusterer, type Marker } from "@googlemaps/markerclusterer";
+import { StarIcon } from "@phosphor-icons/react";
 import { InfoWindow, useMap } from "@vis.gl/react-google-maps";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { TreeMarker, type Tree } from "./TreeMarker";
-
-export type ClusteredTreeMarkersProps = {
-       trees: Tree[];
-};
-
+import { HotelMarker as HotelMarkerType } from "../../type/HotelType";
+import { HotelMarker } from "./HotelMarker";
 /**
  * The ClusteredTreeMarkers component is responsible for integrating the
  * markers with the markerclusterer.
  */
-export const ClusteredTreeMarkers = ({ trees }: ClusteredTreeMarkersProps) => {
+export const ClusteredHotelMarkers = ({ hotels }: { hotels: HotelMarkerType[] }) => {
        const [markers, setMarkers] = useState<{ [key: string]: Marker }>({});
-       const [selectedTreeKey, setSelectedTreeKey] = useState<string | null>(null);
+       const [selectedHotelKey, setSelectedHotelKey] = useState<string | null>(null);
 
-       const selectedTree = useMemo(() => (trees && selectedTreeKey ? trees.find((t) => t.key === selectedTreeKey)! : null), [trees, selectedTreeKey]);
+       const selectedHotel = useMemo(() => (hotels && selectedHotelKey ? hotels.find((t) => t.key === selectedHotelKey)! : null), [hotels, selectedHotelKey]);
 
        // create the markerClusterer once the map is available and update it when
        // the markers are changed
@@ -51,29 +48,42 @@ export const ClusteredTreeMarkers = ({ trees }: ClusteredTreeMarkersProps) => {
        }, []);
 
        const handleInfoWindowClose = useCallback(() => {
-              setSelectedTreeKey(null);
+              setSelectedHotelKey(null);
        }, []);
 
-       const handleMarkerClick = useCallback((tree: Tree) => {
-              setSelectedTreeKey(tree.key);
+       const handleMarkerClick = useCallback((hotel: HotelMarkerType) => {
+              setSelectedHotelKey(hotel.key);
        }, []);
 
        return (
               <>
-                     {trees.map((tree) => (
-                            <TreeMarker
-                                   key={tree.key}
-                                   tree={tree}
+                     {hotels.map((hotel) => (
+                            <HotelMarker
+                                   key={hotel.key}
+                                   hotel={hotel}
                                    onClick={handleMarkerClick}
                                    setMarkerRef={setMarkerRef}
                             />
                      ))}
 
-                     {selectedTreeKey && (
+                     {selectedHotelKey && (
                             <InfoWindow
-                                   anchor={markers[selectedTreeKey]}
+                                   anchor={markers[selectedHotelKey]}
                                    onCloseClick={handleInfoWindowClose}>
-                                   {selectedTree?.name}
+                                   <div className="bg-white rounded-xl shadow-lg p-4 w-64">
+                                          <div>
+                                                 <div className="font-bold text-lg">{selectedHotel?.name}</div>
+                                                 <div className="flex items-center gap-1">
+                                                        <span className="text-yellow-500 font-semibold">{selectedHotel?.rating}</span>
+                                                        <StarIcon
+                                                               weight="fill"
+                                                               size={18}
+                                                               className="text-yellow-500"
+                                                        />
+                                                 </div>
+                                          </div>
+                                          <div className="text-sm text-gray-600 mb-1">{selectedHotel?.address}</div>
+                                   </div>
                             </InfoWindow>
                      )}
               </>

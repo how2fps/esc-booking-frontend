@@ -9,11 +9,11 @@ import { useSearchParams } from "react-router";
 import HotelItem from "../../components/HotelItem/HotelItem";
 import HandlePagination from "../../components/Other/HandlePagination";
 
-import { StarIcon } from "@phosphor-icons/react";
+import { SpinnerIcon, StarIcon } from "@phosphor-icons/react";
 import { APIProvider, Map as GoogleMap } from "@vis.gl/react-google-maps";
 import type { Hotel, HotelFilter, HotelMarker, HotelPrice } from "../../type/HotelType";
 import { AmenityFilter } from "./AmenityFilter";
-import { ClusteredTreeMarkers } from "./ClusteredTreeMarkers";
+import { ClusteredHotelMarkers } from "./ClusteredHotelMarkers";
 const formatDate = (dateString: string): string => {
        const date = new Date(dateString);
        const year = date.getFullYear();
@@ -31,6 +31,7 @@ const HotelListings = () => {
 
        const [allHotels, setAllHotels] = useState<HotelMarker[]>([]);
        const [hotelPrices, setHotelPrices] = useState<Map<string, HotelPrice>>(new Map());
+       const [searchTerm, setSearchTerm] = useState<string>("");
        const [sortOption, setSortOption] = useState<string>();
 
        const [currentPage, setCurrentPage] = useState<number>(1);
@@ -70,6 +71,7 @@ const HotelListings = () => {
                             });
                             console.log(updatedHotelResults);
                             setAllHotels(updatedHotelResults);
+                            setIsLoading(false);
                      } catch (error: unknown) {
                             if (error instanceof Error) {
                                    console.error("Fetch error details:", {
@@ -128,10 +130,9 @@ const HotelListings = () => {
        }, [allHotels, hotelPrices]);
 
        const filteredHotelsArray = useMemo(() => {
-              const filteredHotels = mergedHotels.filter((hotel) => hotel.rating >= filters.minimumRating && [...filters.amenities].every((amenity) => hotel.amenities[amenity]));
-              setIsLoading(false);
+              const filteredHotels = mergedHotels.filter((hotel) => hotel.rating >= filters.minimumRating && [...filters.amenities].every((amenity) => hotel.amenities[amenity]) && hotel.name.toLowerCase().includes(searchTerm.toLowerCase()));
               return filteredHotels;
-       }, [filters, mergedHotels]);
+       }, [filters, mergedHotels, searchTerm]);
 
        const sortedHotelsArray = useMemo(() => {
               const arr = [...filteredHotelsArray];
@@ -162,7 +163,14 @@ const HotelListings = () => {
                      <div className="flex">
                             <div className="left lg:w-1/4 w-1/3 pr-[45px] max-md:hidden">
                                    <div className="sidebar-main">
-                                          {allHotels.length > 0 ? (
+                                          {isLoading || filteredHotelsArray.length == 0 ? (
+                                                 <div className="w-full h-[400px] rounded-xl border-2 border-black overflow-hidden mb-4 flex justify-center items-center">
+                                                        <SpinnerIcon
+                                                               className="animate-spin text-blue-500"
+                                                               size={32}
+                                                        />
+                                                 </div>
+                                          ) : (
                                                  <APIProvider apiKey={"AIzaSyAb7h-Azds2hKTEeVfuGzcDy4uXSigGYzI"}>
                                                         <div className="w-full h-[400px] rounded-xl border-2 border-black overflow-hidden mb-4">
                                                                <GoogleMap
@@ -172,12 +180,10 @@ const HotelListings = () => {
                                                                       defaultZoom={14}
                                                                       gestureHandling={"greedy"}
                                                                       disableDefaultUI={true}>
-                                                                      <ClusteredTreeMarkers trees={filteredHotelsArray} />
+                                                                      <ClusteredHotelMarkers hotels={filteredHotelsArray} />
                                                                </GoogleMap>
                                                         </div>
                                                  </APIProvider>
-                                          ) : (
-                                                 ""
                                           )}
                                           <div className="flex"></div>
                                           <div className="border-2 border-black rounded-[12px] p-4 mt-4">
@@ -231,59 +237,74 @@ const HotelListings = () => {
                                    </div>
                             </div>
                             <div className="right lg:w-3/4 md:w-2/3 md:pl-[15px]">
-                                   <div className="heading flex items-center justify-between gap-6 flex-wrap">
-                                          <div className="right flex items-center gap-3">
-                                                 <div className="select-block relative cursor-pointer">
-                                                        <select
-                                                               id="select-filter"
-                                                               name="select-filter"
-                                                               className="custom-select cursor-pointer"
-                                                               onChange={(e) => {
-                                                                      handleItemsPerPageChange(Number.parseInt(e.target.value));
-                                                               }}
-                                                               value={itemsPerPage}>
-                                                               <option value="8">8 Per Page</option>
-                                                               <option value="9">9 Per Page</option>
-                                                               <option value="12">12 Per Page</option>
-                                                               <option value="16">16 Per Page</option>
-                                                        </select>
-                                                        <Icon.CaretDown className="text-xl absolute top-1/2 -translate-y-1/2 md:right-4 right-2 cursor-pointer" />
-                                                 </div>
-                                                 <div className="select-block relative cursor-pointer">
-                                                        <select
-                                                               id="select-filter"
-                                                               name="select-filter"
-                                                               className="custom-select cursor-pointer"
-                                                               onChange={(e) => {
-                                                                      setSortOption(e.target.value);
-                                                               }}
-                                                               defaultValue={"Sorting"}>
-                                                               <option
-                                                                      value="Sorting"
-                                                                      disabled>
-                                                                      Sort by (Default)
-                                                               </option>
-                                                               <option value="starHighToLow">Best Review</option>
-                                                               <option value="priceHighToLow">Price High To Low</option>
-                                                               <option value="priceLowToHigh">Price Low To High</option>
-                                                        </select>
-                                                        <Icon.CaretDown className="text-xl absolute top-1/2 -translate-y-1/2 md:right-4 right-2" />
-                                                 </div>
+                                   <div className="right flex items-center gap-3">
+                                          <div className="flex-1">
+                                                 <input
+                                                        type="text"
+                                                        placeholder="Search hotels..."
+                                                        value={searchTerm}
+                                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                                        className="w-full rounded-lg border-2 border-black h-14 focus:outline-none focus:ring-2 focus:ring-blue-500 px-4"
+                                                 />
+                                          </div>
+                                          <div className="select-block relative cursor-pointer">
+                                                 <select
+                                                        id="select-filter"
+                                                        name="select-filter"
+                                                        className="custom-select cursor-pointer h-14 rounded-lg border-2 border-black"
+                                                        onChange={(e) => {
+                                                               handleItemsPerPageChange(Number.parseInt(e.target.value));
+                                                        }}
+                                                        value={itemsPerPage}>
+                                                        <option value="8">8 Per Page</option>
+                                                        <option value="9">9 Per Page</option>
+                                                        <option value="12">12 Per Page</option>
+                                                        <option value="16">16 Per Page</option>
+                                                 </select>
+                                                 <Icon.CaretDown className="text-xl absolute top-1/2 -translate-y-1/2 md:right-4 right-2 cursor-pointer" />
+                                          </div>
+                                          <div className="select-block relative cursor-pointer">
+                                                 <select
+                                                        id="select-filter"
+                                                        name="select-filter"
+                                                        className="custom-select cursor-pointer h-14 rounded-lg border-2 border-black"
+                                                        onChange={(e) => {
+                                                               setSortOption(e.target.value);
+                                                        }}
+                                                        defaultValue={"Sorting"}>
+                                                        <option
+                                                               value="Sorting"
+                                                               disabled>
+                                                               Sort by (Default)
+                                                        </option>
+                                                        <option value="starHighToLow">Best Review</option>
+                                                        <option value="priceHighToLow">Price High To Low</option>
+                                                        <option value="priceLowToHigh">Price Low To High</option>
+                                                 </select>
+                                                 <Icon.CaretDown className="text-xl absolute top-1/2 -translate-y-1/2 md:right-4 right-2" />
                                           </div>
                                    </div>
-
-                                   <div className="list-tent md:mt-10 mt-6 grid lg:grid-cols-3 md:grid-cols-2 min-[360px]:grid-cols-2 lg:gap-[30px] gap-4 gap-y-7">
-                                          {currentPageHotels.length > 0 ? (
-                                                 currentPageHotels.map((hotel) => (
-                                                        <HotelItem
-                                                               key={hotel.id}
-                                                               hotelData={hotel}
-                                                        />
-                                                 ))
-                                          ) : (
-                                                 <div>No results available.</div>
-                                          )}
-                                   </div>
+                                   {isLoading ? (
+                                          <div className="flex justify-center items-center min-h-[200px]">
+                                                 <SpinnerIcon
+                                                        className="animate-spin text-blue-500"
+                                                        size={96}
+                                                 />
+                                          </div>
+                                   ) : (
+                                          <div className="list-tent md:mt-10 mt-6 grid lg:grid-cols-3 md:grid-cols-2 min-[360px]:grid-cols-2 lg:gap-[30px] gap-4 gap-y-7">
+                                                 {currentPageHotels.length > 0 ? (
+                                                        currentPageHotels.map((hotel) => (
+                                                               <HotelItem
+                                                                      key={hotel.id}
+                                                                      hotelData={hotel}
+                                                               />
+                                                        ))
+                                                 ) : (
+                                                        <div>No results available.</div>
+                                                 )}
+                                          </div>
+                                   )}
                                    {currentPageHotels.length > 0 ? (
                                           <HandlePagination
                                                  pageCount={pageCount}
