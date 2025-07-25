@@ -6,18 +6,13 @@ import {
   EmbeddedCheckoutProvider,
   EmbeddedCheckout
 } from '@stripe/react-stripe-js';
-import {
-  BrowserRouter,
-  Route,
-  Routes,
-  Navigate
-} from "react-router-dom";
-const stripePromise = loadStripe("");
+
+const stripePromise = loadStripe("pk_test_51RlnqCFyaklkAMXyrYjEB341JN4tJG4fVRI7XqqQ1I0vPj1EJSF4JmQiXcFENNFnPazI53KrTSwftVmpplyOCXP300U4RheZ2p");
 
 const CheckoutForm = () => {
   const fetchClientSecret = useCallback(() => {
     // Create a Checkout Session
-    return fetch("/create-checkout-session", {
+    return fetch("http://localhost:4242/create-checkout-session", {
       method: "POST",
     })
       .then((res) => res.json())

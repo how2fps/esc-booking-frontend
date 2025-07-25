@@ -3,16 +3,12 @@
 import React, { useCallback, useState, useEffect } from "react";
 import {loadStripe} from '@stripe/stripe-js';
 import {
-  EmbeddedCheckoutProvider,
-  EmbeddedCheckout
-} from '@stripe/react-stripe-js';
-import {
   BrowserRouter,
   Route,
   Routes,
   Navigate
 } from "react-router-dom";
-const stripePromise = loadStripe("");
+
 
 const ReturnForm = () => {
   const [status, setStatus] = useState(null);
