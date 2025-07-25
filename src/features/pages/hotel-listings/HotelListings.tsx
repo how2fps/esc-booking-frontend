@@ -14,7 +14,7 @@ import { APIProvider, Map as GoogleMap } from "@vis.gl/react-google-maps";
 import type { Hotel, HotelFilter, HotelMarker, HotelPrice } from "../../type/HotelType";
 import { AmenityFilter } from "./AmenityFilter";
 import { ClusteredTreeMarkers } from "./ClusteredTreeMarkers";
-
+import SliderOne from "../../components/Slider/Slider"
 const formatDate = (dateString: string): string => {
        const date = new Date(dateString);
        const year = date.getFullYear();
@@ -156,8 +156,12 @@ const HotelListings = () => {
        }, [itemsPerPage, currentPage, sortedHotelsArray]);
 
        return (
+              <div>
+              <SliderOne />
               <div className="lg:py-20 md:py-14 max-lg:mt-10 max-md:mt-40 py-10">
+                     
                      <div className="container">
+                            
                             <div className="flex">
                                    <div className="left lg:w-1/4 w-1/3 pr-[45px] max-md:hidden">
                                           <div className="sidebar-main">
@@ -293,6 +297,7 @@ const HotelListings = () => {
                                    </div>
                             </div>
                      </div>
+              </div>
               </div>
        );
 };
