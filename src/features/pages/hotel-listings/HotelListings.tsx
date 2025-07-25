@@ -157,21 +157,27 @@ const HotelListings = () => {
 
        return (
               <div className="lg:py-20 md:py-14 max-lg:mt-10 max-md:mt-40 py-10">
-                     <APIProvider apiKey={"AIzaSyAb7h-Azds2hKTEeVfuGzcDy4uXSigGYzI"}>
-                            <GoogleMap
-                                   mapId={"23a74d563be6cbd9931b8972"}
-                                   style={{ width: "100vw", height: "100vh" }}
-                                   defaultCenter={{ lat: 1.43801, lng: 103.78877 }}
-                                   defaultZoom={12}
-                                   gestureHandling={"greedy"}
-                                   disableDefaultUI={true}>
-                                   <ClusteredTreeMarkers trees={filteredHotelsArray} />
-                            </GoogleMap>
-                     </APIProvider>
                      <div className="container">
                             <div className="flex">
                                    <div className="left lg:w-1/4 w-1/3 pr-[45px] max-md:hidden">
                                           <div className="sidebar-main">
+                                                 {filteredHotelsArray.length > 0 ? (
+                                                        <APIProvider apiKey={"AIzaSyAb7h-Azds2hKTEeVfuGzcDy4uXSigGYzI"}>
+                                                               <div className="w-full h-[300px] rounded-xl border-2 border-black overflow-hidden mb-4">
+                                                                      <GoogleMap
+                                                                             mapId={"23a74d563be6cbd9931b8972"}
+                                                                             style={{ width: "100%", height: "300px", borderRadius: "12px" }}
+                                                                             defaultCenter={filteredHotelsArray[0].position}
+                                                                             defaultZoom={14}
+                                                                             gestureHandling={"greedy"}
+                                                                             disableDefaultUI={true}>
+                                                                             <ClusteredTreeMarkers trees={filteredHotelsArray} />
+                                                                      </GoogleMap>
+                                                               </div>
+                                                        </APIProvider>
+                                                 ) : (
+                                                        ""
+                                                 )}
                                                  <div className="border-2 border-black rounded-[12px] p-4">
                                                         <div className="heading6">Price Range</div>
                                                         <div className="price-block flex items-center justify-between flex-wrap mt-3">
@@ -191,7 +197,7 @@ const HotelListings = () => {
                                                                              }));
                                                                       }
                                                                }}
-                                                               className="mt-4"
+                                                               className="mt-4" 
                                                         />
                                                  </div>
                                                  <div className="border-2 border-black rounded-[12px] p-4 mt-8">

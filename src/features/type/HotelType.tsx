@@ -1,8 +1,3 @@
-interface LocationMap {
-       lat: number;
-       lng: number;
-}
-
 export interface Hotel {
        id: string;
        name: string;
@@ -55,7 +50,7 @@ export interface HotelPrice {
        price: number;
        converted_price: number;
        lowest_converted_price: number;
-       market_rates: any[];
+       market_rates: string[];
 }
 
 export interface HotelFilter {

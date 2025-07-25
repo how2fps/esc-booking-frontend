@@ -23,11 +23,8 @@ export const ClusteredTreeMarkers = ({ trees }: ClusteredTreeMarkersProps) => {
        const clusterer = useMemo(() => {
               if (!map) return null;
 
-              return new MarkerClusterer({
-                     map,
-                     markers: Object.values(markers),
-              });
-       }, [map, markers]);
+              return new MarkerClusterer({ map });
+       }, [map]);
 
        useEffect(() => {
               if (!clusterer) return;
@@ -45,6 +42,7 @@ export const ClusteredTreeMarkers = ({ trees }: ClusteredTreeMarkersProps) => {
                      if (marker) {
                             return { ...markers, [key]: marker };
                      } else {
+                            // eslint-disable-next-line @typescript-eslint/no-unused-vars
                             const { [key]: _, ...newMarkers } = markers;
 
                             return newMarkers;
