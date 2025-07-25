@@ -6,10 +6,11 @@ app.use(cors());
 const stripe = new Stripe('sk_test_51RlnqCFyaklkAMXy3bGjZAbtqwV5YTo1XMzIOv6UBE4zyixDyJx7zM0L1zUDMuw3LSV5K4d14RmmMdVfZ0URPMbT00DeV4VJS3');
 app.use(express.static('public'));
 
-const YOUR_DOMAIN = 'http://localhost:5173';
+const YOUR_DOMAIN = 'http://127.0.0.1:5173';
 
 app.post('/create-checkout-session', async (req, res) => {
   const session = await stripe.checkout.sessions.create({
+    
     ui_mode: 'embedded',
     line_items: [
       {
@@ -19,7 +20,7 @@ app.post('/create-checkout-session', async (req, res) => {
       },
     ],
     mode: 'payment',
-    return_url: `http://localhost:5713/return?session_id={CHECKOUT_SESSION_ID}`,
+    return_url: `${YOUR_DOMAIN}/return?session_id={CHECKOUT_SESSION_ID}`,
   });
 
   res.send({clientSecret: session.client_secret});
