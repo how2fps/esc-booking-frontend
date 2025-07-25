@@ -1,6 +1,5 @@
-'use client';
-
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Footer from '../../components/Footer/Footer';
 import HeaderOne from '../../components/Header/Header';
 
@@ -10,12 +9,8 @@ const BookingPage = () => {
   const [checkinDate, setCheckinDate] = useState('');
   const [checkoutDate, setCheckoutDate] = useState('');
   const [guests, setGuests] = useState('');
-  const [cardholderName, setCardholderName] = useState('');
-  const [cardNumber, setCardNumber] = useState('');
-  const [expirationDate, setExpirationDate] = useState('');
-  const [cvv, setCvv] = useState('');
   const [errors, setErrors] = useState<string[]>([]);
-  const [isValid, setIsValid] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -26,27 +21,12 @@ const BookingPage = () => {
     if (!checkinDate) validationErrors.push('Check-in date is required');
     if (!checkoutDate) validationErrors.push('Check-out date is required');
     if (!guests || parseInt(guests) <= 0) validationErrors.push('Number of guests must be greater than 0');
-    if (!cardholderName) validationErrors.push('Cardholder name is required');
-    if (!cardNumber || cardNumber.length !== 16) validationErrors.push('Card number must be 16 digits');
-    if (!expirationDate) validationErrors.push('Expiration date is required');
-    if (!cvv || cvv.length !== 3) validationErrors.push('CVV must be 3 digits');
 
     setErrors(validationErrors);
-    setIsValid(validationErrors.length === 0);
 
     if (validationErrors.length === 0) {
-      console.log('Booking and payment details:', {
-        name,
-        email,
-        checkinDate,
-        checkoutDate,
-        guests,
-        cardholderName,
-        cardNumber,
-        expirationDate,
-        cvv,
-      });
-      alert('Booking and payment submitted successfully!');
+      // Navigate to the checkout page if no errors
+      navigate('/checkout');
     }
   };
 
@@ -131,66 +111,7 @@ const BookingPage = () => {
                   />
                 </div>
 
-                {/* Payment Details */}
-                <div className="mb-5">
-                  <label htmlFor="cardholderName">
-                    Cardholder Name<span className="text-primary">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="cardholderName"
-                    className="border-line px-4 pt-3 pb-3 w-full rounded-lg mt-2 text-black bg-[#d1d1d1]"
-                    value={cardholderName}
-                    onChange={(e) => setCardholderName(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="mb-5">
-                  <label htmlFor="cardNumber">
-                    Card Number<span className="text-primary">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="cardNumber"
-                    className="border-line px-4 pt-3 pb-3 w-full rounded-lg mt-2 text-black bg-[#d1d1d1]"
-                    value={cardNumber}
-                    onChange={(e) => setCardNumber(e.target.value)}
-                    maxLength={16}
-                    required
-                  />
-                </div>
-
-                <div className="mb-5">
-                  <label htmlFor="expirationDate">
-                    Expiration Date<span className="text-primary">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="expirationDate"
-                    className="border-line px-4 pt-3 pb-3 w-full rounded-lg mt-2 text-black bg-[#d1d1d1]"
-                    value={expirationDate}
-                    onChange={(e) => setExpirationDate(e.target.value)}
-                    placeholder="MM/YY"
-                    required
-                  />
-                </div>
-
-                <div className="mb-5">
-                  <label htmlFor="cvv">
-                    CVV<span className="text-primary">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="cvv"
-                    className="border-line px-4 pt-3 pb-3 w-full rounded-lg mt-2 text-black bg-[#d1d1d1]"
-                    value={cvv}
-                    onChange={(e) => setCvv(e.target.value)}
-                    maxLength={3}
-                    required
-                  />
-                </div>
-
+                {/* Error Messages */}
                 {errors.length > 0 && (
                   <ul className="text-sm text-red-500 mt-2 list-disc pl-5">
                     {errors.map((err, i) => (
@@ -199,38 +120,13 @@ const BookingPage = () => {
                   </ul>
                 )}
 
+                {/* Submit Button */}
                 <div className="block-button mt-6">
                   <button
-                    className={`w-full text-center rounded-lg px-4 py-3 font-semibold transition duration-300 ${
-                      isValid &&
-                      name &&
-                      email &&
-                      checkinDate &&
-                      checkoutDate &&
-                      guests &&
-                      cardholderName &&
-                      cardNumber &&
-                      expirationDate &&
-                      cvv
-                        ? 'button-main'
-                        : 'bg-gray-400 text-white cursor-not-allowed'
-                    }`}
-                    disabled={
-                      !(
-                        isValid &&
-                        name &&
-                        email &&
-                        checkinDate &&
-                        checkoutDate &&
-                        guests &&
-                        cardholderName &&
-                        cardNumber &&
-                        expirationDate &&
-                        cvv
-                      )
-                    }
+                    type="submit"
+                    className="w-full text-center rounded-lg px-4 py-3 font-semibold transition duration-300 button-main"
                   >
-                    Submit Booking
+                    Proceed to Checkout
                   </button>
                 </div>
               </form>
