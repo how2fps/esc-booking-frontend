@@ -24,7 +24,8 @@ const formatDate = (dateString: string): string => {
 
 //?location=RsBU&startDate=7/20/2025&endDate=7/27/2025&adult=1&children=1&room=2
 const HotelListings = () => {
-       const [searchParams, setSearchParams] = useSearchParams();
+       // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       const [searchParams, _] = useSearchParams();
        const destination_id = searchParams.get("location");
        const checkIn = formatDate(searchParams.get("startDate") as string);
        const checkOut = formatDate(searchParams.get("endDate") as string);
@@ -32,6 +33,7 @@ const HotelListings = () => {
        const [allHotels, setAllHotels] = useState<HotelMarker[]>([]);
        const [hotelPrices, setHotelPrices] = useState<Map<string, HotelPrice>>(new Map());
        const [searchTerm, setSearchTerm] = useState<string>("");
+       const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>("");
        const [sortOption, setSortOption] = useState<string>();
 
        const [currentPage, setCurrentPage] = useState<number>(1);
@@ -54,6 +56,16 @@ const HotelListings = () => {
               setItemsPerPage(newItemsPerPage);
               setCurrentPage(1);
        };
+
+       useEffect(() => {
+              const handler = setTimeout(() => {
+                     setDebouncedSearchTerm(searchTerm);
+              }, 300);
+
+              return () => {
+                     clearTimeout(handler);
+              };
+       }, [searchTerm]);
 
        useEffect(() => {
               const fetchHotelsByDestination = async () => {
@@ -130,9 +142,9 @@ const HotelListings = () => {
        }, [allHotels, hotelPrices]);
 
        const filteredHotelsArray = useMemo(() => {
-              const filteredHotels = mergedHotels.filter((hotel) => hotel.rating >= filters.minimumRating && [...filters.amenities].every((amenity) => hotel.amenities[amenity]) && hotel.name.toLowerCase().includes(searchTerm.toLowerCase()));
+              const filteredHotels: HotelMarker[] = mergedHotels.filter((hotel) => hotel.rating >= filters.minimumRating && [...filters.amenities].every((amenity) => hotel.amenities[amenity]) && hotel.name.toLowerCase().includes(debouncedSearchTerm.toLowerCase()));
               return filteredHotels;
-       }, [filters, mergedHotels, searchTerm]);
+       }, [filters, mergedHotels, debouncedSearchTerm]);
 
        const sortedHotelsArray = useMemo(() => {
               const arr = [...filteredHotelsArray];
@@ -163,7 +175,7 @@ const HotelListings = () => {
                      <div className="flex">
                             <div className="left lg:w-1/4 w-1/3 pr-[45px] max-md:hidden">
                                    <div className="sidebar-main">
-                                          {isLoading || filteredHotelsArray.length == 0 ? (
+                                          {isLoading ? (
                                                  <div className="w-full h-[400px] rounded-xl border-2 border-black overflow-hidden mb-4 flex justify-center items-center">
                                                         <SpinnerIcon
                                                                className="animate-spin text-blue-500"

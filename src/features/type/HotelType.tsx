@@ -2,7 +2,9 @@ export interface Hotel {
        id: string;
        name: string;
        address: string;
-       amenities: object;
+       amenities: {
+              [key: string]: boolean;
+       };
        priceRange: { min: number; max: number };
        latitude: number;
        longitude: number;

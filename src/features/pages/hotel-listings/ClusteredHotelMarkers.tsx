@@ -2,7 +2,7 @@ import { MarkerClusterer, type Marker } from "@googlemaps/markerclusterer";
 import { StarIcon } from "@phosphor-icons/react";
 import { InfoWindow, useMap } from "@vis.gl/react-google-maps";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { HotelMarker as HotelMarkerType } from "../../type/HotelType";
+import type { HotelMarker as HotelMarkerType } from "../../type/HotelType";
 import { HotelMarker } from "./HotelMarker";
 /**
  * The ClusteredTreeMarkers component is responsible for integrating the
