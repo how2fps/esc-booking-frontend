@@ -25,11 +25,8 @@ const iconlist = {
 
 }
 
-
-
 const HotelItem: React.FC<Props> = ({ data, type }) => {
-    
-    const router = useNavigate()
+    const navigate = useNavigate()
     const prefix = data.image_details["prefix"]
     const image_count = Math.min(data.image_details["count"],10)
     const image_array: string[] = []
@@ -37,9 +34,8 @@ const HotelItem: React.FC<Props> = ({ data, type }) => {
      image_array.push(prefix+i+".jpg")
     }
 
-
     const handleClickItem = (id: string) => {
-        router(`/camp/hotel-detail?id=${id}`)
+        navigate(`/hotels/${id}`)
     }
 
     return (
