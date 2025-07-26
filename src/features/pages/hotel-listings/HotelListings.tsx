@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import * as Icon from "phosphor-react";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
-import { useSearchParams } from "react-router";
+import { useSearchParams } from "react-router-dom";
 import HotelItem from "../../components/HotelItem/HotelItem";
 import HandlePagination from "../../components/Other/HandlePagination";
 
@@ -176,7 +176,9 @@ const HotelListings = () => {
                             <div className="left lg:w-1/4 w-1/3 pr-[45px] max-md:hidden">
                                    <div className="sidebar-main">
                                           {isLoading ? (
-                                                 <div className="w-full h-[400px] rounded-xl border-2 border-black overflow-hidden mb-4 flex justify-center items-center">
+                                                 <div
+                                                        role="status"
+                                                        className="w-full h-[400px] rounded-xl border-2 border-black overflow-hidden mb-4 flex justify-center items-center">
                                                         <SpinnerIcon
                                                                className="animate-spin text-blue-500"
                                                                size={32}
@@ -260,8 +262,9 @@ const HotelListings = () => {
                                                  />
                                           </div>
                                           <div className="select-block relative cursor-pointer">
+                                                 <label htmlFor="items-per-page">Items Per Page</label>
                                                  <select
-                                                        id="select-filter"
+                                                        id="items-per-page"
                                                         name="select-filter"
                                                         className="custom-select cursor-pointer h-14 rounded-lg border-2 border-black"
                                                         onChange={(e) => {
@@ -276,19 +279,15 @@ const HotelListings = () => {
                                                  <Icon.CaretDown className="text-xl absolute top-1/2 -translate-y-1/2 md:right-4 right-2 cursor-pointer" />
                                           </div>
                                           <div className="select-block relative cursor-pointer">
+                                                 <label htmlFor="sort">Sort By</label>
                                                  <select
-                                                        id="select-filter"
+                                                        id="sort"
                                                         name="select-filter"
                                                         className="custom-select cursor-pointer h-14 rounded-lg border-2 border-black"
                                                         onChange={(e) => {
                                                                setSortOption(e.target.value);
                                                         }}
                                                         defaultValue={"Sorting"}>
-                                                        <option
-                                                               value="Sorting"
-                                                               disabled>
-                                                               Sort by (Default)
-                                                        </option>
                                                         <option value="starHighToLow">Best Review</option>
                                                         <option value="priceHighToLow">Price High To Low</option>
                                                         <option value="priceLowToHigh">Price Low To High</option>
@@ -297,7 +296,9 @@ const HotelListings = () => {
                                           </div>
                                    </div>
                                    {isLoading ? (
-                                          <div className="flex justify-center items-center min-h-[200px]">
+                                          <div
+                                                 role="status"
+                                                 className="flex justify-center items-center min-h-[200px]">
                                                  <SpinnerIcon
                                                         className="animate-spin text-blue-500"
                                                         size={96}
