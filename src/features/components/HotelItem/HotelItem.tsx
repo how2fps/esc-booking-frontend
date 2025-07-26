@@ -44,6 +44,7 @@ const HotelItem: React.FC<{ hotelData: Hotel }> = ({ hotelData }) => {
        };
        return (
               <div
+                     role="listitem"
                      className="hotel-item hover-scale"
                      onClick={() => {
                             handleClickItem(hotelData.id);
