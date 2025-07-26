@@ -44,9 +44,9 @@ const HeaderOne = () => {
 			<div className={`header-main h-20 w-full bg-white min-[1322px]:px-5 px-4 flex items-center justify-between ${fixedHeader ? 'fixed box-shadow' : ''}`}>
 				<Link to="/" className="logo">
 					<img
-						src="/images/logo/Vector.png"
+						src="/images/logo/Bloom.png"
 						alt="logo"
-						className="sm:w-[40px] w-[40px]"
+						className="sm:w-[120px] w-[80px]"
 					/>
 				</Link>
 
