@@ -7,8 +7,10 @@ import "react-date-range/dist/theme/default.css";
 import { Link } from "react-router-dom";
 
 import Destination from "../data/destinations.json";
-import MicroSpellingCorrecter from "micro-spelling-correcter";
+import { SpellcheckerWasm }  from "spellchecker-wasm";
 import { AsyncPaginate } from 'react-select-async-paginate';
+import { BKTree } from '@picosearch/bk-tree';
+
 interface DestinationType {
        term: string;
        uid: string;
@@ -35,11 +37,12 @@ const options: DestinationType[] = (Array.isArray(Destination) ? Destination : O
 const tokenizedOptions = options.map(option =>(option.term || '').match(/\w+/g) || []);
 
 const Common_typos = new Set(tokenizedOptions.flat().filter(word => word.length > 3));
+console.log(Common_typos)
+const correcter = new BKTree();
 
-
-const correcter = new MicroSpellingCorrecter( Common_typos, 2 );
-
-
+for (const item of Common_typos) {
+  correcter.insert(item);
+}
 
 const noOptionsMessage = (input: { inputValue: string }) => {
        if (input.inputValue.length === 0) {
@@ -60,18 +63,27 @@ const loadOptions = async (search: string, page: number) => {
       hasMore: false
     };
   }
-  const corrected = correcter.correct?.(search) || search;
+  let search_term = search.split(/[,\s]+/);
+  search_term =search_term.map(term =>correcter.lookup(term) );
+const filteredOptions = options.filter((i) => 
+  i.term && (
+    i.term.toLowerCase().includes(search.toLowerCase()) ||
+    search_term.some(correctedTerm =>
+      i.term.toLowerCase().includes(correctedTerm.toLowerCase())
+    )
+  )
+);
+const uniqueOptions = Array.from(
+  new Map(filteredOptions.map(item => [item.term, item])).values()
+);
+console.log(uniqueOptions)
+  const hasMore = Math.ceil(uniqueOptions.length / optionsPerPage) > page;
 
-  const filteredOptions = options.filter((i) => i.term && (i.term.toLowerCase().includes(search.toLowerCase()) || i.term.toLowerCase().includes(corrected.toLowerCase())));
-  
-  const hasMore = Math.ceil(filteredOptions.length / optionsPerPage) > page;
-
-  const slicedOptions = filteredOptions.slice(   
+  const slicedOptions = uniqueOptions.slice(   
     (page - 1) * optionsPerPage,
     page * optionsPerPage
   );
-  console.log('page:', page, 'filteredOptions.length:', filteredOptions.length, 'hasMore:', hasMore);
-  console.log('Page:', page, 'options count:', slicedOptions);
+
 
   return {
     options: slicedOptions,
@@ -88,9 +100,10 @@ const loadPageOptions = async (
   additional = defaultAdditional
 ) => {
   const { page = 1 } = additional;
-  console.log('Fetching page:', page, 'query:', q);
 
+  
   const { options, hasMore } = await loadOptions(q, page);
+       console.log('Fetching page:', page, 'query:', q, 'Option:', options);
 
   return {
     options,
@@ -213,8 +226,7 @@ const DestinationSearch = () => {
                                                                       getOptionLabel={(i: DestinationType) => i.term}
                                                                       getOptionValue={(i: DestinationType) => i.uid}
                                                                       noOptionsMessage={noOptionsMessage}
-                                                                      onChange={setLocation}  
-                                                                                                                                           
+                                                                      onChange={setLocation}                                                             
                                                                       styles={{
                                                                              control: (provided) => ({
                                                                                     ...provided,
