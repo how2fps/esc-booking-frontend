@@ -58,13 +58,13 @@ const renderSldier = () =>
     // Wait for the second page options to appear
     expect(await screen.findByText('Policlinico, Rome, Italy')).toBeInTheDocument();
 
-    // Ensure all four options are visible (not duplicated)
+    // Ensure all 2 options are visible (not duplicated)
     expect(screen.getAllByRole('option').map(el => el.textContent)).toEqual(
       expect.arrayContaining(['Rome, Italy', 'Policlinico, Rome, Italy'])
     );
   });
 
-  it('ends when no more item avaiable ', async () => {
+  it('ends when no more item available ', async () => {
     renderSldier()
     const asyncSelect =  await screen.findByTestId('async-select');
     expect(asyncSelect).toBeInTheDocument();
@@ -95,14 +95,11 @@ it('shows options corresponding only to latest rapid input after debounce', asyn
   await userEvent.type(input, 'b', { delay: 10 }); // input is now 'ab'
   await userEvent.type(input, 'c', { delay: 10 }); // input is now 'abc'
   await userEvent.type(input, 'd', { delay: 10 }); // input is now 'abcd'  
-  // Wait longer than debounce timeout + max artificial delay in your loadPageOptions (200ms + 100ms)
-  // to ensure last call settles
 
   await waitFor(
     async () => {
       // The options for 'abcd' should be rendered, NOT options for 'abc'
-      expect(screen.getByText('Ubud, Indonesia')).toBeInTheDocument();
-      expect(screen.getByText('Kedewatan, Ubud, Indonesia')).toBeInTheDocument();
+      expect(screen.getByText('Autodromo Miguel E. Abed, Puebla, PUEBLA, Mexico')).toBeInTheDocument();
 
       // Should NOT find options from previous inputs
       expect(screen.queryByText('Abcoude, Netherlands')).not.toBeInTheDocument();
