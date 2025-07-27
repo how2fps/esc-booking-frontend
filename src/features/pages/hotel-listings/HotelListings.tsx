@@ -2,215 +2,187 @@
 
 import { useState } from 'react'
 
-import * as Icon from 'phosphor-react'
-import Slider from 'rc-slider'
-import 'rc-slider/assets/index.css'
-import { Suspense } from 'react'
-import { useSearchParams } from "react-router"
-import Footer from '../../components/Footer/Footer'
-import HeaderOne from '../../components/Header/Header'
-import HandlePagination from '../../components/Other/HandlePagination'
-import SliderTwo from '../../components/Slider/Slider'
-import TentItem from '../../components/Tent/TentItem'
-import tentData from '../../components/data/Tent.json'
-import type { TentType } from '../../type/HotelType'
+import * as Icon from "phosphor-react";
+import Slider from "rc-slider";
+import "rc-slider/assets/index.css";
+import { useSearchParams } from "react-router-dom";
+import HotelItem from "../../components/HotelItem/HotelItem";
+import HandlePagination from "../../components/Other/HandlePagination";
 
-import { Link } from "react-router-dom"
+import { SpinnerIcon, StarIcon } from "@phosphor-icons/react";
+import { APIProvider, Map as GoogleMap } from "@vis.gl/react-google-maps";
+import type { Hotel, HotelFilter, HotelMarker, HotelPrice } from "../../type/HotelType";
+import { AmenityFilter } from "./AmenityFilter";
+import { ClusteredHotelMarkers } from "./ClusteredHotelMarkers";
+const formatDate = (dateString: string): string => {
+       const date = new Date(dateString);
+       const year = date.getFullYear();
+       const month = String(date.getMonth() + 1).padStart(2, "0");
+       const day = String(date.getDate()).padStart(2, "0");
+       return `${year}-${month}-${day}`;
+};
+//?location=RsBU&startDate=7/20/2025&endDate=7/27/2025&adult=1&children=1&room=2
+const HotelListings = () => {
+       // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       const [searchParams, _] = useSearchParams();
+       const destination_id = searchParams.get("location");
+       const numberOfAdults = Number(searchParams.get("adult"));
+       const numberOfChildren = Number(searchParams.get("children"));
+       const numberOfRooms = Number(searchParams.get("room"));
+       const checkIn = formatDate(searchParams.get("startDate") as string);
+       const checkOut = formatDate(searchParams.get("endDate") as string);
 
+       const [allHotels, setAllHotels] = useState<HotelMarker[]>([]);
+       const [hotelPrices, setHotelPrices] = useState<Map<string, HotelPrice>>(new Map());
+       const [searchTerm, setSearchTerm] = useState<string>("");
+       const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>("");
+       const [sortOption, setSortOption] = useState<string>();
 
-type Service = string;
-type Amenities = string;
-type Activities = string;
-type Terrain = string;
-function getParams() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  return searchParams;
-}
-const TopMapSidebarContent = () => {
-  const params = getParams()
-  const categoryParams = params.get('category')
-  const continentsParams = params.get('continents')
-  const countryParams = params.get('country')
-  const [openSidebar, setOpenSidebar] = useState(false)
-  const [sortOption, setSortOption] = useState('');
-  const [service, setService] = useState<Service[]>([])
-  const [amenities, setAmenities] = useState<Amenities[]>([])
-  const [activities, setActivities] = useState<Activities[]>([])
-  const [terrain, setTerrain] = useState<Terrain[]>([])
-  const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({ min: 0, max: 500 });
-  const [currentPage, setCurrentPage] = useState(0);
-  const [tentPerPage, setTentPerPage] = useState<number>(12);
-  const tentsPerPage = tentPerPage;
-  const offset = currentPage * tentsPerPage;
+       const [currentPage, setCurrentPage] = useState<number>(1);
+       const [itemsPerPage, setItemsPerPage] = useState<number>(8);
 
-  const handleOpenSidebar = () => {
-    setOpenSidebar(!openSidebar)
-  }
+       const [isLoading, setIsLoading] = useState<boolean>(true);
+       // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       const [error, setError] = useState<string | null>(null);
 
-  const handleTentPerPage = (page: number) => {
-    setTentPerPage(page);
-    setCurrentPage(0);
-  };
+       const [filters, setFilters] = useState<HotelFilter>({
+              amenities: new Set(),
+              priceRange: { min: 0, max: 10000 },
+              minimumRating: 0,
+       });
 
-  const handleSortChange = (option: string) => {
-    setSortOption(option);
-    setCurrentPage(0);
-  };
+       const handlePageChange = (selected: number) => {
+              setCurrentPage(selected + 1);
+              window.scrollTo({ top: 0, behavior: "smooth" });
+       };
 
-  const handlePriceChange = (values: number | number[]) => {
-    if (Array.isArray(values)) {
-      setPriceRange({ min: values[0], max: values[1] });
-      setCurrentPage(0);
-    }
-  };
+       const handleItemsPerPageChange = (newItemsPerPage: number) => {
+              setItemsPerPage(newItemsPerPage);
+              setCurrentPage(1);
+       };
 
-  const handleService = (item: Service) => {
-    const isSelected = service.includes(item);
+       useEffect(() => {
+              const handler = setTimeout(() => {
+                     setDebouncedSearchTerm(searchTerm);
+              }, 300);
 
-    if (isSelected) {
-      setService(service.filter((service) => service !== item));
-    } else {
-      setService([...service, item]);
-    }
-    setCurrentPage(0);
-  };
+              return () => {
+                     clearTimeout(handler);
+              };
+       }, [searchTerm]);
+       
+       useEffect(() => {
+              setCurrentPage(1);
+       }, [filters, debouncedSearchTerm, sortOption]);
 
-  const handleAmenities = (item: Amenities) => {
-    const isSelected = amenities.includes(item);
+       useEffect(() => {
+              const fetchHotelsByDestination = async () => {
+                     setIsLoading(true);
+                     try {
+                            const response = await fetch(`http://localhost:3000/api/hotels?destination_id=${destination_id}`, {
+                                   method: "GET",
+                                   headers: {
+                                          "Content-Type": "application/json",
+                                   },
+                            });
+                            const hotelResults: Hotel[] = await response.json();
+                            const updatedHotelResults: HotelMarker[] = hotelResults.map((hotel) => {
+                                   return { ...hotel, key: hotel.id, position: { lat: hotel.latitude, lng: hotel.longitude } };
+                            });
+                            setAllHotels(updatedHotelResults);
+                            setIsLoading(false);
+                     } catch (error: unknown) {
+                            if (error instanceof Error) {
+                                   console.error("Fetch error details:", {
+                                          name: error.name,
+                                          message: error.message,
+                                          stack: error.stack,
+                                   });
+                            }
+                            setError("Something went wrong while loading hotels. Please try again later.");
+                     }
+              };
+              fetchHotelsByDestination();
+       }, [destination_id]);
 
-    if (isSelected) {
-      setAmenities(amenities.filter((amenities) => amenities !== item));
-    } else {
-      setAmenities([...amenities, item]);
-    }
-    setCurrentPage(0);
-  };
+       useEffect(() => {
+              let isMounted = true;
+              let timeoutId: number | undefined;
+              const fetchHotelPricesWithPolling = async () => {
+                     try {
+                            let retries = 0;
+                            const maxRetries = 50;
+                            const delay = 1500;
+                            const guestsParam = Array(numberOfRooms)
+                                   .fill(numberOfAdults + numberOfChildren)
+                                   .join("|");
+                            const queryString = `http://localhost:3000/api/hotels/prices?destination_id=${destination_id}&checkin=${checkIn}&checkout=${checkOut}&lang=en_US&currency=SGD&country_code=SG&guests=${guestsParam}&landing_page=wl-acme-earn&product_type=earn&partner_id=1089`;
+                            while (retries < maxRetries) {
+                                   const response = await fetch(queryString);
+                                   const result = await response.json();
+                                   if (result.complete && result.data?.hotels) {
+                                          const priceMap = new Map<string, HotelPrice>();
+                                          result.data.hotels.forEach((price: HotelPrice) => {
+                                                 priceMap.set(price.id, price);
+                                          });
+                                          if (isMounted) setHotelPrices(priceMap);
+                                          return;
+                                   }
+                                   retries++;
+                                   await new Promise((resolve) => (timeoutId = setTimeout(resolve, delay)));
+                            }
+                            console.warn("Polling timed out");
+                     } catch (error) {
+                            if (error instanceof Error) {
+                                   console.error("Polling error:", error);
+                            }
+                     }
+              };
+              fetchHotelPricesWithPolling();
+              return () => {
+                     isMounted = false;
+                     clearTimeout(timeoutId);
+              };
+       }, [checkIn, checkOut, destination_id, numberOfAdults, numberOfChildren, numberOfRooms]);
 
-  const handleActivities = (item: Activities) => {
-    const isSelected = activities.includes(item);
+       const mergedHotels = useMemo(() => {
+              return allHotels.map((hotel) => {
+                     const priceData = hotelPrices.get(hotel.id);
+                     return {
+                            ...hotel,
+                            price: priceData?.price ?? hotel.price,
+                     };
+              });
+       }, [allHotels, hotelPrices]);
 
-    if (isSelected) {
-      setActivities(activities.filter((activities) => activities !== item));
-    } else {
-      setActivities([...activities, item]);
-    }
-    setCurrentPage(0);
-  };
+       const filteredHotelsArray = useMemo(() => {
+              const filteredHotels: HotelMarker[] = mergedHotels.filter((hotel) => hotel.rating >= filters.minimumRating && [...filters.amenities].every((amenity) => hotel.amenities[amenity]) && hotel.name.toLowerCase().includes(debouncedSearchTerm.toLowerCase()));
+              return filteredHotels;
+       }, [filters, mergedHotels, debouncedSearchTerm]);
 
-  const handleTerrain = (item: Terrain) => {
-    // check terrain selected
-    const isSelected = terrain.includes(item);
+       const sortedHotelsArray = useMemo(() => {
+              const arr = [...filteredHotelsArray];
+              if (sortOption === "starHighToLow") {
+                     return arr.sort((a, b) => b.rating - a.rating);
+              }
+              if (sortOption === "priceHighToLow") {
+                     return arr.sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
+              }
+              if (sortOption === "priceLowToHigh") {
+                     return arr.sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
+              }
+              return arr;
+       }, [filteredHotelsArray, sortOption]);
 
-    if (isSelected) {
-      setTerrain(terrain.filter((terrain) => terrain !== item));
-    } else {
-      setTerrain([...terrain, item]);
-    }
-    setCurrentPage(0);
-  };
+       const pageCount = useMemo(() => {
+              return Math.ceil(sortedHotelsArray.length / itemsPerPage) || 1;
+       }, [sortedHotelsArray, itemsPerPage]);
 
-  let filteredData = tentData.filter(tent => {
-    let isDataCategoryMatch = true;
-    if (categoryParams) {
-      isDataCategoryMatch = tent.category.toLowerCase() === categoryParams.toLowerCase()
-    }
-
-    let isDataContinentsMatch = true;
-    if (continentsParams) {
-      isDataContinentsMatch = tent.continents.toLowerCase() === continentsParams.toLowerCase()
-    }
-
-    let isDataCountryMatch = true;
-    if (countryParams) {
-      isDataCountryMatch = tent.country.toLowerCase() === countryParams.toLowerCase()
-    }
-
-    let isPriceRangeMatched = true;
-    if (priceRange.min !== 0 || priceRange.max !== 500) {
-      isPriceRangeMatched = tent.price >= priceRange.min && tent.price <= priceRange.max;
-    }
-
-    let isDataServiceMatched = true;
-    if (service.length > 0) {
-      isDataServiceMatched = service.every(item => tent.services.includes(item))
-    }
-
-    let isDataAmenitiesMatched = true;
-    if (amenities.length > 0) {
-      isDataAmenitiesMatched = amenities.every(item => tent.amenities.includes(item))
-    }
-
-    let isDataActivitiesMatched = true;
-    if (activities.length > 0) {
-      isDataActivitiesMatched = activities.every(item => tent.activities.includes(item))
-    }
-
-    let isDataTerrainMatched = true;
-    if (terrain.length > 0) {
-      isDataTerrainMatched = terrain.every(item => tent.terrain.includes(item))
-    }
-
-    return isDataCategoryMatch && isDataContinentsMatch && isDataCountryMatch && isPriceRangeMatched && isDataServiceMatched && isDataAmenitiesMatched && isDataActivitiesMatched && isDataTerrainMatched
-  })
-
-
-  let sortedData = [...filteredData];
-
-  if (sortOption === 'starHighToLow') {
-    filteredData = sortedData.sort((a, b) => b.rate - a.rate)
-  }
-
-  if (sortOption === 'priceHighToLow') {
-    filteredData = sortedData.sort((a, b) => b.price - a.price)
-  }
-
-  if (sortOption === 'priceLowToHigh') {
-    filteredData = sortedData.sort((a, b) => a.price - b.price)
-  }
-
-  if (filteredData.length === 0) {
-    filteredData = [{
-      id: 'no-data',
-      category: 'no-data',
-      name: 'no-data',
-      continents: 'no-data',
-      country: 'no-data',
-      location: 'no-data',
-      locationMap: {
-        lat: 0,
-        lng: 0
-      },
-      rate: 0,
-      price: 0,
-      listImage: [],
-      image: 'no-data',
-      shortDesc: 'no-data',
-      description: 'no-data',
-      services: [],
-      amenities: [],
-      activities: [],
-      terrain: [],
-    }];
-  }
-
-
-  const pageCount = Math.ceil(filteredData.length / tentsPerPage);
-
-  if (pageCount === 0) {
-    setCurrentPage(0);
-  }
-
-  let currentTents: TentType[];
-
-  if (filteredData.length > 0) {
-    currentTents = filteredData.slice(offset, offset + tentsPerPage);
-  } else {
-    currentTents = []
-  }
-
-  const handlePageChange = (selected: number) => {
-    setCurrentPage(selected);
-  };
+       const currentPageHotels = useMemo(() => {
+              const startIndex = (currentPage - 1) * itemsPerPage;
+              const endIndex = startIndex + itemsPerPage;
+              return sortedHotelsArray.slice(startIndex, endIndex);
+       }, [itemsPerPage, currentPage, sortedHotelsArray]);
 
   return (
     <>
