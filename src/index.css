@@ -13,13 +13,6 @@
        -moz-osx-font-smoothing: grayscale;
 }
 
-
-
-input[type="text"], textarea {
-  color: black;
-  background-color : #d1d1d1; 
-}
-
 a {
        font-weight: 500;
        color: #000000;

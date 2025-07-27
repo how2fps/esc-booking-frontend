@@ -5,10 +5,11 @@ import { DateRangePicker } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { Link } from "react-router-dom";
-import AsyncSelect from "react-select/async";
+
+import { BKTree } from "@picosearch/bk-tree";
+import { AsyncPaginate } from "react-select-async-paginate";
 import Destination from "../data/destinations.json";
-import MicroSpellingCorrecter from "micro-spelling-correcter";
-import { AsyncPaginate } from 'react-select-async-paginate';
+
 interface DestinationType {
        term: string;
        uid: string;
@@ -31,15 +32,15 @@ const options: DestinationType[] = (Array.isArray(Destination) ? Destination : O
 
 //const mappedOptions = options.map((option) => ({ value: option.uid, label: option.term }));
 
+const tokenizedOptions = options.map((option) => (option.term || "").match(/\w+/g) || []);
 
-const tokenizedOptions = options.map(option =>(option.term || '').match(/\w+/g) || []);
+const Common_typos = new Set(tokenizedOptions.flat().filter((word) => word.length > 3));
+console.log(Common_typos);
+const correcter = new BKTree();
 
-const Common_typos = new Set(tokenizedOptions.flat().filter(word => word.length > 3));
-
-
-const correcter = new MicroSpellingCorrecter( Common_typos, 2 );
-
-
+for (const item of Common_typos) {
+       correcter.insert(item);
+}
 
 const noOptionsMessage = (input: { inputValue: string }) => {
        if (input.inputValue.length === 0) {
@@ -50,48 +51,43 @@ const noOptionsMessage = (input: { inputValue: string }) => {
        return "No options";
 };
 
-
 const optionsPerPage = 10;
 
 const loadOptions = async (search: string, page: number) => {
-  if (!search || search.length < 3) {
-    return {
-      options: [],
-      hasMore: false
-    };
-  }
-  const corrected = correcter.correct?.(search) || search;
+       if (!search || search.length < 3) {
+              return {
+                     options: [],
+                     hasMore: false,
+              };
+       }
+       let search_term = search.split(/[,\s]+/);
+       search_term = search_term.map((term) => correcter.lookup(term));
+       const filteredOptions = options.filter((i) => i.term && (i.term.toLowerCase().includes(search.toLowerCase()) || search_term.some((correctedTerm) => i.term.toLowerCase().includes(correctedTerm.toLowerCase()))));
+       const uniqueOptions = Array.from(new Map(filteredOptions.map((item) => [item.term, item])).values());
+       console.log(uniqueOptions);
+       const hasMore = Math.ceil(uniqueOptions.length / optionsPerPage) > page;
 
-  const filteredOptions = options.filter((i) => i.term && (i.term.toLowerCase().includes(search.toLowerCase()) || i.term.toLowerCase().includes(corrected.toLowerCase())));
-  
-  const hasMore = Math.ceil(filteredOptions.length / optionsPerPage) > page;
+       const slicedOptions = uniqueOptions.slice((page - 1) * optionsPerPage, page * optionsPerPage);
 
-  const slicedOptions = filteredOptions.slice(   
-    (page - 1) * optionsPerPage,
-    page * optionsPerPage
-  );
-
-  return {
-    options: slicedOptions,
-    hasMore
-  };
+       return {
+              options: slicedOptions,
+              hasMore,
+       };
 };
 
+const defaultAdditional = { page: 1 };
 
+const loadPageOptions = async (q: string, loadedOptions: DestinationType[], additional = defaultAdditional) => {
+       const { page = 1 } = additional;
 
-const defaultAdditional = {
-  page: 1
-};
+       const { options, hasMore } = await loadOptions(q, page);
+       console.log("Fetching page:", page, "query:", q, "Option:", options);
 
-const loadPageOptions = async (q: string, additional = defaultAdditional) => {
-  const { page } = { page: 1 }
-       
-  const { options, hasMore } = await loadOptions(q, page);
- 
-  return {
-    options,
-    hasMore
-  };
+       return {
+              options,
+              hasMore,
+              additional: { page: page + 1 },
+       };
 };
 
 const DestinationSearch = () => {
@@ -175,7 +171,9 @@ const DestinationSearch = () => {
 
        return (
               <>
-                     <div className="slider-block style-one relative h-[620px]">
+                     <div
+                            className="slider-block style-one relative h-[620px]"
+                            data-testid="slider">
                             <div className="bg-img absolute top-0 left-0 w-full h-full">
                                    <img
                                           src={"/images/slider/hotel-lobby-2024-12-05-23-25-27-utc.jpg"}
@@ -199,18 +197,16 @@ const DestinationSearch = () => {
                                           <div className="form-search md:mt-10 mt-6 w-full">
                                                  <form className="bg-white rounded-lg p-5 flex max-lg:flex-wrap items-center justify-between gap-5 relative">
                                                         <div
-                                                               className="select-block md:w-[48%] w-full"
+                                                               className="select-block lg:w-full md:w-[48%] w-full"
                                                                data-testid="async-select">
                                                                <AsyncPaginate
-                                                                      debounceTimeout={100} 
-                                                                      data-testid="async-select"
+                                                                      debounceTimeout={100}
                                                                       additional={{ page: 1 }}
                                                                       loadOptions={loadPageOptions}
                                                                       getOptionLabel={(i: DestinationType) => i.term}
                                                                      getOptionValue={(i: DestinationType) => i.uid}
                                                                       noOptionsMessage={noOptionsMessage}
-                                                                      onChange={setLocation}  
-                                                                                                                                           
+                                                                      onChange={setLocation}
                                                                       styles={{
                                                                              control: (provided) => ({
                                                                                     ...provided,
@@ -223,7 +219,6 @@ const DestinationSearch = () => {
                                                                              }),
                                                                       }}
                                                                />
-                                                               <p data-testid="uid">Selected: {location ? location.uid : "None"}</p>
                                                         </div>
                                                         <div className="relative lg:w-full md:w-[48%] w-full">
                                                                <div
@@ -331,7 +326,7 @@ const DestinationSearch = () => {
                                                         </div>
                                                         <div className="button-block flex-shrink-0 max-lg:w-[48%] max-md:w-full">
                                                                <div className="button-main max-lg:w-full">
-                                                                      <Link to={`/hotels/topmap-grid?location=${location ? location.uid : "None"}&startDate=${state[0].startDate.toLocaleDateString()}&endDate=${state[0].endDate.toLocaleDateString()}&adult=${guest.adult}&children=${guest.children}&room=${guest.room}`}>Search</Link>
+                                                                      <Link to={`/hotels?location=${location ? location.uid : "None"}&startDate=${state[0].startDate.toLocaleDateString()}&endDate=${state[0].endDate.toLocaleDateString()}&adult=${guest.adult}&children=${guest.children}&room=${guest.room}`}>Search</Link>
                                                                </div>
                                                         </div>
                                                  </form>
