@@ -25,7 +25,10 @@ export const HotelMarker = (props: HotelMarkerProps) => {
                      ref={ref}
                      onClick={handleClick}>
                      <span className="marker-clustering-tree">
-                            <BuildingIcon color="red" />
+                            <BuildingIcon
+                                   color="red"
+                                   weight="fill"
+                            />
                      </span>
               </AdvancedMarker>
        );

@@ -4,6 +4,7 @@ import { InfoWindow, useMap } from "@vis.gl/react-google-maps";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { HotelMarker as HotelMarkerType } from "../../type/HotelType";
 import { HotelMarker } from "./HotelMarker";
+
 /**
  * The ClusteredTreeMarkers component is responsible for integrating the
  * markers with the markerclusterer.
@@ -70,19 +71,27 @@ export const ClusteredHotelMarkers = ({ hotels }: { hotels: HotelMarkerType[] })
                             <InfoWindow
                                    anchor={markers[selectedHotelKey]}
                                    onCloseClick={handleInfoWindowClose}>
-                                   <div className="bg-white rounded-xl shadow-lg p-4 w-64">
-                                          <div>
-                                                 <div className="font-bold text-lg">{selectedHotel?.name}</div>
-                                                 <div className="flex items-center gap-1">
-                                                        <span className="text-yellow-500 font-semibold">{selectedHotel?.rating}</span>
+                                   <div className="flex flex-col items-center">
+                                          <div className="w-full flex justify-center mt-2">
+                                                 <img
+                                                        src={selectedHotel?.image_details.count && selectedHotel?.image_details.count > 0 ? selectedHotel.image_details.prefix + "1" + selectedHotel.image_details.suffix : "../../../assets/Placeholder_Cat.png"}
+                                                        alt={`${selectedHotel?.name} image`}
+                                                        className="w-full h-32 object-cover rounded-lg"
+                                                 />
+                                          </div>
+                                          <div className="font-bold text-lg text-center">{selectedHotel?.name}</div>
+                                          <div className="flex items-center gap-1 justify-center mt-1">
+                                                 {[...Array(4)].map((_, i) => (
                                                         <StarIcon
+                                                               key={i}
                                                                weight="fill"
                                                                size={18}
                                                                className="text-yellow-500"
                                                         />
-                                                 </div>
+                                                 ))}
                                           </div>
-                                          <div className="text-sm text-gray-600 mb-1">{selectedHotel?.address}</div>
+
+                                          <div className="text-sm text-gray-600 mt-2">{selectedHotel?.address}</div>
                                    </div>
                             </InfoWindow>
                      )}

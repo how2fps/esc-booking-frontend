@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import { useEffect, useMemo, useState } from "react";
+import { useState } from 'react'
 
 import * as Icon from "phosphor-react";
 import Slider from "rc-slider";
@@ -17,16 +17,18 @@ import { ClusteredHotelMarkers } from "./ClusteredHotelMarkers";
 const formatDate = (dateString: string): string => {
        const date = new Date(dateString);
        const year = date.getFullYear();
-       const month = date.getMonth() + 1;
-       const day = date.getDate();
+       const month = String(date.getMonth() + 1).padStart(2, "0");
+       const day = String(date.getDate()).padStart(2, "0");
        return `${year}-${month}-${day}`;
 };
-
 //?location=RsBU&startDate=7/20/2025&endDate=7/27/2025&adult=1&children=1&room=2
 const HotelListings = () => {
        // eslint-disable-next-line @typescript-eslint/no-unused-vars
        const [searchParams, _] = useSearchParams();
        const destination_id = searchParams.get("location");
+       const numberOfAdults = Number(searchParams.get("adult"));
+       const numberOfChildren = Number(searchParams.get("children"));
+       const numberOfRooms = Number(searchParams.get("room"));
        const checkIn = formatDate(searchParams.get("startDate") as string);
        const checkOut = formatDate(searchParams.get("endDate") as string);
 
@@ -68,12 +70,16 @@ const HotelListings = () => {
                      clearTimeout(handler);
               };
        }, [searchTerm]);
+       
+       useEffect(() => {
+              setCurrentPage(1);
+       }, [filters, debouncedSearchTerm, sortOption]);
 
        useEffect(() => {
               const fetchHotelsByDestination = async () => {
                      setIsLoading(true);
                      try {
-                            const response = await fetch(`http://localhost:3000/api/hotels?destination_id=${destination_id}&checkin=${checkIn}&checkout=${checkOut}&lang=${"en_US"}&currency=${"SGD"}&country_code=${"SG"}&guests=${2}&partner_id=${1}`, {
+                            const response = await fetch(`http://localhost:3000/api/hotels?destination_id=${destination_id}`, {
                                    method: "GET",
                                    headers: {
                                           "Content-Type": "application/json",
@@ -97,21 +103,22 @@ const HotelListings = () => {
                      }
               };
               fetchHotelsByDestination();
-       }, [checkIn, checkOut, destination_id]);
+       }, [destination_id]);
 
        useEffect(() => {
               let isMounted = true;
               let timeoutId: number | undefined;
-
               const fetchHotelPricesWithPolling = async () => {
                      try {
                             let retries = 0;
-                            const maxRetries = 40;
-                            const delay = 2000;
-
+                            const maxRetries = 50;
+                            const delay = 1500;
+                            const guestsParam = Array(numberOfRooms)
+                                   .fill(numberOfAdults + numberOfChildren)
+                                   .join("|");
+                            const queryString = `http://localhost:3000/api/hotels/prices?destination_id=${destination_id}&checkin=${checkIn}&checkout=${checkOut}&lang=en_US&currency=SGD&country_code=SG&guests=${guestsParam}&landing_page=wl-acme-earn&product_type=earn&partner_id=1089`;
                             while (retries < maxRetries) {
-                                   const response = await fetch(`http://localhost:3000/api/hotels/prices?destination_id=${destination_id}&checkin=${checkIn}&checkout=${checkOut}&lang=en_US&currency=SGD&country_code=SG&guests=2&partner_id=1`);
-
+                                   const response = await fetch(queryString);
                                    const result = await response.json();
                                    if (result.complete && result.data?.hotels) {
                                           const priceMap = new Map<string, HotelPrice>();
@@ -121,26 +128,22 @@ const HotelListings = () => {
                                           if (isMounted) setHotelPrices(priceMap);
                                           return;
                                    }
-
                                    retries++;
                                    await new Promise((resolve) => (timeoutId = setTimeout(resolve, delay)));
                             }
-
-                            console.warn("Hotel price polling timed out");
+                            console.warn("Polling timed out");
                      } catch (error) {
                             if (error instanceof Error) {
                                    console.error("Polling error:", error);
                             }
                      }
               };
-
               fetchHotelPricesWithPolling();
-
               return () => {
                      isMounted = false;
                      clearTimeout(timeoutId);
               };
-       }, [checkIn, checkOut, destination_id]);
+       }, [checkIn, checkOut, destination_id, numberOfAdults, numberOfChildren, numberOfRooms]);
 
        const mergedHotels = useMemo(() => {
               return allHotels.map((hotel) => {
@@ -181,171 +184,345 @@ const HotelListings = () => {
               return sortedHotelsArray.slice(startIndex, endIndex);
        }, [itemsPerPage, currentPage, sortedHotelsArray]);
 
-       return (
-              <div className="bg-white text-black lg:py-20 md:py-14 max-lg:mt-10 max-md:mt-40 py-10 px-12">
-                     <div className="flex">
-                            <div className="left lg:w-1/4 w-1/3 pr-[45px] max-md:hidden">
-                                   <div className="sidebar-main">
-                                          {isLoading ? (
-                                                 <div
-                                                        role="status"
-                                                        className="w-full h-[400px] rounded-xl border-2 border-black overflow-hidden mb-4 flex justify-center items-center">
-                                                        <SpinnerIcon
-                                                               className="animate-spin text-blue-500"
-                                                               size={32}
-                                                        />
-                                                 </div>
-                                          ) : (
-                                                 <APIProvider apiKey={"AIzaSyAb7h-Azds2hKTEeVfuGzcDy4uXSigGYzI"}>
-                                                        <div className="w-full h-[400px] rounded-xl border-2 border-black overflow-hidden mb-4">
-                                                               <GoogleMap
-                                                                      mapId={"23a74d563be6cbd9931b8972"}
-                                                                      style={{ width: "100%", height: "397px", borderRadius: "12px" }}
-                                                                      defaultCenter={
-                                                                             allHotels.length > 0 ? { lat: allHotels[0].latitude, lng: allHotels[0].longitude } : { lat: 0, lng: 0 } // or a sensible fallback location
-                                                                      }
-                                                                      defaultZoom={14}
-                                                                      gestureHandling={"greedy"}
-                                                                      disableDefaultUI={true}>
-                                                                      <ClusteredHotelMarkers hotels={filteredHotelsArray} />
-                                                               </GoogleMap>
-                                                        </div>
-                                                 </APIProvider>
-                                          )}
-                                          <div className="flex"></div>
-                                          <div className="border-2 border-black rounded-[12px] p-4 mt-4">
-                                                 <div className="heading6">Price Range</div>
-                                                 <div className="price-block flex items-center justify-between flex-wrap mt-3">
-                                                        ${filters.priceRange.min} - ${filters.priceRange.max}
-                                                 </div>
-                                                 <Slider
-                                                        data-testid="price-slider"
-                                                        range
-                                                        value={[filters.priceRange.min, filters.priceRange.max]}
-                                                        min={0}
-                                                        max={30000}
-                                                        onChange={(value) => {
-                                                               if (Array.isArray(value) && value.length === 2) {
-                                                                      const [min, max] = value;
-                                                                      setFilters((prev) => ({
-                                                                             ...prev,
-                                                                             priceRange: { min, max },
-                                                                      }));
-                                                               }
-                                                        }}
-                                                        className="mt-4"
-                                                 />
-                                          </div>
-                                          <div
-                                                 data-testid="rating-slider"
-                                                 className="border-2 border-black rounded-[12px] p-4 mt-8">
-                                                 <div className="heading6">Rating</div>
-                                                 <div className="price-block flex items-center justify-between flex-wrap">
-                                                        <div className="flex items-center gap-1">
-                                                               ≥ {filters.minimumRating}
-                                                               <StarIcon
-                                                                      className="text-yellow"
-                                                                      weight="fill"
-                                                               />
-                                                        </div>
-                                                 </div>
-                                                 <Slider
-                                                        value={filters.minimumRating}
-                                                        min={0}
-                                                        max={5}
-                                                        step={0.5}
-                                                        className="mt-2"
-                                                        onChange={(value) =>
-                                                               setFilters((prev) => ({
-                                                                      ...prev,
-                                                                      minimumRating: typeof value === "number" ? value : prev.minimumRating,
-                                                               }))
-                                                        }
-                                                 />
-                                          </div>
-                                          <AmenityFilter setFilters={setFilters} />
-                                   </div>
-                            </div>
-                            <div className="right lg:w-3/4 md:w-2/3 md:pl-[15px]">
-                                   <div className="right flex items-center gap-3">
-                                          <div className="flex-1">
-                                                 <input
-                                                        type="text"
-                                                        placeholder="Search hotels..."
-                                                        value={searchTerm}
-                                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                                        className="w-full rounded-lg border-2 border-black h-14 px-4 bg-white text-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
-                                                 />
-                                          </div>
-                                          <div className="select-block relative cursor-pointer">
-                                                 <label htmlFor="items-per-page">Items Per Page: </label>
-                                                 <select
-                                                        id="items-per-page"
-                                                        name="select-filter"
-                                                        className="custom-select cursor-pointer h-14 rounded-lg border-2 border-black bg-white text-black"
-                                                        onChange={(e) => {
-                                                               handleItemsPerPageChange(Number.parseInt(e.target.value));
-                                                        }}
-                                                        value={itemsPerPage}>
-                                                        <option value="8">8</option>
-                                                        <option value="9">9</option>
-                                                        <option value="12">12</option>
-                                                        <option value="16">16</option>
-                                                 </select>
-                                                 <Icon.CaretDown className="text-s absolute top-1/2 -translate-y-1/2 md:right-4 right-2 cursor-pointer pointer-events-none" />
-                                          </div>
-                                          <div className="select-block relative cursor-pointer">
-                                                 <label htmlFor="sort">Sort By: </label>
-                                                 <select
-                                                        id="sort"
-                                                        name="select-filter"
-                                                        className="custom-select cursor-pointer h-14 rounded-lg border-2 border-black bg-white text-black"
-                                                        onChange={(e) => {
-                                                               setSortOption(e.target.value);
-                                                        }}
-                                                        defaultValue={"Sorting"}>
-                                                        <option value="starHighToLow">Review High To Low</option>
-                                                        <option value="priceHighToLow">Price High To Low</option>
-                                                        <option value="priceLowToHigh">Price Low To High</option>
-                                                 </select>
-                                                 <Icon.CaretDown className="text-s absolute top-1/2 -translate-y-1/2 md:right-4 right-2 cursor-pointer pointer-events-none" />
-                                          </div>
-                                   </div>
-                                   {isLoading ? (
-                                          <div
-                                                 role="status"
-                                                 className="flex justify-center items-center min-h-[200px]">
-                                                 <SpinnerIcon
-                                                        className="animate-spin text-blue-500"
-                                                        size={96}
-                                                 />
-                                          </div>
-                                   ) : (
-                                          <div className="list-tent md:mt-10 mt-6 grid lg:grid-cols-3 md:grid-cols-2 min-[360px]:grid-cols-2 lg:gap-[30px] gap-4 gap-y-7">
-                                                 {currentPageHotels.length > 0 ? (
-                                                        currentPageHotels.map((hotel) => (
-                                                               <HotelItem
-                                                                      key={hotel.id}
-                                                                      hotelData={hotel}
-                                                               />
-                                                        ))
-                                                 ) : (
-                                                        <div>No results available.</div>
-                                                 )}
-                                          </div>
-                                   )}
-                                   {currentPageHotels.length > 0 ? (
-                                          <HandlePagination
-                                                 pageCount={pageCount}
-                                                 onPageChange={handlePageChange}
-                                          />
-                                   ) : (
-                                          ""
-                                   )}
-                            </div>
-                     </div>
-              </div>
-       );
-};
+  return (
+    <>
+      <div className='overflow-hidden'>
+        <HeaderOne />
+        <SliderTwo />
+        <div className="lg:py-20 md:py-14 max-lg:mt-10 max-md:mt-40 py-10">
+          <div className="container">
+            <div className="flex justify-between">
+              <div className="left lg:w-1/4 w-1/3 pr-[45px] max-md:hidden">
+                <div className="sidebar-main">
+                  <div className="filter-price">
+                    <div className="heading6">Price Range</div>
+                    <Slider
+                      range
+                      defaultValue={[0, 500]}
+                      min={0}
+                      max={500}
+                      onChange={handlePriceChange}
+                      className='mt-4'
+                    />
+                    <div className="price-block flex items-center justify-between flex-wrap mt-3">
+                      <div className="min flex items-center gap-1">
+                        <div>Min price:</div>
+                        <div className='price-min text-button'>$
+                          <span>{priceRange.min}</span>
+                        </div>
+                      </div>
+                      <div className="max flex items-center gap-1">
+                        <div>Max price:</div>
+                        <div className='price-max text-button'>$
+                          <span>{priceRange.max}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
-export default HotelListings;
+                  <div className="filter-service mt-7">
+                    <div className="heading6">Services</div>
+                    <div className="list-service flex flex-col gap-3 mt-3">
+                      {['reception desk', 'pet allowed', 'tour guide', 'breakfast', 'currency exchange', 'self-service laundry', 'cooking service', 'relaxation service', 'cleaning service'].map((item, index) => (
+                        <div key={index} className="service-item flex items-center justify-between">
+                          <div className="left flex items-center cursor-pointer">
+                            <div className="block-input">
+                              <input
+                                type="checkbox"
+                                name={item}
+                                id={item}
+                                checked={service.includes(item)}
+                                onChange={() => handleService(item)}
+                              />
+                              <Icon.CheckSquare size={20} weight='fill' className='icon-checkbox text-primary' />
+                            </div>
+                            <label htmlFor={item} className="service-name capitalize pl-2 cursor-pointer">{item}</label>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="filter-amenities mt-7">
+                    <div className="heading6">Amenities</div>
+                    <div className="list-amenities flex flex-col gap-3 mt-3">
+                      {['parking', 'wifi', 'tv', 'toilet', 'bathtub', 'campfire', 'picnic table', 'trash', 'cooking equipment', 'refrigerator', 'microwave', 'dishwasher', 'coffee maker'].map((item, index) => (
+                        <div key={index} className="amenities-item flex items-center justify-between">
+                          <div className="left flex items-center cursor-pointer">
+                            <div className="block-input">
+                              <input
+                                type="checkbox"
+                                name={item}
+                                id={item}
+                                checked={amenities.includes(item)}
+                                onChange={() => handleAmenities(item)}
+                              />
+                              <Icon.CheckSquare size={20} weight='fill' className='icon-checkbox text-primary' />
+                            </div>
+                            <label htmlFor={item} className="amenities-name capitalize pl-2 cursor-pointer">{item}</label>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="filter-activities mt-7">
+                    <div className="heading6">Activities</div>
+                    <div className="list-activities flex flex-col gap-3 mt-3">
+                      {['hiking', 'swimming', 'fishing', 'wildlife watching', 'biking', 'boating', 'climbing', 'snow sports', 'horseback riding', 'surfing', 'wind sports'].map((item, index) => (
+                        <div key={index} className="activities-item flex items-center justify-between">
+                          <div className="left flex items-center cursor-pointer">
+                            <div className="block-input">
+                              <input
+                                type="checkbox"
+                                name={item}
+                                id={item}
+                                checked={activities.includes(item)}
+                                onChange={() => handleActivities(item)}
+                              />
+                              <Icon.CheckSquare size={20} weight='fill' className='icon-checkbox text-primary' />
+                            </div>
+                            <label htmlFor={item} className="activities-name capitalize pl-2 cursor-pointer">{item}</label>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="filter-terrain mt-7">
+                    <div className="heading6">Terrain</div>
+                    <div className="list-terrain flex flex-col gap-3 mt-3">
+                      {['lake', 'beach', 'farm', 'forest', 'river', 'hot spring', 'swimming hole', 'desert', 'cave'].map((item, index) => (
+                        <div key={index} className="terrain-item flex items-center justify-between">
+                          <div className="left flex items-center cursor-pointer">
+                            <div className="block-input">
+                              <input
+                                type="checkbox"
+                                name={item}
+                                id={item}
+                                checked={terrain.includes(item)}
+                                onChange={() => handleTerrain(item)}
+                              />
+                              <Icon.CheckSquare size={20} weight='fill' className='icon-checkbox text-primary' />
+                            </div>
+                            <label htmlFor={item} className="terrain-name capitalize pl-2 cursor-pointer">{item}</label>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className='right lg:w-3/4 md:w-2/3 md:pl-[15px]'>
+                <div className="heading flex items-center justify-between gap-6 flex-wrap">
+                  <div className="left flex items-center sm:gap-5 gap-3 max-sm:flex-wrap">
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="md:hidden show-filter-sidebar flex items-center gap-2 sm:px-4 px-3 py-2.5 border border-outline rounded-lg cursor-pointer duration-300 hover:bg-black hover:text-white"
+                        onClick={handleOpenSidebar}
+                      >
+                        <Icon.SlidersHorizontal className='text-xl' />
+                        <p>Show Filters</p>
+                      </div>
+                      <Link to={'/camp/topmap-grid'}>
+                        <Icon.SquaresFour className='text-3xl cursor-pointer text-black duration-300' />
+                      </Link>
+                      <Link to={'/camp/topmap-list'}>
+                        <Icon.Rows className='text-3xl cursor-pointer text-variant2 duration-300 hover:text-black' />
+                      </Link>
+                    </div>
+                    <div className="line w-px h-7 bg-outline max-[400px]:hidden"></div>
+                    <div className="body2">Showing {filteredData[0].id === 'no-data' ? 0 : offset + 1}-{filteredData[0].id === 'no-data' ? 0 : offset + currentTents.length} of {filteredData[0].id === 'no-data' ? 0 : filteredData.length}</div>
+                  </div>
+                  <div className="right flex items-center gap-3">
+                    <div className="select-block relative">
+                      <select
+                        id="select-filter"
+                        name="select-filter"
+                        className='custom-select'
+                        onChange={(e) => { handleTentPerPage(Number(e.target.value)) }}
+                        defaultValue={'12'}
+                      >
+                        <option value="8">8 Per Page</option>
+                        <option value="9">9 Per Page</option>
+                        <option value="12">12 Per Page</option>
+                        <option value="15">15 Per Page</option>
+                        <option value="16">16 Per Page</option>
+                      </select>
+                      <Icon.CaretDown className='text-xl absolute top-1/2 -translate-y-1/2 md:right-4 right-2' />
+                    </div>
+                    <div className="select-block relative" >
+                      <select
+                        id="select-filter"
+                    
+                        name="select-filter"
+                        className='custom-select'
+                        onChange={(e) => { handleSortChange(e.target.value) }}
+                        defaultValue={'Sorting'}
+                      >
+                        <option value="Sorting" disabled>Sort by (Defaut)</option>
+                        <option value="starHighToLow">Best Review</option>
+                        <option value="priceHighToLow">Price High To Low</option>
+                        <option value="priceLowToHigh">Price Low To High</option>
+                      </select>
+                      <Icon.CaretDown className='text-xl absolute top-1/2 -translate-y-1/2 md:right-4 right-2' />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="list-tent md:mt-10 mt-6 grid lg:grid-cols-3 md:grid-cols-2 min-[360px]:grid-cols-2 lg:gap-[30px] gap-4 gap-y-7">
+                  {currentTents.map((item) => (
+                    item.id === 'no-data' ? (
+                      <div key={item.id} className="no-data-product">No tents match the selected criteria.</div>
+                    ) : (
+                      <TentItem key={item.id} data={item} type='default' />
+                    )
+                  ))}
+                </div>
+
+                {pageCount > 1 && (
+                  <div className="list-pagination flex items-center md:mt-10 mt-7">
+                    <HandlePagination pageCount={pageCount} onPageChange={handlePageChange} />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          className={`sidebar-filter ${openSidebar ? 'open' : ''}`}
+          onClick={handleOpenSidebar}
+        >
+          <div className="sidebar-main" onClick={(e) => { e.stopPropagation() }}>
+            <div className="filter-price">
+              <div className="heading6">Price Range</div>
+              <Slider
+                range
+                defaultValue={[0, 500]}
+                min={0}
+                max={500}
+                onChange={handlePriceChange}
+                className='mt-4'
+              />
+              <div className="price-block flex items-center justify-between flex-wrap mt-3">
+                <div className="min flex items-center gap-1">
+                  <div>Min price:</div>
+                  <div className='price-min text-button'>$
+                    <span>{priceRange.min}</span>
+                  </div>
+                </div>
+                <div className="max flex items-center gap-1">
+                  <div>Max price:</div>
+                  <div className='price-max text-button'>$
+                    <span>{priceRange.max}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="filter-service mt-7">
+              <div className="heading6">Services</div>
+              <div className="list-service flex flex-col gap-3 mt-3">
+                {['reception desk', 'pet allowed', 'tour guide', 'breakfast', 'currency exchange', 'self-service laundry', 'cooking service', 'relaxation service', 'cleaning service'].map((item, index) => (
+                  <div key={index} className="service-item flex items-center justify-between">
+                    <div className="left flex items-center cursor-pointer">
+                      <div className="block-input">
+                        <input
+                          type="checkbox"
+                          name={item}
+                          id={item}
+                          checked={service.includes(item)}
+                          onChange={() => handleService(item)}
+                        />
+                        <Icon.CheckSquare size={20} weight='fill' className='icon-checkbox text-primary' />
+                      </div>
+                      <label htmlFor={item} className="service-name capitalize pl-2 cursor-pointer">{item}</label>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="filter-amenities mt-7">
+              <div className="heading6">Amenities</div>
+              <div className="list-amenities flex flex-col gap-3 mt-3">
+                {['parking', 'wifi', 'tv', 'toilet', 'bathtub', 'campfire', 'picnic table', 'trash', 'cooking equipment', 'refrigerator', 'microwave', 'dishwasher', 'coffee maker'].map((item, index) => (
+                  <div key={index} className="amenities-item flex items-center justify-between">
+                    <div className="left flex items-center cursor-pointer">
+                      <div className="block-input">
+                        <input
+                          type="checkbox"
+                          name={item}
+                          id={item}
+                          checked={amenities.includes(item)}
+                          onChange={() => handleAmenities(item)}
+                        />
+                        <Icon.CheckSquare size={20} weight='fill' className='icon-checkbox text-primary' />
+                      </div>
+                      <label htmlFor={item} className="amenities-name capitalize pl-2 cursor-pointer">{item}</label>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="filter-activities mt-7">
+              <div className="heading6">Activities</div>
+              <div className="list-activities flex flex-col gap-3 mt-3">
+                {['hiking', 'swimming', 'fishing', 'wildlife watching', 'biking', 'boating', 'climbing', 'snow sports', 'horseback riding', 'surfing', 'wind sports'].map((item, index) => (
+                  <div key={index} className="activities-item flex items-center justify-between">
+                    <div className="left flex items-center cursor-pointer">
+                      <div className="block-input">
+                        <input
+                          type="checkbox"
+                          name={item}
+                          id={item}
+                          checked={activities.includes(item)}
+                          onChange={() => handleActivities(item)}
+                        />
+                        <Icon.CheckSquare size={20} weight='fill' className='icon-checkbox text-primary' />
+                      </div>
+                      <label htmlFor={item} className="activities-name capitalize pl-2 cursor-pointer">{item}</label>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="filter-terrain mt-7">
+              <div className="heading6">Terrain</div>
+              <div className="list-terrain flex flex-col gap-3 mt-3">
+                {['lake', 'beach', 'farm', 'forest', 'river', 'hot spring', 'swimming hole', 'desert', 'cave'].map((item, index) => (
+                  <div key={index} className="terrain-item flex items-center justify-between">
+                    <div className="left flex items-center cursor-pointer">
+                      <div className="block-input">
+                        <input
+                          type="checkbox"
+                          name={item}
+                          id={item}
+                          checked={terrain.includes(item)}
+                          onChange={() => handleTerrain(item)}
+                        />
+                        <Icon.CheckSquare size={20} weight='fill' className='icon-checkbox text-primary' />
+                      </div>
+                      <label htmlFor={item} className="terrain-name capitalize pl-2 cursor-pointer">{item}</label>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    </>
+  )
+}
+
+const Listings = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <TopMapSidebarContent />
+  </Suspense>
+)
+export default Listings
