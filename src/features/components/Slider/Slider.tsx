@@ -34,8 +34,6 @@ const options: DestinationType[] = (Array.isArray(Destination) ? Destination : O
 
 const tokenizedOptions = options.map((option) => (option.term || "").match(/\w+/g) || []);
 
-const tokenizedOptions = options.map((option) => (option.term || "").match(/\w+/g) || []);
-
 const Common_typos = new Set(tokenizedOptions.flat().filter((word) => word.length > 3));
 console.log(Common_typos);
 const correcter = new BKTree();
