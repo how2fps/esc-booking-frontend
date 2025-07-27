@@ -71,7 +71,7 @@ const HeaderOne = () => {
 
 				<div className="right flex items-center gap-3">
 					{user ? (
-						<span className="text-button max-sm:hidden">Hello, {user.name}</span>
+						<Link to="/profile" className="text-button max-sm:hidden">Hello, {user.name}</Link>
 					) : (
 						<>
 							<Link to="/login" className="text-button max-sm:hidden">Log In</Link>
