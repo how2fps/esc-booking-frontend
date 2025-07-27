@@ -1,383 +1,346 @@
-import React, { useState, useEffect, useCallback  } from 'react';
-import * as Icon from 'phosphor-react'
-import { addDays } from 'date-fns';
-import { DateRangePicker } from 'react-date-range';
-import 'react-date-range/dist/styles.css'; // main css file
-import 'react-date-range/dist/theme/default.css'; // theme css file
-import AsyncSelect from 'react-select/async';
-import Destination from '../data/destinations.json';
-import {  Link } from "react-router-dom";
-
-
+import { addDays } from "date-fns";
+import * as Icon from "phosphor-react";
+import { useCallback, useEffect, useState } from "react";
+import { DateRangePicker } from "react-date-range";
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
+import { Link } from "react-router-dom";
+import AsyncSelect from "react-select/async";
+import Destination from "../data/destinations.json";
+import MicroSpellingCorrecter from "micro-spelling-correcter";
+import { AsyncPaginate } from 'react-select-async-paginate';
 interface DestinationType {
-    term: string;
-    uid: string;
-    lat: number;
-    lng: number;
-    type: string;
-    state: string;
+       term: string;
+       uid: string;
+       lat: number;
+       lng: number;
+       type: string;
+       state?: string;
 }
 
 interface GuestType {
-    adult: number;
-    children: number;
-    room: number;
-
+       adult: number;
+       children: number;
+       room: number;
 }
 
-
-
-
-// Convert the Destination JSON data to a TypeScript type
 const options: DestinationType[] = (Array.isArray(Destination) ? Destination : Object.values(Destination)).map((d: any) => ({
-    ...d,
-    state: typeof d.state === 'string' ? d.state : '',
+       ...d,
+       state: typeof d.state === "string" ? d.state : "",
 }));
 
-const mappedOptions = options.map(option => ({ value: option.uid, label: option.term }));
+//const mappedOptions = options.map((option) => ({ value: option.uid, label: option.term }));
 
 
-const filterOption = (input: string) => {
-    if (!input || input.length < 3) {
-        return [];
-    }
-  return mappedOptions.filter((i) =>
-    i.label && i.label.toLowerCase().includes(input.toLowerCase())
-  );
+const tokenizedOptions = options.map(option =>(option.term || '').match(/\w+/g) || []);
+
+const Common_typos = new Set(tokenizedOptions.flat().filter(word => word.length > 3));
+
+
+const correcter = new MicroSpellingCorrecter( Common_typos, 2 );
+
+
+
+const noOptionsMessage = (input: { inputValue: string }) => {
+       if (input.inputValue.length === 0) {
+              return "Type to search";
+       } else if (input.inputValue.length < 3) {
+              return `Search input must be at least ${3} characters`;
+       }
+       return "No options";
 };
 
-const noOptionsMessage = (input) => {
-  if (input.inputValue.length === 0) {
-    return "Type to search";
-  } else if (input.inputValue.length < 3) {
-    return `Search input must be at least ${3} characters`;
+
+const optionsPerPage = 10;
+
+const loadOptions = async (search: string, page: number) => {
+  if (!search || search.length < 3) {
+    return {
+      options: [],
+      hasMore: false
+    };
   }
-  return "No options";
+  const corrected = correcter.correct?.(search) || search;
+
+  const filteredOptions = options.filter((i) => i.term && (i.term.toLowerCase().includes(search.toLowerCase()) || i.term.toLowerCase().includes(corrected.toLowerCase())));
+  
+  const hasMore = Math.ceil(filteredOptions.length / optionsPerPage) > page;
+
+  const slicedOptions = filteredOptions.slice(   
+    (page - 1) * optionsPerPage,
+    page * optionsPerPage
+  );
+
+  return {
+    options: slicedOptions,
+    hasMore
+  };
 };
 
 
 
-
-
-
-const loadOptions = (
-  inputValue: string,
-  callback: (options: { value: string; label: string }[]) => void
-) => {
-  setTimeout(() => {
-    callback(filterOption(inputValue));
-  }, 500);
+const defaultAdditional = {
+  page: 1
 };
 
-const SliderOne = () => {
-    const [openDate, setOpenDate] = useState(false)
-    const [openGuest, setOpenGuest] = useState(false)
-    const [location, setLocation] = useState(
-        {
-            term: '',
-            uid: '23',
-            lat: 0,
-            lng: 0,
-            type: '',
-            state: '',
-        }
-    )
+const loadPageOptions = async (q: string, additional = defaultAdditional) => {
+  const { page } = { page: 1 }
+       
+  const { options, hasMore } = await loadOptions(q, page);
+ 
+  return {
+    options,
+    hasMore
+  };
+};
 
+const DestinationSearch = () => {
+       const [openDate, setOpenDate] = useState(false);
+       const [openGuest, setOpenGuest] = useState(false);
+       const [location, setLocation] = useState({
+              term: "",
+              uid: "",
+              lat: 0,
+              lng: 0,
+              type: "",
+              state: "",
+       });
 
-    const [state, setState] = useState([
-        {
-            startDate: new Date(),
-            endDate: addDays(new Date(), 7),
-            key: 'selection'
-        }
-    ]);
+       const [state, setState] = useState([
+              {
+                     startDate: new Date(),
+                     endDate: addDays(new Date(), 7),
+                     key: "selection",
+              },
+       ]);
 
-    const [guest, setGuest] = useState<GuestType>(
-        {
-            adult: 0,
-            children: 0,
-            room: 0
-        }
-    );
+       const [guest, setGuest] = useState<GuestType>({
+              adult: 0,
+              children: 0,
+              room: 0,
+       });
 
-    const handleOpenDate = () => {
-        setOpenDate(prevOpenDate => !prevOpenDate);
-        setOpenGuest(false);
-    }
+       const handleOpenDate = () => {
+              setOpenDate((prevOpenDate) => !prevOpenDate);
+              setOpenGuest(false);
+       };
 
-    const handleOpenGuest = () => {
-        setOpenGuest(!openGuest);
-        setOpenDate(false);
-    }
+       const handleOpenGuest = () => {
+              setOpenGuest(!openGuest);
+              setOpenDate(false);
+       };
 
-    // Check if the click event occurs outside the popup.
-    const handleClickOutsideDatePopup: EventListener = useCallback((event) => {
-        // Cast event.target to Element to use the closest method.
-        const targetElement = event.target as Element;
+       const handleClickOutsideDatePopup: EventListener = useCallback(
+              (event) => {
+                     const targetElement = event.target as Element;
+                     if (openDate && !targetElement.closest(".form-date-picker")) {
+                            setOpenDate(false);
+                     }
+              },
+              [openDate]
+       );
 
-        if (openDate && !targetElement.closest('.form-date-picker')) {
-            setOpenDate(false)
-        }
-    }, [openDate]);
+       const handleClickOutsideGuestPopup: EventListener = useCallback(
+              (event) => {
+                     const targetElement = event.target as Element;
+                     if (openGuest && !targetElement.closest(".sub-menu-guest")) {
+                            setOpenGuest(false);
+                     }
+              },
+              [openGuest]
+       );
 
-    // Check if the click event occurs outside the popup.
-    const handleClickOutsideGuestPopup: EventListener = useCallback((event) => {
-        // Cast event.target to Element to use the closest method.
-        const targetElement = event.target as Element;
+       useEffect(() => {
+              return () => {
+                     document.removeEventListener("click", handleClickOutsideDatePopup);
+                     document.removeEventListener("click", handleClickOutsideGuestPopup);
+              };
+       }, [handleClickOutsideDatePopup, handleClickOutsideGuestPopup]);
 
-        if (openGuest && !targetElement.closest('.sub-menu-guest')) {
-            setOpenGuest(false)
-        }
-    }, [openGuest]);
+       const increaseGuest = (type: keyof GuestType) => {
+              setGuest((prevGuest) => ({
+                     ...prevGuest,
+                     [type]: prevGuest[type] + 1,
+              }));
+       };
 
-    useEffect(() => {
-        // Add a global click event to track clicks outside the popup.
-       // document.addEventListener('click', handleClickOutsideDatePopup);
-       // document.addEventListener('click', handleClickOutsideGuestPopup);
-        // Cleanup to avoid memory leaks.
-        return () => {
-            document.removeEventListener('click', handleClickOutsideDatePopup);
-            document.removeEventListener('click', handleClickOutsideGuestPopup);
-        };
-    }, [handleClickOutsideDatePopup, handleClickOutsideGuestPopup])
+       const decreaseGuest = (type: keyof GuestType) => {
+              if (guest[type] > 0) {
+                     setGuest((prevGuest) => ({
+                            ...prevGuest,
+                            [type]: prevGuest[type] - 1,
+                     }));
+              }
+       };
 
+       return (
+              <>
+                     <div className="slider-block style-one relative h-[620px]">
+                            <div className="bg-img absolute top-0 left-0 w-full h-full">
+                                   <img
+                                          src={"/images/slider/hotel-lobby-2024-12-05-23-25-27-utc.jpg"}
+                                          width={5000}
+                                          height={3000}
+                                          alt="slider"
+                                          className="w-full h-full object-cover"
+                                          style={{
+                                                 filter: "brightness(0.5)",
+                                                 WebkitFilter: "brightness(0.5)",
+                                                 position: "relative",
+                                          }}
+                                   />
+                            </div>
+                            <div className="container py-[176px]">
+                                   <div className="content w-full relative">
+                                          <div className="heading flex-col items-center justify-center">
+                                                 <div className="heading2 text-white text-center">Pick your next journey</div>
+                                          </div>
 
-    // Increase number
-    const increaseGuest = (type: keyof GuestType) => {
-        setGuest((prevGuest) => ({
-            ...prevGuest,
-            [type]: prevGuest[type] + 1
-        }));
-    };
+                                          <div className="form-search md:mt-10 mt-6 w-full">
+                                                 <form className="bg-white rounded-lg p-5 flex max-lg:flex-wrap items-center justify-between gap-5 relative">
+                                                        <div
+                                                               className="select-block md:w-[48%] w-full"
+                                                               data-testid="async-select">
+                                                               <AsyncPaginate
+                                                                      debounceTimeout={100} 
+                                                                      data-testid="async-select"
+                                                                      additional={{ page: 1 }}
+                                                                      loadOptions={loadPageOptions}
+                                                                      getOptionLabel={(i: DestinationType) => i.term}
+                                                                     getOptionValue={(i: DestinationType) => i.uid}
+                                                                      noOptionsMessage={noOptionsMessage}
+                                                                      onChange={setLocation}  
+                                                                                                                                           
+                                                                      styles={{
+                                                                             control: (provided) => ({
+                                                                                    ...provided,
+                                                                                    width: 300,
+                                                                                    height: 54,
+                                                                             }),
+                                                                             menu: (provided) => ({
+                                                                                    ...provided,
+                                                                                    width: 300,
+                                                                             }),
+                                                                      }}
+                                                               />
+                                                               <p data-testid="uid">Selected: {location ? location.uid : "None"}</p>
+                                                        </div>
+                                                        <div className="relative lg:w-full md:w-[48%] w-full">
+                                                               <div
+                                                                      className="select-block w-full"
+                                                                      onClick={handleOpenDate}>
+                                                                      <Icon.CalendarBlank className="icon text-xl left-5" />
+                                                                      <input
+                                                                             className="body2 w-full pl-12 pr-5 py-3 border border-outline rounded-lg bg-white text-black"
+                                                                             type="text"
+                                                                             placeholder="Add Dates"
+                                                                             value={`${state[0].startDate.toLocaleDateString()} - ${state[0].endDate.toLocaleDateString()}`}
+                                                                             readOnly
+                                                                      />
+                                                               </div>
+                                                               <DateRangePicker
+                                                                      className={`form-date-picker box-shadow md:border-t border-outline  ${openDate ? "open" : ""}`}
+                                                                      onChange={(item) => setState([item.selection] as any)}
+                                                                      staticRanges={[]}
+                                                                      inputRanges={[]}
+                                                                      moveRangeOnFirstSelection={false}
+                                                                      months={2}
+                                                                      ranges={state}
+                                                                      direction="horizontal"
+                                                               />
+                                                        </div>
+                                                        <div className="relative lg:w-full md:w-[48%] w-full">
+                                                               <div
+                                                                      className="select-block w-full"
+                                                                      onClick={handleOpenGuest}>
+                                                                      <Icon.Users className="icon text-xl left-5" />
+                                                                      <input
+                                                                             className="body2 w-full pl-12 pr-5 py-3 border border-outline rounded-lg bg-white text-black"
+                                                                             type="text"
+                                                                             placeholder="Add Guest"
+                                                                             value={`${guest.adult > 0 ? (guest.adult === 1 ? guest.adult + " adult" : guest.adult + " adults") : ""}${guest.children > 0 ? (guest.children === 1 ? ", " + guest.children + " children" : ", " + guest.children + " childrens") : ""}`}
+                                                                             readOnly
+                                                                      />
+                                                               </div>
+                                                               <div className={`sub-menu-guest bg-white rounded-b-xl overflow-hidden p-5 absolute top-full md:mt-5 mt-3 left-0 w-full box-shadow md:border-t border-outline ${openGuest ? "open" : ""}`}>
+                                                                      <div className="item flex items-center justify-between pb-4 border-b border-outline">
+                                                                             <div className="left">
+                                                                                    <p>Adults</p>
+                                                                                    <div className="caption1 text-variant1">(12 Years+)</div>
+                                                                             </div>
+                                                                             <div className="right flex items-center gap-5">
+                                                                                    <div
+                                                                                           className={`minus w-8 h-8 flex items-center justify-center rounded-full border border-outline duration-300 ${guest.adult === 0 ? "opacity-[0.4] cursor-default" : "cursor-pointer hover:bg-black hover:text-white"}`}
+                                                                                           onClick={() => decreaseGuest("adult")}>
+                                                                                           <Icon.Minus weight="bold" />
+                                                                                    </div>
+                                                                                    <div className="text-title">{guest.adult}</div>
+                                                                                    <div
+                                                                                           className="plus w-8 h-8 flex items-center justify-center rounded-full border border-outline cursor-pointer duration-300 hover:bg-black hover:text-white"
+                                                                                           onClick={() => increaseGuest("adult")}>
+                                                                                           <Icon.Plus weight="bold" />
+                                                                                    </div>
+                                                                             </div>
+                                                                      </div>
+                                                                      <div className="item flex items-center justify-between pb-4 pt-4 border-b border-outline">
+                                                                             <div className="left">
+                                                                                    <p>Children</p>
+                                                                                    <div className="caption1 text-variant1">(2-12 Years)</div>
+                                                                             </div>
+                                                                             <div className="right flex items-center gap-5">
+                                                                                    <div
+                                                                                           className={`minus w-8 h-8 flex items-center justify-center rounded-full border border-outline duration-300 ${guest.children === 0 ? "opacity-[0.4] cursor-default" : "cursor-pointer hover:bg-black hover:text-white"}`}
+                                                                                           onClick={() => decreaseGuest("children")}>
+                                                                                           <Icon.Minus weight="bold" />
+                                                                                    </div>
+                                                                                    <div className="text-title">{guest.children}</div>
+                                                                                    <div
+                                                                                           className="plus w-8 h-8 flex items-center justify-center rounded-full border border-outline cursor-pointer duration-300 hover:bg-black hover:text-white"
+                                                                                           onClick={() => increaseGuest("children")}>
+                                                                                           <Icon.Plus weight="bold" />
+                                                                                    </div>
+                                                                             </div>
+                                                                      </div>
 
-    // Decrease number
-    const decreaseGuest = (type: keyof GuestType) => {
-        if (guest[type] > 0) {
-            setGuest((prevGuest) => ({
-                ...prevGuest,
-                [type]: prevGuest[type] - 1
-            }));
-        }
-    };
+                                                                      <div
+                                                                             className="button-main w-full text-center"
+                                                                             onClick={() => setOpenGuest(false)}>
+                                                                             Done
+                                                                      </div>
+                                                               </div>
+                                                        </div>
+                                                        <div className="relative lg:w-full md:w-[48%] w-full">
+                                                               <div className="item flex items-center justify-between pb-3 pt-3 border border-outline rounded-lg">
+                                                                      <div className="left pl-4">
+                                                                             <p>Rooms</p>
+                                                                      </div>
+                                                                      <div className="right flex items-center gap-5 pr-3">
+                                                                             <div
+                                                                                    className={`minus w-8 h-8 flex items-center justify-center rounded-full border border-outline duration-300 ${guest.room === 0 ? "opacity-[0.4] cursor-default" : "cursor-pointer hover:bg-black hover:text-white"}`}
+                                                                                    onClick={() => decreaseGuest("room")}>
+                                                                                    <Icon.Minus weight="bold" />
+                                                                             </div>
+                                                                             <div className="text-title">{guest.room}</div>
+                                                                             <div
+                                                                                    className="plus w-8 h-8 flex items-center justify-center rounded-full border border-outline cursor-pointer duration-300 hover:bg-black hover:text-white"
+                                                                                    onClick={() => increaseGuest("room")}>
+                                                                                    <Icon.Plus weight="bold" />
+                                                                             </div>
+                                                                      </div>
+                                                               </div>
+                                                        </div>
+                                                        <div className="button-block flex-shrink-0 max-lg:w-[48%] max-md:w-full">
+                                                               <div className="button-main max-lg:w-full">
+                                                                      <Link to={`/hotels/topmap-grid?location=${location ? location.uid : "None"}&startDate=${state[0].startDate.toLocaleDateString()}&endDate=${state[0].endDate.toLocaleDateString()}&adult=${guest.adult}&children=${guest.children}&room=${guest.room}`}>Search</Link>
+                                                               </div>
+                                                        </div>
+                                                 </form>
+                                          </div>
+                                   </div>
+                            </div>
+                     </div>
+              </>
+       );
+};
 
-
-    return (
-        <>
-            <div className="slider-block style-one relative h-[620px]">
-                <div className="bg-img absolute top-0 left-0 w-full h-full"> 
-                    <img
-                        src={'/images/slider/hotel-lobby-2024-12-05-23-25-27-utc.jpg'}
-                        width={5000}
-                        height={3000}
-                        alt='slider'
-                        className='w-full h-full object-cover'
-                        style={{
-                            filter: 'brightness(0.5)',
-                            WebkitFilter: 'brightness(0.5)',
-                            position: 'relative',
-                        }}
-                    />
-                </div>
-                <div className="container py-[176px]">
-                    <div className="content w-full relative">
-                        <div className="heading flex-col items-center justify-center">
-                            <div className="heading2 text-white text-center">Find yourself outside</div>
-                            <div className="heading6 text-white text-center mt-3">Reserve beautiful private RV spots and campsites—found <br className='max-sm:hidden' />only on Hipcamp.</div>
-                        </div>
-
-                        <div className="form-search md:mt-10 mt-6 w-full">
-                            <form className='bg-white rounded-lg p-5 flex max-lg:flex-wrap items-center justify-between gap-5 relative'>
-                                {/* Location Input */}
-                                <div className="select-block lg:w-full md:w-[70%] w-full">
-                                    <AsyncSelect
-                                        data-testid="async-select"
-                                        loadOptions={loadOptions}
-                                        defaultOptions={true}
-                                        noOptionsMessage={noOptionsMessage}
-                                        value ={location}
-                                        onChange={setLocation}
-                                        components={{
-                                            IndicatorSeparator: () => null,
-                                        }}
-                                        styles={{
-                                            control: (provided) => ({
-                                              ...provided,
-                                              height: '54px',
-                                              minHeight: '54px',
-                                              width: 420,
-                                              borderRadius: '0.5rem',
-                                              paddingLeft: '0.5rem',
-                                              paddingRight: '1.25rem',
-                                              borderColor: '#E5E7EB',
-                                              boxShadow: 'none',
-                                              alignItems: 'center',
-                                            }),
-                                            dropdownIndicator: (provided) => ({
-                                                ...provided,
-                                                position: 'absolute',
-                                                right: '12px',
-                                                color: '#9CA3AF',
-                                                padding: 0,
-                                                alignItems: 'center',
-                                              }),
-                                            menu: (provided) => ({
-                                                ...provided,
-                                                width: 420,
-                                                verticalAlign: 'center',
-                                            }),
-                                            valueContainer: (provided) => ({
-                                                ...provided,
-                                                paddingLeft: '0.5rem',
-                                                paddingRight: '1.25rem',
-                                                verticalAlign: 'center',
-                                            }),
-                                            input: (provided) => ({
-                                                ...provided,
-                                                margin: 0,
-                                                padding: 0,
-                                                verticalAlign: 'center',
-                                              }),
-                                            indicatorsContainer: (provided) => ({
-                                                ...provided,
-                                                height: '56px',
-                                                verticalAlign: 'center',
-                                            }),
-                                        }}
-                                    />  
-                                </div>
-
-                                {/* Date Input */}
-                                <div className="relative lg:w-full md:w-[42%] w-full">
-                                    <div className='select-block w-full' onClick={handleOpenDate}>
-                                        <Icon.CalendarBlank className='icon text-xl left-5' />
-                                        {/* <input className='body2 w-full pl-12 pr-5 py-3 border border-outline rounded-lg' type="text" placeholder='Add Dates' /> */}
-                                        <input
-                                            className='body2 w-full pl-12 pr-5 py-3 border border-outline rounded-lg'
-                                            type="text"
-                                            placeholder='Add Dates'
-                                            value={`${state[0].startDate.toLocaleDateString()} - ${state[0].endDate.toLocaleDateString()}`}
-                                            readOnly // prevent user edit value
-                                        />
-                                    </div >
-                                    <DateRangePicker
-                                        className={`form-date-picker box-shadow md:border-t border-outline  ${openDate ? 'open' : ''}`}
-                                        onChange={item => setState([item.selection] as any)}
-                                        // showSelectionPreview={true}
-                                        
-                                        staticRanges={[]}
-                                        inputRanges={[]}
-                                        
-                                        moveRangeOnFirstSelection={false}
-                                        months={2}
-                                        ranges={state}
-                                        direction="horizontal"
-                                    />
-                                </div>
-
-                                {/* Guest and Room Input */}
-                                <div className="relative lg:w-full md:w-[42%] w-full">
-                                    <div className="select-block w-full" onClick={handleOpenGuest}>
-                                        
-                                        <Icon.Users className='icon text-xl left-5' />
-                                        <input
-                                            className='body2 w-full pl-12 pr-5 py-3 border border-outline rounded-lg'
-                                            type="text"
-                                            placeholder='Add Guest'
-                                            value={`${guest.adult} ${guest.adult === 1 ? 'adult' : 'adults'} · ${guest.children} ${guest.children === 1 ? 'child' : 'children'} · ${guest.room} ${guest.room === 1 ? 'room' : 'rooms'}`}
-                                            readOnly
-                              
-                                        />
-                                    </div>
-                                    <div className={`sub-menu-guest bg-white rounded-b-xl overflow-hidden p-5 absolute top-full md:mt-5 mt-3 left-0 w-full box-shadow md:border-t border-outline ${openGuest ? 'open' : ''}`}>
-                                        <div className="item flex items-center justify-between pb-4 border-b border-outline">
-                                            <div className="left">
-                                                <p>Adults</p>
-                                                <div className="caption1 text-variant1">(12 Years+)</div>
-                                            </div>
-                                            <div className="right flex items-center gap-5">
-                                                <div
-                                                    className={`minus w-8 h-8 flex items-center justify-center rounded-full border border-outline duration-300 ${guest.adult === 0 ? 'opacity-[0.4] cursor-default' : 'cursor-pointer hover:bg-black hover:text-white'}`}
-                                                    onClick={() => decreaseGuest('adult')}
-                                                >
-                                                    <Icon.Minus weight='bold' />
-                                                </div>
-                                                <div className="text-title">{guest.adult}</div>
-                                                <div
-                                                    className="plus w-8 h-8 flex items-center justify-center rounded-full border border-outline cursor-pointer duration-300 hover:bg-black hover:text-white"
-                                                    onClick={() => increaseGuest('adult')}
-                                                >
-                                                    <Icon.Plus weight='bold' />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="item flex items-center justify-between pb-4 pt-4 border-b border-outline">
-                                            <div className="left">
-                                                <p>Children</p>
-                                                <div className="caption1 text-variant1">(2-12 Years)</div>
-                                            </div>
-                                            <div className="right flex items-center gap-5">
-                                                <div
-                                                    className={`minus w-8 h-8 flex items-center justify-center rounded-full border border-outline duration-300 ${guest.children === 0 ? 'opacity-[0.4] cursor-default' : 'cursor-pointer hover:bg-black hover:text-white'}`}
-                                                    onClick={() => decreaseGuest('children')}
-                                                >
-                                                    <Icon.Minus weight='bold' />
-                                                </div>
-                                                <div className="text-title">{guest.children}</div>
-                                                <div
-                                                    className="plus w-8 h-8 flex items-center justify-center rounded-full border border-outline cursor-pointer duration-300 hover:bg-black hover:text-white"
-                                                    onClick={() => increaseGuest('children')}
-                                                >
-                                                    <Icon.Plus weight='bold' />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="item flex items-center justify-between pb-4 pt-4 border-b border-outline">
-                                            <div className="left">
-                                                <p>Rooms</p>
-                                                <div className="caption1 text-variant1">(Number of rooms)</div>
-                                            </div>
-                                            <div className="right flex items-center gap-5">
-                                                <div
-                                                    className={`minus w-8 h-8 flex items-center justify-center rounded-full border border-outline duration-300 ${guest.room === 0 ? 'opacity-[0.4] cursor-default' : 'cursor-pointer hover:bg-black hover:text-white'}`}
-                                                    onClick={() => decreaseGuest('room')}
-                                                >
-                                                    <Icon.Minus weight='bold' />
-                                                </div>
-                                                <div className="text-title">{guest.room}</div>
-                                                <div
-                                                    className="plus w-8 h-8 flex items-center justify-center rounded-full border border-outline cursor-pointer duration-300 hover:bg-black hover:text-white"
-                                                    onClick={() => increaseGuest('room')}
-                                                >
-                                                    <Icon.Plus weight='bold' />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div
-                                            className="button-main w-full text-center"
-                                            onClick={() => setOpenGuest(false)}
-                                        >
-                                            Done
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                {/* Button */}
-                                <div className="button-block flex-shrink-0 max-lg:w-[48%] max-md:w-full">
-                                    <div className='button-main max-lg:w-full'><Link to={`/camp/topmap-grid?location=${location ? location.value : 'None'}&startDate=${state[0].startDate.toLocaleDateString()}&endDate=${state[0].endDate.toLocaleDateString()}&adult=${guest.adult}&children=${guest.children}&room=${guest.room}`}>Search</Link></div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-
-
-
-            </div>
-        </>
-    )
-}
-
-export default SliderOne
+export default DestinationSearch;

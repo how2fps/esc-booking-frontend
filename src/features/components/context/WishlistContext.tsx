@@ -3,7 +3,7 @@
 // WishlistContext.tsx
 import React, { createContext, useState, useReducer, useEffect } from 'react';
 import {WishlistReducer, WishlistContext, WishlistAction, WishlistItem} from './Wishlist';
-import { TentType } from '../../type/TentType';
+import { TentType } from '../../type/HotelType';
 export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [wishlistState, dispatch] = useReducer(WishlistReducer, { wishlistArray: [] });
 

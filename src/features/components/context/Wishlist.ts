@@ -1,5 +1,5 @@
 import  { createContext, useContext, useReducer, useEffect } from 'react';
-import { TentType } from '../../type/TentType';
+import { TentType } from '../../type/HotelType';
 
 export interface WishlistItem extends TentType {
 }

@@ -16,5 +16,15 @@ export default defineConfig(({ mode }) => {
          environment: "jsdom",
          setupFiles: "./src/setupTests.ts",
        },
+       server: {
+    proxy: {
+      '/api': {
+        target: 'https://hotelapi.loyalty.dev', // Your backend server
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+        // Optional: Add more options as needed
+      },
+    },
+  },
   }
 })
