@@ -198,7 +198,9 @@ const DestinationSearch = () => {
 
                                           <div className="form-search md:mt-10 mt-6 w-full">
                                                  <form className="bg-white rounded-lg p-5 flex max-lg:flex-wrap items-center justify-between gap-5 relative">
-                                                        <div className="select-block lg:w-full md:w-[48%] w-full">
+                                                        <div
+                                                               className="select-block md:w-[48%] w-full"
+                                                               data-testid="async-select">
                                                                <AsyncPaginate
                                                                       debounceTimeout={100} 
                                                                       data-testid="async-select"
@@ -213,6 +215,7 @@ const DestinationSearch = () => {
                                                                              control: (provided) => ({
                                                                                     ...provided,
                                                                                     width: 300,
+                                                                                    height: 54,
                                                                              }),
                                                                              menu: (provided) => ({
                                                                                     ...provided,
@@ -228,7 +231,7 @@ const DestinationSearch = () => {
                                                                       onClick={handleOpenDate}>
                                                                       <Icon.CalendarBlank className="icon text-xl left-5" />
                                                                       <input
-                                                                             className="body2 w-full pl-12 pr-5 py-4 border border-outline rounded-lg text-sm"
+                                                                             className="body2 w-full pl-12 pr-5 py-3 border border-outline rounded-lg bg-white text-black"
                                                                              type="text"
                                                                              placeholder="Add Dates"
                                                                              value={`${state[0].startDate.toLocaleDateString()} - ${state[0].endDate.toLocaleDateString()}`}
@@ -252,7 +255,7 @@ const DestinationSearch = () => {
                                                                       onClick={handleOpenGuest}>
                                                                       <Icon.Users className="icon text-xl left-5" />
                                                                       <input
-                                                                             className="body2 w-full pl-12 pr-5 py-3 border border-outline rounded-lg"
+                                                                             className="body2 w-full pl-12 pr-5 py-3 border border-outline rounded-lg bg-white text-black"
                                                                              type="text"
                                                                              placeholder="Add Guest"
                                                                              value={`${guest.adult > 0 ? (guest.adult === 1 ? guest.adult + " adult" : guest.adult + " adults") : ""}${guest.children > 0 ? (guest.children === 1 ? ", " + guest.children + " children" : ", " + guest.children + " childrens") : ""}`}
