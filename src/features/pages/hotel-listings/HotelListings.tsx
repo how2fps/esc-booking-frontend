@@ -40,6 +40,7 @@ const HotelListings = () => {
        const [itemsPerPage, setItemsPerPage] = useState<number>(8);
 
        const [isLoading, setIsLoading] = useState<boolean>(true);
+       const [error, setError] = useState<string | null>(null);
 
        const [filters, setFilters] = useState<HotelFilter>({
               amenities: new Set(),
@@ -81,7 +82,6 @@ const HotelListings = () => {
                             const updatedHotelResults: HotelMarker[] = hotelResults.map((hotel) => {
                                    return { ...hotel, key: hotel.id, position: { lat: hotel.latitude, lng: hotel.longitude } };
                             });
-                            console.log(updatedHotelResults);
                             setAllHotels(updatedHotelResults);
                             setIsLoading(false);
                      } catch (error: unknown) {
@@ -92,43 +92,53 @@ const HotelListings = () => {
                                           stack: error.stack,
                                    });
                             }
+                            setError("Something went wrong while loading hotels. Please try again later.");
                      }
               };
               fetchHotelsByDestination();
        }, [checkIn, checkOut, destination_id]);
 
        useEffect(() => {
-              const fetchHotelPrices = async () => {
+              let isMounted = true;
+              let timeoutId: number | undefined;
+
+              const fetchHotelPricesWithPolling = async () => {
                      try {
-                            const controller = new AbortController();
-                            const timeoutId = setTimeout(() => controller.abort(), 90000);
-                            const response = await fetch(`http://localhost:3000/api/hotels/prices?destination_id=${destination_id}&checkin=${checkIn}&checkout=${checkOut}&lang=${"en_US"}&currency=${"SGD"}&country_code=${"SG"}&guests=${2}&partner_id=${1}`, {
-                                   signal: controller.signal,
-                                   method: "GET",
-                                   headers: {
-                                          "Content-Type": "application/json",
-                                   },
-                            });
-                            const hotelPricesResponse = await response.json();
-                            console.log(hotelPricesResponse);
-                            const hotelPricesArray = hotelPricesResponse.data.hotels;
-                            clearTimeout(timeoutId);
-                            const priceMap = new Map<string, HotelPrice>();
-                            hotelPricesArray.forEach((price: HotelPrice) => {
-                                   priceMap.set(price.id, price);
-                            });
-                            setHotelPrices(priceMap);
+                            let retries = 0;
+                            const maxRetries = 40;
+                            const delay = 2000;
+
+                            while (retries < maxRetries) {
+                                   const response = await fetch(`http://localhost:3000/api/hotels/prices?destination_id=${destination_id}&checkin=${checkIn}&checkout=${checkOut}&lang=en_US&currency=SGD&country_code=SG&guests=2&partner_id=1`);
+
+                                   const result = await response.json();
+                                   if (result.complete && result.data?.hotels) {
+                                          const priceMap = new Map<string, HotelPrice>();
+                                          result.data.hotels.forEach((price: HotelPrice) => {
+                                                 priceMap.set(price.id, price);
+                                          });
+                                          if (isMounted) setHotelPrices(priceMap);
+                                          return;
+                                   }
+
+                                   retries++;
+                                   await new Promise((resolve) => (timeoutId = setTimeout(resolve, delay)));
+                            }
+
+                            console.warn("Hotel price polling timed out");
                      } catch (error) {
                             if (error instanceof Error) {
-                                   console.error("Fetch error details:", {
-                                          name: error.name,
-                                          message: error.message,
-                                          stack: error.stack,
-                                   });
+                                   console.error("Polling error:", error);
                             }
                      }
               };
-              fetchHotelPrices();
+
+              fetchHotelPricesWithPolling();
+
+              return () => {
+                     isMounted = false;
+                     clearTimeout(timeoutId);
+              };
        }, [checkIn, checkOut, destination_id]);
 
        const mergedHotels = useMemo(() => {
@@ -171,7 +181,7 @@ const HotelListings = () => {
        }, [itemsPerPage, currentPage, sortedHotelsArray]);
 
        return (
-              <div className="lg:py-20 md:py-14 max-lg:mt-10 max-md:mt-40 py-10 px-12">
+              <div className="bg-white text-black lg:py-20 md:py-14 max-lg:mt-10 max-md:mt-40 py-10 px-12">
                      <div className="flex">
                             <div className="left lg:w-1/4 w-1/3 pr-[45px] max-md:hidden">
                                    <div className="sidebar-main">
@@ -190,7 +200,9 @@ const HotelListings = () => {
                                                                <GoogleMap
                                                                       mapId={"23a74d563be6cbd9931b8972"}
                                                                       style={{ width: "100%", height: "397px", borderRadius: "12px" }}
-                                                                      defaultCenter={{ lat: allHotels[0].latitude, lng: allHotels[0].longitude }}
+                                                                      defaultCenter={
+                                                                             allHotels.length > 0 ? { lat: allHotels[0].latitude, lng: allHotels[0].longitude } : { lat: 0, lng: 0 } // or a sensible fallback location
+                                                                      }
                                                                       defaultZoom={14}
                                                                       gestureHandling={"greedy"}
                                                                       disableDefaultUI={true}>
@@ -206,6 +218,7 @@ const HotelListings = () => {
                                                         ${filters.priceRange.min} - ${filters.priceRange.max}
                                                  </div>
                                                  <Slider
+                                                        data-testid="price-slider"
                                                         range
                                                         value={[filters.priceRange.min, filters.priceRange.max]}
                                                         min={0}
@@ -222,7 +235,9 @@ const HotelListings = () => {
                                                         className="mt-4"
                                                  />
                                           </div>
-                                          <div className="border-2 border-black rounded-[12px] p-4 mt-8">
+                                          <div
+                                                 data-testid="rating-slider"
+                                                 className="border-2 border-black rounded-[12px] p-4 mt-8">
                                                  <div className="heading6">Rating</div>
                                                  <div className="price-block flex items-center justify-between flex-wrap">
                                                         <div className="flex items-center gap-1">
@@ -258,41 +273,41 @@ const HotelListings = () => {
                                                         placeholder="Search hotels..."
                                                         value={searchTerm}
                                                         onChange={(e) => setSearchTerm(e.target.value)}
-                                                        className="w-full rounded-lg border-2 border-black h-14 focus:outline-none focus:ring-2 focus:ring-blue-500 px-4"
+                                                        className="w-full rounded-lg border-2 border-black h-14 px-4 bg-white text-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
                                                  />
                                           </div>
                                           <div className="select-block relative cursor-pointer">
-                                                 <label htmlFor="items-per-page">Items Per Page</label>
+                                                 <label htmlFor="items-per-page">Items Per Page: </label>
                                                  <select
                                                         id="items-per-page"
                                                         name="select-filter"
-                                                        className="custom-select cursor-pointer h-14 rounded-lg border-2 border-black"
+                                                        className="custom-select cursor-pointer h-14 rounded-lg border-2 border-black bg-white text-black"
                                                         onChange={(e) => {
                                                                handleItemsPerPageChange(Number.parseInt(e.target.value));
                                                         }}
                                                         value={itemsPerPage}>
-                                                        <option value="8">8 Per Page</option>
-                                                        <option value="9">9 Per Page</option>
-                                                        <option value="12">12 Per Page</option>
-                                                        <option value="16">16 Per Page</option>
+                                                        <option value="8">8</option>
+                                                        <option value="9">9</option>
+                                                        <option value="12">12</option>
+                                                        <option value="16">16</option>
                                                  </select>
-                                                 <Icon.CaretDown className="text-xl absolute top-1/2 -translate-y-1/2 md:right-4 right-2 cursor-pointer" />
+                                                 <Icon.CaretDown className="text-s absolute top-1/2 -translate-y-1/2 md:right-4 right-2 cursor-pointer pointer-events-none" />
                                           </div>
                                           <div className="select-block relative cursor-pointer">
-                                                 <label htmlFor="sort">Sort By</label>
+                                                 <label htmlFor="sort">Sort By: </label>
                                                  <select
                                                         id="sort"
                                                         name="select-filter"
-                                                        className="custom-select cursor-pointer h-14 rounded-lg border-2 border-black"
+                                                        className="custom-select cursor-pointer h-14 rounded-lg border-2 border-black bg-white text-black"
                                                         onChange={(e) => {
                                                                setSortOption(e.target.value);
                                                         }}
                                                         defaultValue={"Sorting"}>
-                                                        <option value="starHighToLow">Best Review</option>
+                                                        <option value="starHighToLow">Review High To Low</option>
                                                         <option value="priceHighToLow">Price High To Low</option>
                                                         <option value="priceLowToHigh">Price Low To High</option>
                                                  </select>
-                                                 <Icon.CaretDown className="text-xl absolute top-1/2 -translate-y-1/2 md:right-4 right-2" />
+                                                 <Icon.CaretDown className="text-s absolute top-1/2 -translate-y-1/2 md:right-4 right-2 cursor-pointer pointer-events-none" />
                                           </div>
                                    </div>
                                    {isLoading ? (
