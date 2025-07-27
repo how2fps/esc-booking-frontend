@@ -19,7 +19,7 @@ const config: Config = {
     },
     container: {
       padding: {
-        DEFAULT: '16px',
+        DEFAULT: '5px',
       },
     },
     colors: {

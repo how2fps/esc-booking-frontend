@@ -1,241 +1,152 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Footer from '../../components/Footer/Footer';
 import HeaderOne from '../../components/Header/Header';
 
 const BookingPage = () => {
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
-  const [checkinDate, setCheckinDate] = useState('');
-  const [checkoutDate, setCheckoutDate] = useState('');
-  const [guests, setGuests] = useState('');
-  const [cardholderName, setCardholderName] = useState('');
-  const [cardNumber, setCardNumber] = useState('');
-  const [expirationDate, setExpirationDate] = useState('');
-  const [cvv, setCvv] = useState('');
+  const [specialRequests, setSpecialRequests] = useState('');
+  const [selectedHotel] = useState('Grand Hotel');
+  const [roomType] = useState('Double Room');
+  const [adults] = useState(2);
+  const [children] = useState(0);
+  const [startDate] = useState('2023-12-01');
+  const [endDate] = useState('2023-12-05');
+  const [price] = useState(500);
   const [errors, setErrors] = useState<string[]>([]);
-  const [isValid, setIsValid] = useState(false);
+  const navigate = useNavigate();
+
+  const calculateNights = () => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const diffTime = Math.abs(end.getTime() - start.getTime());
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const validationErrors: string[] = [];
-    if (!name) validationErrors.push('Name is required');
-    if (!email) validationErrors.push('Email is required');
-    if (!checkinDate) validationErrors.push('Check-in date is required');
-    if (!checkoutDate) validationErrors.push('Check-out date is required');
-    if (!guests || parseInt(guests) <= 0) validationErrors.push('Number of guests must be greater than 0');
-    if (!cardholderName) validationErrors.push('Cardholder name is required');
-    if (!cardNumber || cardNumber.length !== 16) validationErrors.push('Card number must be 16 digits');
-    if (!expirationDate) validationErrors.push('Expiration date is required');
-    if (!cvv || cvv.length !== 3) validationErrors.push('CVV must be 3 digits');
+    if (!firstName) validationErrors.push('First name is required');
+    if (!lastName) validationErrors.push('Last name is required');
+    if (!phoneNumber) validationErrors.push('Phone number is required');
+    if (!email) validationErrors.push('Email address is required');
 
     setErrors(validationErrors);
-    setIsValid(validationErrors.length === 0);
 
     if (validationErrors.length === 0) {
-      console.log('Booking and payment details:', {
-        name,
+      console.log('Booking details:', {
+        firstName,
+        lastName,
+        phoneNumber,
         email,
-        checkinDate,
-        checkoutDate,
-        guests,
-        cardholderName,
-        cardNumber,
-        expirationDate,
-        cvv,
+        specialRequests,
+        selectedHotel,
+        roomType,
+        adults,
+        children,
+        startDate,
+        endDate,
+        nights: calculateNights(),
+        price,
       });
-      alert('Booking and payment submitted successfully!');
+      alert('Booking submitted successfully!');
+      navigate('/checkout');
     }
   };
 
   return (
     <>
       <HeaderOne />
-      <div className="booking-page lg:py-20 md:py-14 py-10">
-        <div className="container">
-          <div className="content flex items-center justify-center">
-            <div id="form-booking" className="xl:basis-1/3 lg:basis-1/2 sm:basis-2/3 max-sm:w-full">
-              <span className="heading3 text-center">Booking Page</span>
-              <form className="md:mt-10 mt-6" onSubmit={handleSubmit}>
-                {/* Booking Details */}
-                <div className="mb-5">
-                  <label htmlFor="name">
-                    Name<span className="text-primary">*</span>
-                  </label>
+      <div className="booking-page lg:py-20 md:py-14 py-10 bg-white">
+        <div className="container mx-auto px-4">
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col lg:flex-row items-start gap-10"
+          >
+            {/* Your Selection - small sidebar */}
+            <div className="w-full lg:w-1/5 max-w-[220px]">
+              <h2 className="text-md font-semibold mb-4">Your Selection</h2>
+              {[
+                ['Selected Hotel', selectedHotel],
+                ['Room Type', roomType],
+                ['Number of Nights', calculateNights()],
+                ['Start Date', startDate],
+                ['End Date', endDate],
+                ['Adults', adults],
+                ['Children', children],
+                ['Price', `$${price}`],
+              ].map(([label, value], i) => (
+                <div className="mb-4" key={i}>
+                  <label className="block text-sm font-medium text-gray-600">{label}</label>
                   <input
                     type="text"
-                    id="name"
-                    className="border-line px-4 pt-3 pb-3 w-full rounded-lg mt-2 text-black bg-[#d1d1d1]"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
+                    className="w-full px-3 py-2 mt-1 rounded-md bg-gray-200 text-sm text-gray-700"
+                    value={value}
+                    readOnly
                   />
                 </div>
-
-                <div className="mb-5">
-                  <label htmlFor="email">
-                    Email address<span className="text-primary">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    className="border-line px-4 pt-3 pb-3 w-full rounded-lg mt-2 text-black bg-[#d1d1d1]"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="mb-5">
-                  <label htmlFor="checkinDate">
-                    Check-in Date<span className="text-primary">*</span>
-                  </label>
-                  <input
-                    type="date"
-                    id="checkinDate"
-                    className="border-line px-4 pt-3 pb-3 w-full rounded-lg mt-2 text-black bg-[#d1d1d1]"
-                    value={checkinDate}
-                    onChange={(e) => setCheckinDate(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="mb-5">
-                  <label htmlFor="checkoutDate">
-                    Check-out Date<span className="text-primary">*</span>
-                  </label>
-                  <input
-                    type="date"
-                    id="checkoutDate"
-                    className="border-line px-4 pt-3 pb-3 w-full rounded-lg mt-2 text-black bg-[#d1d1d1]"
-                    value={checkoutDate}
-                    onChange={(e) => setCheckoutDate(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="mb-5">
-                  <label htmlFor="guests">
-                    Number of Guests<span className="text-primary">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    id="guests"
-                    className="border-line px-4 pt-3 pb-3 w-full rounded-lg mt-2 text-black bg-[#d1d1d1]"
-                    value={guests}
-                    onChange={(e) => setGuests(e.target.value)}
-                    min="1"
-                    required
-                  />
-                </div>
-
-                {/* Payment Details */}
-                <div className="mb-5">
-                  <label htmlFor="cardholderName">
-                    Cardholder Name<span className="text-primary">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="cardholderName"
-                    className="border-line px-4 pt-3 pb-3 w-full rounded-lg mt-2 text-black bg-[#d1d1d1]"
-                    value={cardholderName}
-                    onChange={(e) => setCardholderName(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="mb-5">
-                  <label htmlFor="cardNumber">
-                    Card Number<span className="text-primary">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="cardNumber"
-                    className="border-line px-4 pt-3 pb-3 w-full rounded-lg mt-2 text-black bg-[#d1d1d1]"
-                    value={cardNumber}
-                    onChange={(e) => setCardNumber(e.target.value)}
-                    maxLength={16}
-                    required
-                  />
-                </div>
-
-                <div className="mb-5">
-                  <label htmlFor="expirationDate">
-                    Expiration Date<span className="text-primary">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="expirationDate"
-                    className="border-line px-4 pt-3 pb-3 w-full rounded-lg mt-2 text-black bg-[#d1d1d1]"
-                    value={expirationDate}
-                    onChange={(e) => setExpirationDate(e.target.value)}
-                    placeholder="MM/YY"
-                    required
-                  />
-                </div>
-
-                <div className="mb-5">
-                  <label htmlFor="cvv">
-                    CVV<span className="text-primary">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="cvv"
-                    className="border-line px-4 pt-3 pb-3 w-full rounded-lg mt-2 text-black bg-[#d1d1d1]"
-                    value={cvv}
-                    onChange={(e) => setCvv(e.target.value)}
-                    maxLength={3}
-                    required
-                  />
-                </div>
-
-                {errors.length > 0 && (
-                  <ul className="text-sm text-red-500 mt-2 list-disc pl-5">
-                    {errors.map((err, i) => (
-                      <li key={i}>{err}</li>
-                    ))}
-                  </ul>
-                )}
-
-                <div className="block-button mt-6">
-                  <button
-                    className={`w-full text-center rounded-lg px-4 py-3 font-semibold transition duration-300 ${
-                      isValid &&
-                      name &&
-                      email &&
-                      checkinDate &&
-                      checkoutDate &&
-                      guests &&
-                      cardholderName &&
-                      cardNumber &&
-                      expirationDate &&
-                      cvv
-                        ? 'button-main'
-                        : 'bg-gray-400 text-white cursor-not-allowed'
-                    }`}
-                    disabled={
-                      !(
-                        isValid &&
-                        name &&
-                        email &&
-                        checkinDate &&
-                        checkoutDate &&
-                        guests &&
-                        cardholderName &&
-                        cardNumber &&
-                        expirationDate &&
-                        cvv
-                      )
-                    }
-                  >
-                    Submit Booking
-                  </button>
-                </div>
-              </form>
+              ))}
             </div>
-          </div>
+
+            {/* Your Details - centralized */}
+            <div className="flex-1 max-w-2xl mx-auto w-full">
+              <h2 className="text-xl font-semibold mb-6 text-center">Your Details</h2>
+
+              {[
+                ['First Name', firstName, setFirstName],
+                ['Last Name', lastName, setLastName],
+                ['Phone Number', phoneNumber, setPhoneNumber],
+                ['Email Address', email, setEmail],
+              ].map(([label, value, setter]: any, i) => (
+                <div className="mb-5" key={i}>
+                  <label className="block font-medium mb-1">
+                    {label} <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type={label.includes('Email') ? 'email' : 'text'}
+                    className="w-full px-4 py-3 rounded-lg bg-[#d1d1d1] text-black"
+                    value={value}
+                    onChange={(e) => setter(e.target.value)}
+                    required
+                  />
+                </div>
+              ))}
+
+              {/* Special Requests */}
+              <div className="mb-6">
+                <label className="block font-medium mb-1">Special Requests to Hotel</label>
+                <textarea
+                  className="w-full px-4 py-3 rounded-lg bg-[#d1d1d1] text-black"
+                  value={specialRequests}
+                  onChange={(e) => setSpecialRequests(e.target.value)}
+                  rows={4}
+                />
+              </div>
+
+              {/* Error Messages */}
+              {errors.length > 0 && (
+                <ul className="text-sm text-red-500 mb-4 list-disc pl-5">
+                  {errors.map((err, i) => (
+                    <li key={i}>{err}</li>
+                  ))}
+                </ul>
+              )}
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-4 rounded-lg transition duration-300"
+              >
+                Proceed to Checkout
+              </button>
+            </div>
+          </form>
         </div>
       </div>
       <Footer />
