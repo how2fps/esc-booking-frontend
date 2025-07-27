@@ -6,9 +6,9 @@ import * as Icon from "phosphor-react";
 const Footer = () => {
     return (
         <>
-            <div id="footer" className='footer'>
+            <div id="footer" className='footer' data-testid = "footer">
                 <div className="bg-surface lg:pt-15 md:pt-12 pt-8">
-                    <div className="container">
+                    <div className="container  ">
                         <div className="footer-heading flex items-center justify-between flex-wrap gap-6 pb-[30px] border-b border-outline">
                             <Link href={'/'}>
                                 <img
@@ -75,8 +75,8 @@ const Footer = () => {
                             <div className="list-nav lg:w-2/3 w-full sm:flex max-sm:grid grid-cols-2 gap-8 justify-between">
                                 <div className="item">
                                     <div className="text-title pb-3">Support</div>
-                                    <Link href={'/pages/contact'} className="caption1 text-variant1 has-line block w-fit whitespace-nowrap pl-3">Help Center</Link>
-                                    <Link href={'/pages/contact'} className="caption1 text-variant1 has-line block w-fit whitespace-nowrap mt-2 pl-3">Contact Us</Link>
+                                    <div className="caption1 text-variant1 has-line block w-fit whitespace-nowrap pl-3">Help Center</div>
+                                    <div className="caption1 text-variant1 has-line block w-fit whitespace-nowrap mt-2 pl-3">Contact Us</div>
                                 </div>
                                 
                                
@@ -91,13 +91,12 @@ const Footer = () => {
                     <div className="footer-bottom py-4 border-t border-outline">
                         <div className="container">
                             <div className="flex items-center sm:justify-between justify-center flex-wrap gap-4">
-                                <div className="copyright caption1 text-variant1">©2025 GlampHub. All Rights Reserved.</div>
                                 <div className="flex items-center gap-3">
-                                    <Link href={'/term-of-use'} className='caption1 text-variant1 has-line'>Terms Of Services</Link>
+                                    <div className='caption1 text-variant1 has-line'>Terms Of Services</div>
                                     <div className='bg-outline w-px h-4'></div>
-                                    <Link href={'/term-of-use'} className='caption1 text-variant1 has-line'>Privacy Policy</Link>
+                                    <div className='caption1 text-variant1 has-line'>Privacy Policy</div>
                                     <div className='bg-outline w-px h-4'></div>
-                                    <Link href={'/term-of-use'} className='caption1 text-variant1 has-line'>Cookie Policy</Link>
+                                    <div className='caption1 text-variant1 has-line'>Cookie Policy</div>
                                 </div>
                             </div>
                         </div>
