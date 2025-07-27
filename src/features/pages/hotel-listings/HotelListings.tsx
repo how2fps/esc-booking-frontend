@@ -40,6 +40,7 @@ const HotelListings = () => {
        const [itemsPerPage, setItemsPerPage] = useState<number>(8);
 
        const [isLoading, setIsLoading] = useState<boolean>(true);
+       // eslint-disable-next-line @typescript-eslint/no-unused-vars
        const [error, setError] = useState<string | null>(null);
 
        const [filters, setFilters] = useState<HotelFilter>({
