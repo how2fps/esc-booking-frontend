@@ -70,6 +70,10 @@ const HotelListings = () => {
                      clearTimeout(handler);
               };
        }, [searchTerm]);
+       
+       useEffect(() => {
+              setCurrentPage(1);
+       }, [filters, debouncedSearchTerm, sortOption]);
 
        useEffect(() => {
               const fetchHotelsByDestination = async () => {
