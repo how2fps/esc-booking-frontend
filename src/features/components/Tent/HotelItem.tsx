@@ -27,7 +27,6 @@ const iconlist = {
 const HotelItem: React.FC<Props> = ({ data, type }) => {
        const router = useNavigate();
        const prefix = data.image_details["prefix"];
-       //const image_count = Math.min(data.image_details["count"],10)
        const image_array: string[] = [];
        for (let i = 0; i < 10; i++) {
               image_array.push(prefix + i + ".jpg");
