@@ -12,6 +12,7 @@
        },
        "dependencies": {
               "@phosphor-icons/react": "^2.1.10",
+              "@picosearch/bk-tree": "^1.1.0",
               "@stripe/react-stripe-js": "^3.8.0",
               "@stripe/stripe-js": "^7.6.1",
               "@tailwindcss/vite": "^4.1.11",
