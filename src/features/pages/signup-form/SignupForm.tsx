@@ -16,6 +16,8 @@ const SignupForm = () => {
        const [showConfirmPassword, setShowConfirmPassword] = useState(false);
        const [errors, setErrors] = useState<string[]>([]);
        const [isValid, setIsValid] = useState(false);
+       const [submitError, setSubmitError] = useState<string | null>(null);
+       const [submitting, setSubmitting] = useState(false);
        const navigate = useNavigate();
 
        useEffect(() => {
@@ -31,7 +33,9 @@ const SignupForm = () => {
 
        const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
               e.preventDefault();
+              setSubmitError(null);
               if (isValid) {
+                     setSubmitting(true);
                      try {
                             const response = await fetch("http://localhost:3000/api/users/signup", {
                                    method: "POST",
@@ -49,12 +53,14 @@ const SignupForm = () => {
                             if (data.success) {
                                    alert("Registration successful! Redirecting to login...");
                                    navigate("/login");
+                            } else {
+                                   setSubmitError(data.message || "Registration failed. Please try again.");
                             }
                      } catch (error) {
-                            console.log(error);
+                            setSubmitError("Network error. Please try again.");
+                     } finally {
+                            setSubmitting(false);
                      }
-
-                     console.log("Sign up with:", { name, email, password });
               }
        };
 
@@ -181,15 +187,19 @@ const SignupForm = () => {
                                                                </ul>
                                                         )}
 
+                                                        {submitError && (
+                                                            <div className="text-red-500 mt-2 text-center">{submitError}</div>
+                                                        )}
+
                                                         <div className="block-button mt-6">
                                                                <button
                                                                       className={`w-full text-center rounded-lg px-4 py-3 font-semibold transition duration-300 ${
-                                                                             isValid && name && email && password && confirmPassword
+                                                                             isValid && name && email && password && confirmPassword && !submitting
                                                                                     ? "button-main" // enabled styling
                                                                                     : "bg-gray-400 text-white cursor-not-allowed" // disabled styling
                                                                       }`}
-                                                                      disabled={!(isValid && name && email && password && confirmPassword)}>
-                                                                      Register
+                                                                      disabled={!(isValid && name && email && password && confirmPassword) || submitting}>
+                                                                      {submitting ? "Registering..." : "Register"}
                                                                </button>
                                                         </div>
                                                  </form>
