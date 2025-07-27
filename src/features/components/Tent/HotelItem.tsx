@@ -1,18 +1,18 @@
-"use client";
+'use client'
 
-import * as Icon from "@phosphor-icons/react";
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import { Pagination } from "swiper/modules";
+import React from 'react'
+import * as Icon from "@phosphor-icons/react"
 import { Swiper, SwiperSlide } from "swiper/react";
-import type { HotelType } from "../../type/HotelType";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+import { Pagination, Navigation } from "swiper/modules";
+import {  useNavigate } from "react-router-dom";
+import type  { HotelType } from '../../type/HotelType'
 
 interface Props {
-       data: HotelType;
-       type: string;
+    data: HotelType;
+    type: string
 }
 const iconlist = {
        dryCleaning: <Icon.WashingMachine />,
@@ -251,4 +251,4 @@ const HotelItem: React.FC<Props> = ({ data, type }) => {
        );
 };
 
-export default HotelItem;
+export default HotelItem
