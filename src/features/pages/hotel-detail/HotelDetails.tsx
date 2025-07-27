@@ -41,6 +41,7 @@ const HotelDetailContent = () => {
                 <div className="text-center">
                     <h2 className="text-2xl font-bold">Hotel not found!</h2>
                     <p>Hotel ID: {hotelId}</p>
+                    <div className="mt-4 text-red-500">Page has failed to load. Please reload the page.</div>
                 </div>
             </div>
         );
@@ -49,7 +50,9 @@ const HotelDetailContent = () => {
     const [viewMoreDesc, setViewMoreDesc] = useState<boolean>(false)
     const [openDate, setOpenDate] = useState(false)
     const [openGuest, setOpenGuest] = useState(false)
-    const [mainImage, setMainImage] = useState<string | null>(null) // ✅ Fixed: Added proper typing
+    const [mainImage, setMainImage] = useState<string | null>(null) 
+    const [imageError, setImageError] = useState(false);
+    const [roomCount, setRoomCount] = useState(1);
     const [state, setState] = useState([
         {
             startDate: new Date(),
@@ -62,28 +65,53 @@ const HotelDetailContent = () => {
         children: 0,
     });
 
-    // ✅ Fixed: Moved useMemo before useEffect
+    // Only display images that actually exist, fallback if none
     const image_array = useMemo(() => {
         const prefix = hotel.image_details?.prefix || '';
         const count = hotel.image_details?.count || 0;
         const suffix = hotel.image_details?.suffix || '.jpg';
         const image_count = Math.min(count, 10);
         const images: string[] = [];
-
         for (let i = 0; i < image_count; i++) {
             images.push(`${prefix}${i}${suffix}`);
         }
-
         return images;
     }, [hotel.id]);
 
-    // ✅ Fixed: Set main image after image_array is created
+    const [validImages, setValidImages] = useState<string[]>([]);
+
     useEffect(() => {
-        const firstImage = image_array.length > 0 
-            ? image_array[0] 
+        let isMounted = true;
+        const checkImages = async () => {
+            const results: string[] = [];
+            await Promise.all(
+                image_array.map((url) =>
+                    new Promise<void>((resolve) => {
+                        const img = new window.Image();
+                        img.src = url;
+                        img.onload = () => {
+                            if (isMounted) results.push(url);
+                            resolve();
+                        };
+                        img.onerror = () => resolve();
+                    })
+                )
+            );
+            if (isMounted) {
+                setValidImages(results.length > 0 ? results : ['/assets/cityhero.jpg']);
+            }
+        };
+        checkImages();
+        return () => { isMounted = false; };
+    }, [image_array]);
+
+    // Set main image after validImages is created
+    useEffect(() => {
+        const firstImage = validImages.length > 0 
+            ? validImages[0] 
             : '/assets/cityhero.jpg';
         setMainImage(firstImage);
-    }, [image_array]);
+    }, [validImages]);
 
     const handleOpenDate = () => {
         setOpenDate(!openDate)
@@ -91,22 +119,31 @@ const HotelDetailContent = () => {
     }
 
     const handleOpenGuest = () => {
-        setOpenGuest(!openGuest)
-        setOpenDate(false)
+        setOpenGuest(!openGuest);
+        setOpenDate(false);
     }
 
     // Check if the click event occurs outside the popup.
     const handleClickOutsideDatePopup: EventListener = useCallback((event) => {
         const targetElement = event.target as Element;
-        if (openDate && !targetElement.closest('.form-date-picker')) {
-            setOpenDate(false)
+        // Only close if click is outside both the trigger and the dropdown
+        if (
+            openDate &&
+            !targetElement.closest('.sidebar-date-trigger') &&
+            !targetElement.closest('.sidebar-date-dropdown')
+        ) {
+            setOpenDate(false);
         }
     }, [openDate]);
 
     const handleClickOutsideGuestPopup: EventListener = useCallback((event) => {
         const targetElement = event.target as Element;
-        if (openGuest && !targetElement.closest('.sub-menu-guest')) {
-            setOpenGuest(false)
+        if (
+            openGuest &&
+            !targetElement.closest('.sub-menu-guest') &&
+            !targetElement.closest('.select-block')
+        ) {
+            setOpenGuest(false);
         }
     }, [openGuest]);
 
@@ -140,10 +177,8 @@ const HotelDetailContent = () => {
     // ✅ Fixed: Added missing variables
     const basePrice = 200;
     const nights = Math.ceil((state[0].endDate.getTime() - state[0].startDate.getTime()) / (1000 * 60 * 60 * 24));
-    const cleaningFee = 40; // ✅ Added missing variable
-    const serviceFee = 60;  // ✅ Added missing variable
-    const serviceTax = 1.9 * (basePrice * nights); 
-    const total = (basePrice * nights) + serviceTax;
+    const serviceTax = 0.19 * (basePrice * nights * roomCount);
+    const total = (basePrice * nights * roomCount) + serviceTax;
 
     return (
         <div className='hotel-detail'>
@@ -163,16 +198,22 @@ const HotelDetailContent = () => {
                             className="w-full h-full object-cover rounded-xl"
                             style={{ width: '100%', height: '100%' }}
                             onError={(e) => {
+                                setImageError(true);
                                 e.currentTarget.src = "/images/placeholder-hotel.jpg";
                             }}
                         />
+                        {imageError && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-80">
+                                <span className="text-red-500 font-semibold">Images/Content has failed to load. Please reload the page.</span>
+                            </div>
+                        )}
                     </div>
                 </div>
                 {/* Thumbnail Grid */}
                 <div className="w-full mt-6">
                     <div className="flex gap-3.5 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-                        {image_array.length > 0 ? (
-                            image_array.slice(0, 10).map((imageUrl, index) => (
+                        {validImages.length > 0 ? (
+                            validImages.map((imageUrl, index) => (
                                 <div key={index} className="aspect-[16/11] min-w-[120px] w-[120px] flex-shrink-0">
                                     <img
                                         src={imageUrl}
@@ -180,6 +221,7 @@ const HotelDetailContent = () => {
                                         className="w-full h-full rounded-xl shadow-md object-cover cursor-pointer transition-transform hover:scale-105"
                                         onClick={() => setMainImage(imageUrl)}
                                         onError={(e) => {
+                                            setImageError(true);
                                             e.currentTarget.src = "/images/placeholder-hotel.jpg";
                                         }}
                                     />
@@ -201,7 +243,7 @@ const HotelDetailContent = () => {
                             
                             {/* Hotel Header */}
                             <div className="flex items-center justify-between gap-6">
-                                <div className="heading3">{hotel.name}</div>
+                                <h1 className="heading3" role="heading" aria-level="1">{hotel.name}</h1>
                                 <div className="share w-12 h-12 rounded-full bg-white border border-outline flex-shrink-0 flex items-center justify-center cursor-pointer duration-300 hover:bg-black hover:text-white">
                                     <Icon.ShareNetwork className='text-2xl' />
                                 </div>
@@ -243,21 +285,23 @@ const HotelDetailContent = () => {
                                 <div className="heading5">Description</div>
                                 {hotel.description ? (
                                     <>
-                                        <div className="body2 text-variant1 mt-3">
+                                        <div className="body2 text-variant1 mt-3 text-justify">
                                             {viewMoreDesc ? hotel.description : hotel.description.substring(0, 300)}
                                             {!viewMoreDesc && hotel.description.length > 300 && '...'}
                                         </div>
                                         {hotel.description.length > 300 && (
-                                            <div
+                                            <span
                                                 className="text-button-sm underline inline-block duration-300 cursor-pointer mt-3 hover:text-primary"
+                                                role="button"
+                                                aria-label={viewMoreDesc ? 'Show less' : 'View More'}
                                                 onClick={() => setViewMoreDesc(!viewMoreDesc)}
                                             >
                                                 {viewMoreDesc ? 'Show less' : 'View More'}
-                                            </div>
+                                            </span>
                                         )}
                                     </>
                                 ) : (
-                                    <div className="body2 text-variant1 mt-3">No description available</div>
+                                    <div className="body2 text-variant1 mt-3 text-justify">No description available</div>
                                 )}
                             </div>
 
@@ -287,41 +331,7 @@ const HotelDetailContent = () => {
                                     )}
                                 </div>
                             </div>
-                            
-                            {/* Date Picker */}
-                            <div className="date lg:mt-10 mt-6 lg:pt-10 pt-6 border-t border-outline">
-                                <div className="heading5">Dates & Availability</div>
-                                <div className="relative">
-                                    {/* Dropdown trigger: Check In / Check Out */}
-                                    <div className="grid grid-cols-2 border border-outline rounded-lg cursor-pointer bg-white" onClick={handleOpenDate}>
-                                        <div className="left pl-5 py-4 border-r border-outline">
-                                            <div className="flex items-center gap-1">
-                                                <Icon.CalendarBlank className='text-xl' />
-                                                <div className="text-button">Check In</div>
-                                            </div>
-                                            <div className="body2 mt-1">{state[0].startDate.toLocaleDateString()}</div>
-                                        </div>
-                                        <div className="left pr-5 py-4">
-                                            <div className="flex items-center justify-end gap-1">
-                                                <Icon.CalendarBlank className='text-xl' />
-                                                <div className="text-button">Check Out</div>
-                                            </div>
-                                            <div className="body2 mt-1 text-end">{state[0].endDate.toLocaleDateString()}</div>
-                                        </div>
-                                    </div>
-                                    {/* Dropdown content: DateRangePicker */}
-                                    <div className={`absolute left-0 w-full z-10 mt-2 ${openDate ? '' : 'hidden'}`} style={{ minWidth: '300px' }}>
-                                        <DateRangePicker
-                                            className="form-date-picker style-detail w-full border border-outline rounded-none open bg-white"
-                                            onChange={item => setState([item.selection] as any)}
-                                            moveRangeOnFirstSelection={false}
-                                            months={2}
-                                            ranges={state}
-                                            direction="horizontal"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
+
 
                             {/* Map */}
                             {hotel.latitude && hotel.longitude && (
@@ -330,7 +340,7 @@ const HotelDetailContent = () => {
                                     <div className="bg-img relative mt-3">
                                         <iframe
                                             className='w-full h-[360px]'
-                                            src={`https://maps.google.com/maps?q=${hotel.latitude}, ${hotel.longitude}&hl=es&z=14&output=embed`}
+                                            src={`https://maps.google.com/maps?q=${hotel.latitude}, ${hotel.longitude}&hl=en&z=14&output=embed`}
                                             title={`Map of ${hotel.name}`}
                                         />
                                     </div>
@@ -345,16 +355,16 @@ const HotelDetailContent = () => {
                                 <div className="reservation bg-surface p-6 rounded-md">
                                     <div className="heading4 text-center">Reservation</div>
                                     <div className="date-sidebar-detail bg-white border border-outline mt-5">
-                                        <div className="relative cursor-pointer">
-                                            <div className="grid grid-cols-2 border-b border-outline" onClick={handleOpenDate}>
-                                                <div className="left pl-5 py-4 border-r border-outline">
+                                        <div className="relative">
+                                            <div className="grid grid-cols-2 border-b border-outline sidebar-date-trigger">
+                                                <div className="left pl-5 py-4 border-r border-outline cursor-pointer" onClick={handleOpenDate}>
                                                     <div className="flex items-center gap-1">
                                                         <Icon.CalendarBlank className='text-xl' />
                                                         <div className="text-button">Check In</div>
                                                     </div>
                                                     <div className="body2 mt-1">{state[0].startDate.toLocaleDateString()}</div>
                                                 </div>
-                                                <div className="left pr-5 py-4">
+                                                <div className="left pr-5 py-4 cursor-pointer" onClick={handleOpenDate}>
                                                     <div className="flex items-center justify-end gap-1">
                                                         <Icon.CalendarBlank className='text-xl' />
                                                         <div className="text-button">Check Out</div>
@@ -362,76 +372,137 @@ const HotelDetailContent = () => {
                                                     <div className="body2 mt-1 text-end">{state[0].endDate.toLocaleDateString()}</div>
                                                 </div>
                                             </div>
-                                            <DateRangePicker
-                                                className={`form-date-picker box-shadow ${openDate ? 'open' : ''}`}
-                                                onChange={item => setState([item.selection] as any)}
-                                                moveRangeOnFirstSelection={false}
-                                                months={2}
-                                                ranges={state}
-                                                direction="horizontal"
-                                            />
+                                            {/* Date Picker dropdown */}
+                                            {openDate && (
+                                                <div className="w-full mt-2 sidebar-date-dropdown">
+                                                    <DateRangePicker
+                                                        className="form-date-picker box-shadow open w-full border border-outline rounded-none bg-white"
+                                                        onChange={item => {
+                                                            const selection = item.selection;
+                                                            if (selection.startDate && selection.endDate && selection.startDate <= selection.endDate) {
+                                                                setState([selection]);
+                                                            }
+                                                        }}
+                                                        moveRangeOnFirstSelection={false}
+                                                        months={2}
+                                                        ranges={state}
+                                                        direction="horizontal"
+                                                        minDate={new Date()}
+                                                        showMonthAndYearPickers={true}
+                                                        showDateDisplay={true}
+                                                    />
+                                                </div>
+                                            )}
                                         </div>
 
                                         {/* Guests */}
-                                        <div className="guest px-5 py-4 relative cursor-pointer">
-                                            <div className="flex items-center justify-between" onClick={handleOpenGuest}>
-                                                <div>
+                                        <div className="guest px-5 py-4 relative">
+                                            <div className="flex items-center justify-between select-block w-full">
+                                                <div
+                                                    className="flex flex-col cursor-pointer"
+                                                    style={{ minWidth: 0 }}
+                                                    onClick={handleOpenGuest}
+                                                    tabIndex={0}
+                                                    role="button"
+                                                    aria-label="Open guest dropdown"
+                                                >
                                                     <div className="flex items-center gap-1">
                                                         <Icon.Users className='text-xl' />
                                                         <div className="text-button">Guest</div>
                                                     </div>
-                                                    <div className="body2 mt-1">{guest.adult} adults - {guest.children} children</div>
+                                                    <div className="body2 mt-1 truncate">
+                                                        {guest.adult > 0 ? (guest.adult === 1 ? guest.adult + " adult" : guest.adult + " adults") : "0 adults"}
+                                                        {guest.children > 0 ? (guest.children === 1 ? " - " + guest.children + " child" : " - " + guest.children + " children") : " - 0 children"}
+                                                    </div>
                                                 </div>
-                                                <Icon.CaretDown className='text-2xl' />
+                                                <span
+                                                    className="cursor-pointer flex items-center"
+                                                    onClick={handleOpenGuest}
+                                                    tabIndex={0}
+                                                    role="button"
+                                                    aria-label="Open guest dropdown"
+                                                >
+                                                    <Icon.CaretDown className='text-2xl'/>
+                                                </span>
                                             </div>
-                                            <div className={`sub-menu-guest bg-white rounded-b-xl overflow-hidden p-5 absolute top-full -mt-px left-0 w-full box-shadow ${openGuest ? 'open' : ''}`}>
+                                            <div className={`sub-menu-guest bg-white rounded-b-xl overflow-hidden p-5 absolute top-full md:mt-5 mt-3 left-0 w-full box-shadow md:border-t border-outline ${openGuest ? "open" : ""}`}>
                                                 <div className="item flex items-center justify-between pb-4 border-b border-outline">
-                                                    <div className="left">
-                                                        <p>Adults</p>
-                                                        <div className="caption1 text-variant1">(12 Years+)</div>
-                                                    </div>
-                                                    <div className="right flex items-center gap-5">
-                                                        <div
-                                                            className={`minus w-8 h-8 flex items-center justify-center rounded-full border border-outline duration-300 ${guest.adult === 0 ? 'opacity-[0.4] cursor-default' : 'cursor-pointer hover:bg-black hover:text-white'}`}
-                                                            onClick={() => decreaseGuest('adult')}
-                                                        >
-                                                            <Icon.Minus weight='bold' />
+                                                        <div className="left">
+                                                            <p>Adults</p>
+                                                            <div className="caption1 text-variant1">(12 Years+)</div>
                                                         </div>
-                                                        <div className="text-title">{guest.adult}</div>
-                                                        <div
-                                                            className="plus w-8 h-8 flex items-center justify-center rounded-full border border-outline cursor-pointer duration-300 hover:bg-black hover:text-white"
-                                                            onClick={() => increaseGuest('adult')}
-                                                        >
-                                                            <Icon.Plus weight='bold' />
+                                                        <div className="right flex items-center gap-5">
+                                                            <div
+                                                                className={`minus w-8 h-8 flex items-center justify-center rounded-full border border-outline duration-300 ${guest.adult === 0 ? "opacity-[0.4] cursor-default" : "cursor-pointer hover:bg-black hover:text-white"}`}
+                                                                role="button"
+                                                                aria-label="Minus adult"
+                                                                onClick={() => decreaseGuest("adult")}> 
+                                                                <Icon.Minus weight="bold" />
+                                                            </div>
+                                                            <div className="text-title">{guest.adult}</div>
+                                                            <div
+                                                                className="plus w-8 h-8 flex items-center justify-center rounded-full border border-outline cursor-pointer duration-300 hover:bg-black hover:text-white"
+                                                                role="button"
+                                                                aria-label="Plus adult"
+                                                                onClick={() => increaseGuest("adult")}> 
+                                                                <Icon.Plus weight="bold" />
+                                                            </div>
                                                         </div>
-                                                    </div>
                                                 </div>
                                                 <div className="item flex items-center justify-between pb-4 pt-4 border-b border-outline">
-                                                    <div className="left">
-                                                        <p>Children</p>
-                                                        <div className="caption1 text-variant1">(2-12 Years)</div>
-                                                    </div>
-                                                    <div className="right flex items-center gap-5">
-                                                        <div
-                                                            className={`minus w-8 h-8 flex items-center justify-center rounded-full border border-outline duration-300 ${guest.children === 0 ? 'opacity-[0.4] cursor-default' : 'cursor-pointer hover:bg-black hover:text-white'}`}
-                                                            onClick={() => decreaseGuest('children')}
-                                                        >
-                                                            <Icon.Minus weight='bold' />
+                                                        <div className="left">
+                                                            <p>Children</p>
+                                                            <div className="caption1 text-variant1">(2-12 Years)</div>
                                                         </div>
-                                                        <div className="text-title">{guest.children}</div>
-                                                        <div
-                                                            className="plus w-8 h-8 flex items-center justify-center rounded-full border border-outline cursor-pointer duration-300 hover:bg-black hover:text-white"
-                                                            onClick={() => increaseGuest('children')}
-                                                        >
-                                                            <Icon.Plus weight='bold' />
+                                                        <div className="right flex items-center gap-5">
+                                                            <div
+                                                                className={`minus w-8 h-8 flex items-center justify-center rounded-full border border-outline duration-300 ${guest.children === 0 ? "opacity-[0.4] cursor-default" : "cursor-pointer hover:bg-black hover:text-white"}`}
+                                                                role="button"
+                                                                aria-label="Minus child"
+                                                                onClick={() => decreaseGuest("children")}> 
+                                                                <Icon.Minus weight="bold" />
+                                                            </div>
+                                                            <div className="text-title">{guest.children}</div>
+                                                            <div
+                                                                className="plus w-8 h-8 flex items-center justify-center rounded-full border border-outline cursor-pointer duration-300 hover:bg-black hover:text-white"
+                                                                role="button"
+                                                                aria-label="Plus child"
+                                                                onClick={() => increaseGuest("children")}> 
+                                                                <Icon.Plus weight="bold" />
+                                                            </div>
                                                         </div>
+                                                </div>
+                                                    <div
+                                                        className="button-main w-full text-center mt-4"
+                                                        onClick={() => setOpenGuest(false)}>
+                                                        Done
                                                     </div>
                                                 </div>
+
+                                        </div>
+                                    </div>
+
+                                    {/* Room Numbers */}
+                                    <div className="room-numbers mt-5">
+                                        <div className="flex items-center justify-between w-full">
+                                            <div className="heading6">Number of Rooms</div>
+                                            <div className="flex items-center gap-5">
                                                 <div
-                                                    className="button-main w-full text-center mt-4"
-                                                    onClick={() => setOpenGuest(false)}
+                                                    className={`minus w-8 h-8 flex items-center justify-center rounded-full border border-outline duration-300 ${roomCount === 1 ? "opacity-[0.4] cursor-default" : "cursor-pointer hover:bg-black hover:text-white"}`}
+                                                    role="button"
+                                                    aria-label="Minus room"
+                                                    onClick={() => roomCount > 1 && setRoomCount(roomCount - 1)}
                                                 >
-                                                    Done
+                                                    <Icon.Minus weight="bold" />
+                                                </div>
+                                                <div className="text-title">{roomCount}</div>
+                                                <div
+                                                    className="plus w-8 h-8 flex items-center justify-center rounded-full border border-outline cursor-pointer duration-300 hover:bg-black hover:text-white"
+                                                    role="button"
+                                                    aria-label="Plus room"
+                                                    onClick={() => setRoomCount(roomCount + 1)}
+                                                >
+                                                    <Icon.Plus weight="bold" />
                                                 </div>
                                             </div>
                                         </div>
@@ -442,21 +513,17 @@ const HotelDetailContent = () => {
                                         <div className="heading6">Price Summary</div>
                                         <div className="list mt-2">
                                             <div className="flex items-center justify-between">
-                                                <div>${basePrice} x {nights} Nights</div>
-                                                <div className="text-button">${basePrice * nights}</div>
+                                                <div>${basePrice} x {nights} Nights x {roomCount} Room{roomCount > 1 ? "s" : ""}</div>
+                                                <div className="text-button">${basePrice * nights * roomCount}</div>
                                             </div>
                                             <div className="flex items-center justify-between mt-1">
-                                                <div>Cleaning Fee</div>
-                                                <div className="text-button">${cleaningFee}</div>
-                                            </div>
-                                            <div className="flex items-center justify-between mt-1">
-                                                <div>Services Fee</div>
-                                                <div className="text-button">${serviceFee}</div>
+                                                <div>Service Tax</div>
+                                                <div className="text-button">${serviceTax.toFixed(2)}</div>
                                             </div>
                                         </div>
                                         <div className="total-block mt-5 pt-5 border-t border-outline flex items-center justify-between">
-                                            <div className="heading6">Total Before Taxes</div>
-                                            <div className="heading5">${total}</div>
+                                            <div className="heading6">Total</div>
+                                            <div className="heading5">${total.toFixed(2)}</div>
                                         </div>
                                         <div className="button-main w-full text-center mt-5">Book Now</div>
                                     </div>
