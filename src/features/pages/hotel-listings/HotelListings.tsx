@@ -17,16 +17,18 @@ import { ClusteredHotelMarkers } from "./ClusteredHotelMarkers";
 const formatDate = (dateString: string): string => {
        const date = new Date(dateString);
        const year = date.getFullYear();
-       const month = date.getMonth() + 1;
-       const day = date.getDate();
+       const month = String(date.getMonth() + 1).padStart(2, "0");
+       const day = String(date.getDate()).padStart(2, "0");
        return `${year}-${month}-${day}`;
 };
-
 //?location=RsBU&startDate=7/20/2025&endDate=7/27/2025&adult=1&children=1&room=2
 const HotelListings = () => {
        // eslint-disable-next-line @typescript-eslint/no-unused-vars
        const [searchParams, _] = useSearchParams();
        const destination_id = searchParams.get("location");
+       const numberOfAdults = Number(searchParams.get("adult"));
+       const numberOfChildren = Number(searchParams.get("children"));
+       const numberOfRooms = Number(searchParams.get("room"));
        const checkIn = formatDate(searchParams.get("startDate") as string);
        const checkOut = formatDate(searchParams.get("endDate") as string);
 
@@ -73,7 +75,7 @@ const HotelListings = () => {
               const fetchHotelsByDestination = async () => {
                      setIsLoading(true);
                      try {
-                            const response = await fetch(`http://localhost:3000/api/hotels?destination_id=${destination_id}&checkin=${checkIn}&checkout=${checkOut}&lang=${"en_US"}&currency=${"SGD"}&country_code=${"SG"}&guests=${2}&partner_id=${1}`, {
+                            const response = await fetch(`http://localhost:3000/api/hotels?destination_id=${destination_id}`, {
                                    method: "GET",
                                    headers: {
                                           "Content-Type": "application/json",
@@ -97,21 +99,18 @@ const HotelListings = () => {
                      }
               };
               fetchHotelsByDestination();
-       }, [checkIn, checkOut, destination_id]);
+       }, [checkIn, checkOut, destination_id, numberOfAdults, numberOfChildren, numberOfRooms]);
 
        useEffect(() => {
               let isMounted = true;
               let timeoutId: number | undefined;
-
               const fetchHotelPricesWithPolling = async () => {
                      try {
                             let retries = 0;
-                            const maxRetries = 40;
-                            const delay = 2000;
-
+                            const maxRetries = 50;
+                            const delay = 1500;
                             while (retries < maxRetries) {
-                                   const response = await fetch(`http://localhost:3000/api/hotels/prices?destination_id=${destination_id}&checkin=${checkIn}&checkout=${checkOut}&lang=en_US&currency=SGD&country_code=SG&guests=2&partner_id=1`);
-
+                                   const response = await fetch(`http://localhost:3000/api/hotels/prices?destination_id=${destination_id}&checkin=${checkIn}&checkout=${checkOut}&lang=en_US&currency=SGD&country_code=SG&guests=${(numberOfAdults + numberOfChildren).toString()}&landing_page=wl-acme-earn&product_type=earn&partner_id=1089`);
                                    const result = await response.json();
                                    if (result.complete && result.data?.hotels) {
                                           const priceMap = new Map<string, HotelPrice>();
@@ -121,26 +120,22 @@ const HotelListings = () => {
                                           if (isMounted) setHotelPrices(priceMap);
                                           return;
                                    }
-
                                    retries++;
                                    await new Promise((resolve) => (timeoutId = setTimeout(resolve, delay)));
                             }
-
-                            console.warn("Hotel price polling timed out");
+                            console.warn("Polling timed out");
                      } catch (error) {
                             if (error instanceof Error) {
                                    console.error("Polling error:", error);
                             }
                      }
               };
-
               fetchHotelPricesWithPolling();
-
               return () => {
                      isMounted = false;
                      clearTimeout(timeoutId);
               };
-       }, [checkIn, checkOut, destination_id]);
+       }, [checkIn, checkOut, destination_id, numberOfAdults, numberOfChildren, numberOfRooms]);
 
        const mergedHotels = useMemo(() => {
               return allHotels.map((hotel) => {
