@@ -99,7 +99,7 @@ const HotelListings = () => {
                      }
               };
               fetchHotelsByDestination();
-       }, [checkIn, checkOut, destination_id, numberOfAdults, numberOfChildren, numberOfRooms]);
+       }, [destination_id]);
 
        useEffect(() => {
               let isMounted = true;
@@ -109,8 +109,12 @@ const HotelListings = () => {
                             let retries = 0;
                             const maxRetries = 50;
                             const delay = 1500;
+                            const guestsParam = Array(numberOfRooms)
+                                   .fill(numberOfAdults + numberOfChildren)
+                                   .join("|");
+                            const queryString = `http://localhost:3000/api/hotels/prices?destination_id=${destination_id}&checkin=${checkIn}&checkout=${checkOut}&lang=en_US&currency=SGD&country_code=SG&guests=${guestsParam}&landing_page=wl-acme-earn&product_type=earn&partner_id=1089`;
                             while (retries < maxRetries) {
-                                   const response = await fetch(`http://localhost:3000/api/hotels/prices?destination_id=${destination_id}&checkin=${checkIn}&checkout=${checkOut}&lang=en_US&currency=SGD&country_code=SG&guests=${(numberOfAdults + numberOfChildren).toString()}&landing_page=wl-acme-earn&product_type=earn&partner_id=1089`);
+                                   const response = await fetch(queryString);
                                    const result = await response.json();
                                    if (result.complete && result.data?.hotels) {
                                           const priceMap = new Map<string, HotelPrice>();
