@@ -42,6 +42,7 @@ const AppRoutes: React.FC = () => {
                             path="/profile"
                             element={<ProfilePage />}
                      />
+                     <Route
                             path="/booking"
                             element={<BookingPage />}
                      />
@@ -49,7 +50,6 @@ const AppRoutes: React.FC = () => {
                             path="/return"
                             element={<ReturnForm />}
                      />
-
                      <Route
                             path="/checkout"
                             element={<CheckoutForm />}
