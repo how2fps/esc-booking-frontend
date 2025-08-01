@@ -59,6 +59,41 @@ const HeaderOne = () => {
                                                         Hotel
                                                  </Link>
                                           </li>
+                                          <li className="h-full relative">
+                                                 <Link
+                                                        to="/hotels?location=fRZM&startDate=02/08/2025&endDate=09/08/2025&adult=1&children=1&room=1"
+                                                        className={`text-button duration-300 h-full flex items-center justify-center gap-1 ${pathname === "/" ? "active" : ""}`}>
+                                                        Listings
+                                                 </Link>
+                                          </li>
+                                          <li className="h-full relative">
+                                                 <Link
+                                                        to="/details"
+                                                        className={`text-button duration-300 h-full flex items-center justify-center gap-1 ${pathname === "/" ? "active" : ""}`}>
+                                                        Hotel Details
+                                                 </Link>
+                                          </li>
+                                          <li className="h-full relative">
+                                                 <Link
+                                                        to="/checkout"
+                                                        className={`text-button duration-300 h-full flex items-center justify-center gap-1 ${pathname === "/" ? "active" : ""}`}>
+                                                        Payment
+                                                 </Link>
+                                          </li>
+                                          <li className="h-full relative">
+                                                 <Link
+                                                        to="/booking"
+                                                        className={`text-button duration-300 h-full flex items-center justify-center gap-1 ${pathname === "/" ? "active" : ""}`}>
+                                                        Booking
+                                                 </Link>
+                                          </li>
+                                          <li className="h-full relative">
+                                                 <Link
+                                                        to="/return"
+                                                        className={`text-button duration-300 h-full flex items-center justify-center gap-1 ${pathname === "/" ? "active" : ""}`}>
+                                                        Return
+                                                 </Link>
+                                          </li>
                                    </ul>
                             </div>
 

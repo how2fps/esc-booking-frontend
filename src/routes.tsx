@@ -29,7 +29,7 @@ const AppRoutes: React.FC = () => {
                             element={<DestinationSearch />}
                      />
                      <Route
-                            path="/hotels/:id"
+                            path="/details/:id"
                             element={<HotelDetails />}
                      />
                      <Route

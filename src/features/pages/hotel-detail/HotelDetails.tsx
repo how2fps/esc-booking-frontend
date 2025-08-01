@@ -3,15 +3,11 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react' // ✅ Added useMemo import
 import { useParams } from "react-router-dom"
 import { addDays } from 'date-fns'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { Pagination } from 'swiper/modules'
 import * as Icon from 'phosphor-react'
 import { DateRangePicker } from 'react-date-range'
 import StickyBox from 'react-sticky-box'
 
-// Components
-import HeaderOne from '../../components/Header/Header'
-import Footer from '../../components/Footer/Footer'
+
 
 // Data
 import hotelsData from '../../components/data/hotels.json'
@@ -29,7 +25,7 @@ interface GuestType {
 
 const HotelDetailContent = () => {
     const { id } = useParams();  
-    const hotelId = id || '4PXS';
+    const hotelId = id || ' ';
     
     // Find the hotel from JSON data
     const hotel = hotelsData.find((h: any) => h.id === hotelId);
@@ -182,7 +178,7 @@ const HotelDetailContent = () => {
 
     return (
         <div className='hotel-detail'>
-            <HeaderOne />
+          
             
             {/* Image Gallery */}
             <div className="container mt-10">
@@ -556,7 +552,7 @@ const HotelDetailContent = () => {
                     </div>
                 </div>
             </div>
-            <Footer />
+        
         </div>
     )
 }
