@@ -32,10 +32,10 @@ const HeaderOne = () => {
                      id="header"
                      className="header"
                      data-testid="header">
-                     <div className={`header-main h-20 w-full bg-white min-[1322px]:px-5 px-4 flex items-center justify-between`}>
+                     <div className={`header-main h-20 w-full bg-white :px-5 px-4 flex items-center justify-between`}>
                             <Link
                                    to="/"
-                                   className="logo">
+                                   className="logo" >
                                    <img
                                           src="/images/logo/Bloom.png"
                                           alt="logo"

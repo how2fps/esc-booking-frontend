@@ -1,14 +1,13 @@
 import { addDays } from "date-fns";
 import * as Icon from "phosphor-react";
+
 import { useCallback, useEffect, useState } from "react";
 import { DateRangePicker } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { Link } from "react-router-dom";
-
-import { BKTree } from "@picosearch/bk-tree";
 import { AsyncPaginate } from "react-select-async-paginate";
-import Destination from "../data/destinations.json";
+
 
 interface DestinationType {
        term: string;
@@ -25,22 +24,8 @@ interface GuestType {
        room: number;
 }
 
-const options: DestinationType[] = (Array.isArray(Destination) ? Destination : Object.values(Destination)).map((d: any) => ({
-       ...d,
-       state: typeof d.state === "string" ? d.state : "",
-}));
 
-//const mappedOptions = options.map((option) => ({ value: option.uid, label: option.term }));
 
-const tokenizedOptions = options.map((option) => (option.term || "").match(/\w+/g) || []);
-
-const Common_typos = new Set(tokenizedOptions.flat().filter((word) => word.length > 3));
-console.log(Common_typos);
-const correcter = new BKTree();
-
-for (const item of Common_typos) {
-       correcter.insert(item);
-}
 
 const noOptionsMessage = (input: { inputValue: string }) => {
        if (input.inputValue.length === 0) {
@@ -60,14 +45,13 @@ const loadOptions = async (search: string, page: number) => {
                      hasMore: false,
               };
        }
-       let search_term = search.split(/[,\s]+/);
-       search_term = search_term.map((term) => correcter.lookup(term));
-       const filteredOptions = options.filter((i) => i.term && (i.term.toLowerCase().includes(search.toLowerCase()) || search_term.some((correctedTerm) => i.term.toLowerCase().includes(correctedTerm.toLowerCase()))));
-       const uniqueOptions = Array.from(new Map(filteredOptions.map((item) => [item.term, item])).values());
-       console.log(uniqueOptions);
-       const hasMore = Math.ceil(uniqueOptions.length / optionsPerPage) > page;
+       const response = await fetch("http://localhost:3000/api/search/" + search);
+       const data = await response.json();
+       console.log(data);
+       
+       const hasMore = Math.ceil(data.length / optionsPerPage) > page;
 
-       const slicedOptions = uniqueOptions.slice((page - 1) * optionsPerPage, page * optionsPerPage);
+       const slicedOptions = data.slice((page - 1) * optionsPerPage, page * optionsPerPage);
 
        return {
               options: slicedOptions,
