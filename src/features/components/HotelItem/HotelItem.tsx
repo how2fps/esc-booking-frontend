@@ -20,7 +20,7 @@ const iconlist = {
        inHouseBar: <MartiniIcon />,
 };
 
-const HotelItem: React.FC<{ hotelData: Hotel }> = ({ hotelData }) => {
+const HotelItem: React.FC<{ hotelData: Hotel,image_size:number }> = ({ hotelData}) => {
        const router = useNavigate();
        const prefix = hotelData.image_details?.prefix || "";
        const suffix = hotelData.image_details?.suffix || "";
@@ -70,7 +70,7 @@ const HotelItem: React.FC<{ hotelData: Hotel }> = ({ hotelData }) => {
                                                                              width={2500}
                                                                              height={2500}
                                                                              alt="Placeholder image"
-                                                                             className="w-full h-full object-cover"
+                                                                             className="w-full h-full object-cover rounded-xl"
                                                                       />
                                                                ) : (
                                                                       <img
@@ -87,7 +87,7 @@ const HotelItem: React.FC<{ hotelData: Hotel }> = ({ hotelData }) => {
                                           ))}
                                    </Swiper>
                             ) : (
-                                   <div className="bg-img w-full aspect-[16/11]">
+                                   <div className="bg-img w-full overflow-hidden aspect-[16/11]">
                                           <img
                                                  src={PlaceholderCat}
                                                  width={2000}
@@ -98,9 +98,18 @@ const HotelItem: React.FC<{ hotelData: Hotel }> = ({ hotelData }) => {
                                    </div>
                             )}
                      </div>
-                     <div className="infor mt-4">
-                            <div className="flex items-center justify-between flex-wrap gap-2">
+                     <div className="infor m-4">
+                            <div className="flex items-center justify-between flex gap-2">
+                                   <div className="name capitalize mt-1">{hotelData.name}</div>
                                    <div className="flex items-center gap-1">
+                                          <div className="text-button-sm">{Number(hotelData.rating).toFixed(1)}</div>
+                                          <StarIcon
+                                                 className="text-yellow"
+                                                 weight="fill"
+                                          />
+                                   </div>
+                            </div>
+                            <div className="flex items-center gap-1">
                                           {Object.entries(hotelData.amenities).map(([key, value]) =>
                                                  value && iconlist[key] ? (
                                                         <span
@@ -111,15 +120,7 @@ const HotelItem: React.FC<{ hotelData: Hotel }> = ({ hotelData }) => {
                                                  ) : null
                                           )}
                                    </div>
-                                   <div className="flex items-center gap-1">
-                                          <div className="text-button-sm">{Number(hotelData.rating).toFixed(1)}</div>
-                                          <StarIcon
-                                                 className="text-yellow"
-                                                 weight="fill"
-                                          />
-                                   </div>
-                            </div>
-                            <div className="name capitalize mt-1">{hotelData.name}</div>
+                            
                             <div className="flex items-center justify-between gap-2 mt-1">
                                    <div className="text-variant1">Nov. 12 - 15</div>
                                    <div className="flex lg:items-end">

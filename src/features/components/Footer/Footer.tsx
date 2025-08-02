@@ -97,13 +97,13 @@ const Footer = () => {
                                                         <div className="form-search mt-5"></div>
                                                  </div>
                                                  <div className="list-nav lg:w-2/3 w-full sm:flex max-sm:grid grid-cols-2 gap-8 justify-between">
-                                                        <div className="item">
+                                                        <div className="click">
                                                                <div className="text-title pb-3">Support</div>
                                                                <div className="caption1 text-variant1 has-line block w-fit whitespace-nowrap pl-3">Help Center</div>
                                                                <div className="caption1 text-variant1 has-line block w-fit whitespace-nowrap mt-2 pl-3">Contact Us</div>
                                                         </div>
 
-                                                        <div className="item">
+                                                        <div className="click">
                                                                <div className="text-title pb-4">Download App</div>
                                                         </div>
                                                  </div>

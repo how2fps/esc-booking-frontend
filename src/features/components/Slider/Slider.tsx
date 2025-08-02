@@ -25,7 +25,7 @@ interface GuestType {
 }
 
 
-
+const images = ["/images/home/mountainhero.jpg", "/images/home/riverhero.jpg", "/images/home/sandhero.jpg"];
 
 const noOptionsMessage = (input: { inputValue: string }) => {
        if (input.inputValue.length === 0) {
@@ -48,7 +48,7 @@ const loadOptions = async (search: string, page: number) => {
        const response = await fetch("http://localhost:3000/api/search/" + search);
        const data = await response.json();
        console.log(data);
-       
+
        const hasMore = Math.ceil(data.length / optionsPerPage) > page;
 
        const slicedOptions = data.slice((page - 1) * optionsPerPage, page * optionsPerPage);
@@ -75,6 +75,13 @@ const loadPageOptions = async (q: string, loadedOptions: DestinationType[], addi
 };
 
 const DestinationSearch = () => {
+       const [index, setIndex] = useState(0);
+       useEffect(() => {
+              const timer = setInterval(() => {
+                     setIndex((prev) => (prev + 1) % images.length);
+              }, 6000);
+              return () => clearInterval(timer);
+       }, []);
        const [openDate, setOpenDate] = useState(false);
        const [openGuest, setOpenGuest] = useState(false);
        const [location, setLocation] = useState({
@@ -158,24 +165,24 @@ const DestinationSearch = () => {
                      <div
                             className="slider-block style-one relative h-[620px]"
                             data-testid="slider">
-                            <div className="bg-img absolute top-0 left-0 w-full h-full">
-                                   <img
-                                          src={"/images/slider/hotel-lobby-2024-12-05-23-25-27-utc.jpg"}
-                                          width={5000}
-                                          height={3000}
-                                          alt="slider"
-                                          className="w-full h-full object-cover"
-                                          style={{
-                                                 filter: "brightness(0.5)",
-                                                 WebkitFilter: "brightness(0.5)",
-                                                 position: "relative",
-                                          }}
-                                   />
+                            <div className="bg-img absolute top-0 left-0 w-full h-full z-0">
+                                   {images.map((src, i) => (
+                                          <img
+                                                 key={i}
+                                                 src={src}
+                                                 alt={`Slide ${i}`}
+                                                 className={`bg-img absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${i === index ? "opacity-100 z-10" : "opacity-0 z-0"}`}
+                                                 style={{
+                                                        filter: "brightness(0.5)",
+                                                        WebkitFilter: "brightness(0.5)",
+                                                 }}
+                                          />
+                                   ))}
                             </div>
-                            <div className="container py-[176px]">
+                            <div className="container py-[176px] z-40">
                                    <div className="content w-full relative">
                                           <div className="heading flex-col items-center justify-center">
-                                                 <div className="heading2 text-white text-center">Pick your next journey</div>
+                                                 <div className="heading3 text-white text-center">Rest Easy at Your Peaceful Retreat</div>
                                           </div>
 
                                           <div className="form-search md:mt-10 mt-6 w-full">
@@ -188,7 +195,7 @@ const DestinationSearch = () => {
                                                                       additional={{ page: 1 }}
                                                                       loadOptions={loadPageOptions}
                                                                       getOptionLabel={(i: DestinationType) => i.term}
-                                                                     getOptionValue={(i: DestinationType) => i.uid}
+                                                                      getOptionValue={(i: DestinationType) => i.uid}
                                                                       noOptionsMessage={noOptionsMessage}
                                                                       onChange={setLocation}
                                                                       styles={{
@@ -242,7 +249,7 @@ const DestinationSearch = () => {
                                                                       />
                                                                </div>
                                                                <div className={`sub-menu-guest bg-white rounded-b-xl overflow-hidden p-5 absolute top-full md:mt-5 mt-3 left-0 w-full box-shadow md:border-t border-outline ${openGuest ? "open" : ""}`}>
-                                                                      <div className="item flex items-center justify-between pb-4 border-b border-outline">
+                                                                      <div className="flex items-center justify-between pb-4 border-b border-outline">
                                                                              <div className="left">
                                                                                     <p>Adults</p>
                                                                                     <div className="caption1 text-variant1">(12 Years+)</div>

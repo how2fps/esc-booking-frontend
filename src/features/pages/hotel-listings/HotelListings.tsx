@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-
+import SliderOne from "../../components/Slider/Slider";
 import * as Icon from "phosphor-react";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
@@ -182,135 +182,54 @@ const HotelListings = () => {
        }, [itemsPerPage, currentPage, sortedHotelsArray]);
 
        return (
-              <div className="bg-white text-black lg:py-20 md:py-14 max-lg:mt-10 max-md:mt-40 py-10 px-12">
-                     <div className="flex">
-                            <div className="left lg:w-1/4 w-1/3 pr-[45px] max-md:hidden">
-                                   <div className="sidebar-main">
-                                          {isLoading ? (
-                                                 <div
-                                                        role="status"
-                                                        className="w-full h-[400px] rounded-xl border-2 border-black overflow-hidden mb-4 flex justify-center items-center">
-                                                        <SpinnerIcon
-                                                               className="animate-spin text-blue-500"
-                                                               size={32}
-                                                        />
-                                                 </div>
-                                          ) : (
-                                                 <APIProvider apiKey={"AIzaSyAb7h-Azds2hKTEeVfuGzcDy4uXSigGYzI"}>
-                                                        <div className="w-full h-[400px] rounded-xl border-2 border-black overflow-hidden mb-4">
-                                                               <GoogleMap
-                                                                      mapId={"23a74d563be6cbd9931b8972"}
-                                                                      style={{ width: "100%", height: "397px", borderRadius: "12px" }}
-                                                                      defaultCenter={
-                                                                             allHotels.length > 0 ? { lat: allHotels[0].latitude, lng: allHotels[0].longitude } : { lat: 0, lng: 0 } // or a sensible fallback location
-                                                                      }
-                                                                      defaultZoom={14}
-                                                                      gestureHandling={"greedy"}
-                                                                      disableDefaultUI={true}>
-                                                                      <ClusteredHotelMarkers hotels={filteredHotelsArray} />
-                                                               </GoogleMap>
-                                                        </div>
-                                                 </APIProvider>
-                                          )}
-                                          <div className="flex"></div>
-                                          <div className="border-2 border-black rounded-[12px] p-4 mt-4">
-                                                 <div className="heading6">Price Range</div>
-                                                 <div className="price-block flex items-center justify-between flex-wrap mt-3">
-                                                        ${filters.priceRange.min} - ${filters.priceRange.max}
-                                                 </div>
-                                                 <Slider
-                                                        data-testid="price-slider"
-                                                        range
-                                                        value={[filters.priceRange.min, filters.priceRange.max]}
-                                                        min={0}
-                                                        max={30000}
-                                                        onChange={(value) => {
-                                                               if (Array.isArray(value) && value.length === 2) {
-                                                                      const [min, max] = value;
-                                                                      setFilters((prev) => ({
-                                                                             ...prev,
-                                                                             priceRange: { min, max },
-                                                                      }));
-                                                               }
-                                                        }}
-                                                        className="mt-4"
-                                                 />
-                                          </div>
-                                          <div
-                                                 data-testid="rating-slider"
-                                                 className="border-2 border-black rounded-[12px] p-4 mt-8">
-                                                 <div className="heading6">Rating</div>
-                                                 <div className="price-block flex items-center justify-between flex-wrap">
-                                                        <div className="flex items-center gap-1">
-                                                               ≥ {filters.minimumRating}
-                                                               <StarIcon
-                                                                      className="text-yellow"
-                                                                      weight="fill"
-                                                               />
-                                                        </div>
-                                                 </div>
-                                                 <Slider
-                                                        value={filters.minimumRating}
-                                                        min={0}
-                                                        max={5}
-                                                        step={0.5}
-                                                        className="mt-2"
-                                                        onChange={(value) =>
-                                                               setFilters((prev) => ({
-                                                                      ...prev,
-                                                                      minimumRating: typeof value === "number" ? value : prev.minimumRating,
-                                                               }))
-                                                        }
-                                                 />
-                                          </div>
-                                          <AmenityFilter setFilters={setFilters} />
-                                   </div>
-                            </div>
-                            <div className="right lg:w-3/4 md:w-2/3 md:pl-[15px]">
-                                   <div className="right flex items-center gap-3">
-                                          <div className="flex-1">
-                                                 <input
-                                                        type="text"
-                                                        placeholder="Search hotels..."
-                                                        value={searchTerm}
-                                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                                        className="w-full rounded-lg border-2 border-black h-14 px-4 bg-white text-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
-                                                 />
-                                          </div>
-                                          <div className="select-block relative cursor-pointer">
-                                                 <label htmlFor="items-per-page">Items Per Page: </label>
-                                                 <select
-                                                        id="items-per-page"
-                                                        name="select-filter"
-                                                        className="custom-select cursor-pointer h-14 rounded-lg border-2 border-black bg-white text-black"
-                                                        onChange={(e) => {
-                                                               handleItemsPerPageChange(Number.parseInt(e.target.value));
-                                                        }}
-                                                        value={itemsPerPage}>
-                                                        <option value="8">8</option>
-                                                        <option value="9">9</option>
-                                                        <option value="12">12</option>
-                                                        <option value="16">16</option>
-                                                 </select>
-                                                 <Icon.CaretDown className="text-s absolute top-1/2 -translate-y-1/2 md:right-4 right-2 cursor-pointer pointer-events-none" />
-                                          </div>
-                                          <div className="select-block relative cursor-pointer">
-                                                 <label htmlFor="sort">Sort By: </label>
-                                                 <select
-                                                        id="sort"
-                                                        name="select-filter"
-                                                        className="custom-select cursor-pointer h-14 rounded-lg border-2 border-black bg-white text-black"
-                                                        onChange={(e) => {
-                                                               setSortOption(e.target.value);
-                                                        }}
-                                                        defaultValue={"Sorting"}>
-                                                        <option value="starHighToLow">Review High To Low</option>
-                                                        <option value="priceHighToLow">Price High To Low</option>
-                                                        <option value="priceLowToHigh">Price Low To High</option>
-                                                 </select>
-                                                 <Icon.CaretDown className="text-s absolute top-1/2 -translate-y-1/2 md:right-4 right-2 cursor-pointer pointer-events-none" />
-                                          </div>
-                                   </div>
+              <div className="bg-white text-black ">
+                     <SliderOne />
+                     <div className="hotel-item rounded-lg p-5 flex items-center gap-5 sticky top-0 z-40 ">
+                            <input
+                                   type="text"
+                                   placeholder="Search hotels..."
+                                   value={searchTerm}
+                                   onChange={(e) => setSearchTerm(e.target.value)}
+                                   className="w-full select-block rounded-lg h-14 px-4 bg-white text-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
+                            />
+
+                            <label htmlFor="items-per-page">Items Per Page: </label>
+                            <select
+                                   id="items-per-page"
+                                   name="select-filter"
+                                   className="select-block cursor-pointer items-center px-5 h-14 rounded-lg bg-white text-black"
+                                   onChange={(e) => {
+                                          handleItemsPerPageChange(Number.parseInt(e.target.value));
+                                   }}
+                                   value={itemsPerPage}>
+                                   <option value="8">8</option>
+                                   <option value="9">9</option>
+                                   <option value="12">12</option>
+                                   <option value="16">16</option>
+                            </select>
+                            <Icon.CaretDown className="text-s abslute top-1/2 -translate-y-1/2 md:right-4 right-2 cursor-pointer pointer-events-none" />
+
+
+                            <label htmlFor="sort">Sort By: </label>
+                            <select
+                                   id="sort"
+                                   name="select-filter"
+                                   className="select-block cursor-pointer items-center px-5 h-14 rounded-lg bg-white text-black"
+                                   onChange={(e) => {
+                                          setSortOption(e.target.value);
+                                   }}
+                                   defaultValue={"Sorting"}>
+                                   <option value="starHighToLow">Review High To Low</option>
+                                   <option value="priceHighToLow">Price High To Low</option>
+                                   <option value="priceLowToHigh">Price Low To High</option>
+                            </select>
+                            <Icon.CaretDown className="text-s absolute top-1/2 -translate-y-1/2 md:right-4 right-2 cursor-pointer pointer-events-none" />
+
+                     </div>
+
+                     <div className="flex mt-5 px-10">
+                            <div className="left lg:w-1/2 md:w-2/3 md:pl-[15px] mr-10">
+
                                    {isLoading ? (
                                           <div
                                                  role="status"
@@ -321,11 +240,11 @@ const HotelListings = () => {
                                                  />
                                           </div>
                                    ) : (
-                                          <div className="list-tent md:mt-10 mt-6 grid lg:grid-cols-3 md:grid-cols-2 min-[360px]:grid-cols-2 lg:gap-[30px] gap-4 gap-y-7">
+                                          <div className="list-tent md:mt-0 mt-6 grid lg:grid-cols-3 md:grid-cols-2 min-[360px]:grid-cols-2 lg:gap-[30px] gap-4 gap-y-7">
                                                  {currentPageHotels.length > 0 ? (
                                                         currentPageHotels.map((hotel) => (
                                                                <HotelItem
-                                                                      key={hotel.id}
+                                                                      image_size={10}
                                                                       hotelData={hotel}
                                                                />
                                                         ))
@@ -342,6 +261,37 @@ const HotelListings = () => {
                                    ) : (
                                           ""
                                    )}
+                            </div>
+                            <div className="right lg:w-1/2 md:w-1/3  pr-[45px] max-md:hidden">
+                                   <div className="sidebar-main">
+                                          {isLoading ? (
+                                                 <div
+                                                        role="status"
+                                                        className="w-full h-full rounded-xl border-2 border-black overflow-hidden mb-4 flex justify-center items-center">
+                                                        <SpinnerIcon
+                                                               className="animate-spin text-blue-500"
+                                                               size={32}
+                                                        />
+                                                 </div>
+                                          ) : (
+                                                 <APIProvider apiKey={"AIzaSyAb7h-Azds2hKTEeVfuGzcDy4uXSigGYzI"}>
+                                                        <div className="w-full h-full rounded-xl border-2 border-black overflow-hidden mb-4">
+                                                               <GoogleMap
+                                                                      mapId={"23a74d563be6cbd9931b8972"}
+                                                                      style={{ width: "100%", height: "900px", borderRadius: "12px" }}
+                                                                      defaultCenter={
+                                                                             allHotels.length > 0 ? { lat: allHotels[0].latitude, lng: allHotels[0].longitude } : { lat: 0, lng: 0 } // or a sensible fallback location
+                                                                      }
+                                                                      defaultZoom={14}
+                                                                      gestureHandling={"greedy"}
+                                                                      disableDefaultUI={true}>
+                                                                      <ClusteredHotelMarkers hotels={filteredHotelsArray} />
+                                                               </GoogleMap>
+                                                        </div>
+                                                 </APIProvider>
+                                          )}
+                                          
+                                   </div>
                             </div>
                      </div>
               </div>
