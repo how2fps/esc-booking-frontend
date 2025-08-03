@@ -37,7 +37,7 @@ const HotelListings = () => {
        const [sortOption, setSortOption] = useState<string>();
 
        const [currentPage, setCurrentPage] = useState<number>(1);
-       const [itemsPerPage, setItemsPerPage] = useState<number>(8);
+       const [itemsPerPage, setItemsPerPage] = useState<number>(9);
 
        const [isLoading, setIsLoading] = useState<boolean>(true);
        // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -51,7 +51,8 @@ const HotelListings = () => {
 
        const handlePageChange = (selected: number) => {
               setCurrentPage(selected + 1);
-              window.scrollTo({ top: 0, behavior: "smooth" });
+              const element = document.getElementById("top");
+              element.scrollIntoView({ behavior: 'smooth' });
        };
 
        const handleItemsPerPageChange = (newItemsPerPage: number) => {
@@ -184,7 +185,8 @@ const HotelListings = () => {
        return (
               <div className="bg-white text-black ">
                      <SliderOne />
-                     <div className="hotel-item rounded-lg p-5 flex items-center gap-5 sticky top-0 z-40 ">
+                     <div id="top"></div>
+                     <div className="hotel-item rounded-lg p-5 flex items-center gap-5 sticky top-0 z-40 ml-5 mr-5 ">
                             <input
                                    type="text"
                                    placeholder="Search hotels..."
@@ -192,8 +194,12 @@ const HotelListings = () => {
                                    onChange={(e) => setSearchTerm(e.target.value)}
                                    className="w-full select-block rounded-lg h-14 px-4 bg-white text-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
                             />
+                            <div >
 
-                            <label htmlFor="items-per-page">Items Per Page: </label>
+
+                                   <Icon.Funnel size={18} />
+                            </div>
+                            <label htmlFor="items-per-page" className="whitespace-nowrap ">Items Per Page: </label>
                             <select
                                    id="items-per-page"
                                    name="select-filter"
@@ -202,7 +208,6 @@ const HotelListings = () => {
                                           handleItemsPerPageChange(Number.parseInt(e.target.value));
                                    }}
                                    value={itemsPerPage}>
-                                   <option value="8">8</option>
                                    <option value="9">9</option>
                                    <option value="12">12</option>
                                    <option value="16">16</option>
@@ -210,7 +215,7 @@ const HotelListings = () => {
                             <Icon.CaretDown className="text-s abslute top-1/2 -translate-y-1/2 md:right-4 right-2 cursor-pointer pointer-events-none" />
 
 
-                            <label htmlFor="sort">Sort By: </label>
+                            <label htmlFor="sort" className="whitespace-nowrap">Sort By: </label>
                             <select
                                    id="sort"
                                    name="select-filter"
@@ -263,11 +268,11 @@ const HotelListings = () => {
                                    )}
                             </div>
                             <div className="right lg:w-1/2 md:w-1/3  pr-[45px] max-md:hidden">
-                                   <div className="sidebar-main">
+                                   <div className="sidebar-main w-full h-dvh sticky pb-[130px] top-[120px] z-39" > 
                                           {isLoading ? (
                                                  <div
                                                         role="status"
-                                                        className="w-full h-full rounded-xl border-2 border-black overflow-hidden mb-4 flex justify-center items-center">
+                                                        className="w-full h-full rounded-xl overflow: hidden  border-2 border-black overflow-hidden mb-4 flex justify-center items-center">
                                                         <SpinnerIcon
                                                                className="animate-spin text-blue-500"
                                                                size={32}
@@ -275,10 +280,10 @@ const HotelListings = () => {
                                                  </div>
                                           ) : (
                                                  <APIProvider apiKey={"AIzaSyAb7h-Azds2hKTEeVfuGzcDy4uXSigGYzI"}>
-                                                        <div className="w-full h-full rounded-xl border-2 border-black overflow-hidden mb-4">
+                                                        <div className="w-full h-full rounded-xl border-2 border-black overflow-hidden mb-4 ">
                                                                <GoogleMap
                                                                       mapId={"23a74d563be6cbd9931b8972"}
-                                                                      style={{ width: "100%", height: "900px", borderRadius: "12px" }}
+                                                                      style={{ width: "100%", height: "100%", borderRadius: "12px" }}
                                                                       defaultCenter={
                                                                              allHotels.length > 0 ? { lat: allHotels[0].latitude, lng: allHotels[0].longitude } : { lat: 0, lng: 0 } // or a sensible fallback location
                                                                       }
