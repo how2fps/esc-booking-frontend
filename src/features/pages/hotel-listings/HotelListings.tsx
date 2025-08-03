@@ -22,6 +22,7 @@ const formatDate = (dateString: string): string => {
        return `${year}-${month}-${day}`;
 };
 
+
 //?location=RsBU&startDate=7/20/2025&endDate=7/27/2025&adult=1&children=1&room=2
 const HotelListings = () => {
        // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -37,9 +38,12 @@ const HotelListings = () => {
        const [sortOption, setSortOption] = useState<string>();
 
        const [currentPage, setCurrentPage] = useState<number>(1);
-       const [itemsPerPage, setItemsPerPage] = useState<number>(9);
+       const [itemsPerPage, setItemsPerPage] = useState<number>(15);
 
        const [isLoading, setIsLoading] = useState<boolean>(true);
+
+       const [filterOpened, setFilterOpened] = useState(false);
+
        // eslint-disable-next-line @typescript-eslint/no-unused-vars
        const [error, setError] = useState<string | null>(null);
 
@@ -59,7 +63,10 @@ const HotelListings = () => {
               setItemsPerPage(newItemsPerPage);
               setCurrentPage(1);
        };
+       const openFilter = () => {
+              setFilterOpened(!filterOpened);
 
+       };
        useEffect(() => {
               const handler = setTimeout(() => {
                      setDebouncedSearchTerm(searchTerm);
@@ -184,9 +191,11 @@ const HotelListings = () => {
 
        return (
               <div className="bg-white text-black ">
-                     <SliderOne />
+                     <div className="relative z-[40]">
+                            <SliderOne  />
+                     </div>
                      <div id="top"></div>
-                     <div className="hotel-item rounded-lg p-5 flex items-center gap-5 sticky top-0 z-40 ml-5 mr-5 ">
+                     <div className="hotel-item rounded-lg p-5 flex items-center gap-5 z-10 sticky top-0 ml-5 mr-5 ">
                             <input
                                    type="text"
                                    placeholder="Search hotels..."
@@ -195,24 +204,77 @@ const HotelListings = () => {
                                    className="w-full select-block rounded-lg h-14 px-4 bg-white text-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
                             />
                             <div >
-
-
-                                   <Icon.Funnel size={18} />
+                                   <Icon.Funnel size={28} className="duration-300 hover:text-primary flex" onClick = {openFilter} />
+                                   <div className={`sub-menu-guest w-80 bg-white border-solid border-2 rounded-b-xl overflow-hidden absolute box-shadow  ${filterOpened ? "open" : ""}`}>
+                                    <div className="border-1 border-black">
+                                          <AmenityFilter setFilters={setFilters} />
+                                          <div className="rounded-[12px] p-4">
+                                                 <div className="heading6">Price Range</div>
+                                                 <div className="price-block flex items-center justify-between flex-wrap">
+                                                        ${filters.priceRange.min} - ${filters.priceRange.max}
+                                                 </div>
+                                                 <Slider
+                                                        data-testid="price-slider"
+                                                        range
+                                                        value  ={[filters.priceRange.min, filters.priceRange.max]}
+                                                        min={0}
+                                                        max={30000}
+                                                        onChange={(value) => {
+                                                               if (Array.isArray(value) && value.length === 2) {
+                                                                      const [min, max] = value;
+                                                                      setFilters((prev) => ({
+                                                                             ...prev,
+                                                                             priceRange: { min, max },
+                                                                      }));
+                                                               }
+                                                        }}
+                                                 />
+                                          </div>
+                                          <div
+                                                 data-testid="rating-slider"
+                                                 className="rounded-[12px] p-4">
+                                                 <div className="heading6">Rating</div>
+                                                 <div className="price-block flex items-center justify-between flex-wrap">
+                                                        <div className="flex items-center gap-1">
+                                                               ≥ {filters.minimumRating}
+                                                               <StarIcon
+                                                                      className="text-yellow"
+                                                                      weight="fill"
+                                                               />
+                                                        </div>
+                                                 </div>
+                                                 <Slider
+                                                        value={filters.minimumRating}
+                                                        min={0}
+                                                        max={5}
+                                                        step={0.5}
+                                                        className="mt-2"
+                                                        onChange={(value) =>
+                                                               setFilters((prev) => ({
+                                                                      ...prev,
+                                                                      minimumRating: typeof value === "number" ? value : prev.minimumRating,
+                                                               }))
+                                                        }
+                                                 />
+                                          </div>
+                                    </div>
+                                   </div>
                             </div>
                             <label htmlFor="items-per-page" className="whitespace-nowrap ">Items Per Page: </label>
                             <select
                                    id="items-per-page"
                                    name="select-filter"
-                                   className="select-block cursor-pointer items-center px-5 h-14 rounded-lg bg-white text-black"
+                                   className="select-block cursor-pointer items-center px-6 h-14 rounded-lg bg-white text-black"
                                    onChange={(e) => {
                                           handleItemsPerPageChange(Number.parseInt(e.target.value));
                                    }}
                                    value={itemsPerPage}>
-                                   <option value="9">9</option>
-                                   <option value="12">12</option>
-                                   <option value="16">16</option>
+                                   <option value="15">15</option>
+                                   <option value="24">24</option>
+                                   <option value="30">30</option>
+                                   <option value="42">42</option>
                             </select>
-                            <Icon.CaretDown className="text-s abslute top-1/2 -translate-y-1/2 md:right-4 right-2 cursor-pointer pointer-events-none" />
+                            <Icon.CaretDown className="text-s abslute top-1/2 -translate-x-9 md:right-4 right-2 cursor-pointer pointer-events-none" />
 
 
                             <label htmlFor="sort" className="whitespace-nowrap">Sort By: </label>
@@ -228,7 +290,7 @@ const HotelListings = () => {
                                    <option value="priceHighToLow">Price High To Low</option>
                                    <option value="priceLowToHigh">Price Low To High</option>
                             </select>
-                            <Icon.CaretDown className="text-s absolute top-1/2 -translate-y-1/2 md:right-4 right-2 cursor-pointer pointer-events-none" />
+                            <Icon.CaretDown className="text-s absolute top-1/2 -translate-x-1 -translate-y-1/2 md:right-4 right-2 cursor-pointer pointer-events-none" />
 
                      </div>
 
@@ -245,7 +307,7 @@ const HotelListings = () => {
                                                  />
                                           </div>
                                    ) : (
-                                          <div className="list-tent md:mt-0 mt-6 grid lg:grid-cols-3 md:grid-cols-2 min-[360px]:grid-cols-2 lg:gap-[30px] gap-4 gap-y-7">
+                                          <div className="list-tent z-10 md:mt-0 mt-6 grid lg:grid-cols-3 md:grid-cols-2 min-[360px]:grid-cols-2 lg:gap-[30px] gap-4 gap-y-7">
                                                  {currentPageHotels.length > 0 ? (
                                                         currentPageHotels.map((hotel) => (
                                                                <HotelItem
