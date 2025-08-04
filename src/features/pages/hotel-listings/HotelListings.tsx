@@ -43,7 +43,7 @@ const HotelListings = () => {
        const [isLoading, setIsLoading] = useState<boolean>(true);
 
        const [filterOpened, setFilterOpened] = useState(false);
-
+       const [listType, setlistType] = useState("default");
        // eslint-disable-next-line @typescript-eslint/no-unused-vars
        const [error, setError] = useState<string | null>(null);
 
@@ -65,6 +65,14 @@ const HotelListings = () => {
        };
        const openFilter = () => {
               setFilterOpened(!filterOpened);
+
+       };
+       const gridView = () => {
+              setlistType("default");
+
+       };
+       const listView = () => {
+              setlistType("list");
 
        };
        useEffect(() => {
@@ -203,8 +211,11 @@ const HotelListings = () => {
                                    onChange={(e) => setSearchTerm(e.target.value)}
                                    className="w-full select-block rounded-lg h-14 px-4 bg-white text-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
                             />
+                            <div> <Icon.SquaresFour  size={28} className="duration-300 hover:text-primary flex" onClick = {gridView}/></div>
+                            <div><Icon.Rows size={28} className="duration-300 hover:text-primary flex" onClick = {listView} /></div>
                             <div >
-                                   <Icon.Funnel size={28} className="duration-300 hover:text-primary flex" onClick = {openFilter} />
+
+                                      <Icon.Funnel size={28} className="duration-300 hover:text-primary flex" onClick = {openFilter} />
                                    <div className={`sub-menu-guest w-80 bg-white border-solid border-2 rounded-b-xl overflow-hidden absolute box-shadow  ${filterOpened ? "open" : ""}`}>
                                     <div className="border-1 border-black">
                                           <AmenityFilter setFilters={setFilters} />
@@ -307,17 +318,16 @@ const HotelListings = () => {
                                                  />
                                           </div>
                                    ) : (
-                                          <div className="list-tent z-10 md:mt-0 mt-6 grid lg:grid-cols-3 md:grid-cols-2 min-[360px]:grid-cols-2 lg:gap-[30px] gap-4 gap-y-7">
-                                                 {currentPageHotels.length > 0 ? (
-                                                        currentPageHotels.map((hotel) => (
-                                                               <HotelItem
-                                                                      image_size={10}
-                                                                      hotelData={hotel}
-                                                               />
-                                                        ))
+                                          <div className={`list-Hotel md:mt-10 mt-6 ${listType === 'default' ? 'grid lg:grid-cols-3 md:grid-cols-2 min-[360px]:grid-cols-2 lg:gap-[30px] gap-4 gap-y-7' : 'flex flex-col gap-6'}`}>
+                                          {currentPageHotels.map((hotel) => (
+                                                 hotel.id === 'no-data' ? (
+                                                 <div key={hotel.id} className="no-data-product">No hotel match the selected criteria.</div>
                                                  ) : (
-                                                        <div>No results available.</div>
-                                                 )}
+                                                 <HotelItem image_size={10}
+                                                        hotelData={hotel}
+                                                        type={listType} />
+                                                 )
+                     ))}
                                           </div>
                                    )}
                                    {currentPageHotels.length > 0 ? (

@@ -20,7 +20,7 @@ const iconlist = {
        inHouseBar: <MartiniIcon />,
 };
 
-const HotelItem: React.FC<{ hotelData: Hotel,image_size:number }> = ({ hotelData}) => {
+const HotelItem: React.FC<{ hotelData: Hotel,image_size:number, type:string }> = ({ hotelData,image_size,type}) => {
        const router = useNavigate();
        const prefix = hotelData.image_details?.prefix || "";
        const suffix = hotelData.image_details?.suffix || "";
@@ -43,6 +43,8 @@ const HotelItem: React.FC<{ hotelData: Hotel,image_size:number }> = ({ hotelData
               router(`/hotel-details?id=${id}`);
        };
        return (
+              <>
+              {type != "list" ? (
               <div
                      role="listitem"
                      className="hotel-item hover-scale"
@@ -129,8 +131,83 @@ const HotelItem: React.FC<{ hotelData: Hotel,image_size:number }> = ({ hotelData
                                    </div>
                             </div>
                      </div>
-              </div>
-       );
-};
+              </div>):(<>{type === 'list' ? (
+                                      <>
+                                      
+                                          <div
+                                              className="hotel-item hover-scale style-list"
+                                              onClick={() => { handleClickItem(hotelData.id) }}
+                                          >
+                      
+                                              <div className=" flex rounded-2xl h-full overflow-hidden border border-outline box-shadow-sm">
+                                                          <div className="thumb-img w-60 h-full overflow-hidden flex-shrink-0">
+                                                              <Swiper
+                                          pagination={{
+                                                 type: "fraction",
+                                          }}
+                                          loop={imageArray.length > 1}
+                                          modules={[Pagination]}
+                                          className="mySwiper rounded-xl">
+                                          {imageArray.map((img, index) => (
+                                                 <SwiperSlide
+                                                        key={index}
+                                                        className="overflow-hidden">
+                                                        <div className="bg-img w-full aspect-[16/11]">
+                                                               {failedImages.has(img) ? (
+                                                                      <img
+                                                                             loading="lazy"
+                                                                             src={PlaceholderCat}
+                                                                             width={2500}
+                                                                             height={2500}
+                                                                             alt="Placeholder image"
+                                                                             className="w-full h-full object-cover rounded-xl"
+                                                                      />
+                                                               ) : (
+                                                                      <img
+                                                                             src={img}
+                                                                             width={2000}
+                                                                             height={2000}
+                                                                             alt="Hotel image"
+                                                                             className="w-full h-full object-cover"
+                                                                             onError={() => handleImageError(img)}
+                                                                      />
+                                                               )}
+                                                        </div>
+                                                 </SwiperSlide>
+                                          ))}
+                                   </Swiper>
+                                                          </div>
+                                                          <div className="text-container w-full max-h-[200px] overflow-hidden">
+                                                      <div className="flex items-center gap-2 ml-4 mt-1 mr-4">
+                                                          <div className="capitalize text-2xl">{hotelData.name}</div>
+                                                          <div className="flex items-center gap-1 text-button">
+                                                          <div className="text-2xl">{hotelData.rating}</div>
+                                                          <StarIcon
+                                                 className="text-yellow"
+                                                 weight="fill"
+                                          />
+                                                          </div>
+                                                      </div>
+                                                      
+                                                      <div className="flex ml-4 mt-1">
+                                                          <div className="max-h-48  overflow-y-auto  mr-4 scrollbar-hide">
+                                                          {hotelData.description}
+                                                          </div>
+                                                      </div>
+              
+                                                      <div className="-title md:">Pricing:</div>
+                                                      <div className="flex items-end md:justify-center sm:mt-1">
+                                                          <span className="flex">${hotelData.price}</span>
+                                                          <span className="text-variant1">/night</span>
+                                                      </div>
+                                                      </div>
+                                                      </div>
+                                                      </div>
+                                                 
+                                          
+                                      </>):(<></>)}</>
+       )}
+       </>
+)};
 
 export default HotelItem;
