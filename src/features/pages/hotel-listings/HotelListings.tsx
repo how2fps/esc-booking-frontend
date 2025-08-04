@@ -127,8 +127,9 @@ const HotelListings = () => {
 
                             while (retries < maxRetries) {
                                    const response = await fetch(`http://localhost:3000/api/hotels/prices?destination_id=${destination_id}&checkin=${checkIn}&checkout=${checkOut}&lang=en_US&currency=SGD&country_code=SG&guests=2&partner_id=1`);
-
+                                   
                                    const result = await response.json();
+                                   console.log(result)
                                    if (result.complete && result.data?.hotels) {
                                           const priceMap = new Map<string, HotelPrice>();
                                           result.data.hotels.forEach((price: HotelPrice) => {

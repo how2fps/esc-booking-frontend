@@ -10,6 +10,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import PlaceholderCat from "../../../assets/Placeholder_Cat.png";
 import type { Hotel } from "../../type/HotelType";
 
+
 const iconlist = {
        dryCleaning: <WashingMachineIcon />,
        outdoorPool: <SwimmingPoolIcon />,
@@ -27,7 +28,7 @@ const HotelItem: React.FC<{ hotelData: Hotel,image_size:number, type:string }> =
        const imageCount = Math.min(hotelData.image_details?.count || 1);
        const imageArray: string[] = [];
        const [failedImages, setFailedImages] = React.useState<Set<string>>(new Set());
-
+       
        if (prefix && imageCount > 0) {
               for (let i = 1; i <= imageCount; i++) {
                      imageArray.push(`${prefix}${i}${suffix}`);
@@ -179,24 +180,44 @@ const HotelItem: React.FC<{ hotelData: Hotel,image_size:number, type:string }> =
                                                           </div>
                                                           <div className="text-container w-full max-h-[200px] overflow-hidden">
                                                       <div className="flex items-center gap-2 ml-4 mt-1 mr-4">
-                                                          <div className="capitalize text-2xl">{hotelData.name}</div>
+                                                          <div className="capitalize text-xl">{hotelData.name}</div>
                                                           <div className="flex items-center gap-1 text-button">
-                                                          <div className="text-2xl">{hotelData.rating}</div>
+                                                          <div className="text-button-sm">{Number(hotelData.rating).toFixed(1)}</div>
                                                           <StarIcon
                                                  className="text-yellow"
                                                  weight="fill"
                                           />
                                                           </div>
                                                       </div>
-                                                      
-                                                      <div className="flex ml-4 mt-1">
-                                                          <div className="max-h-48  overflow-y-auto  mr-4 scrollbar-hide">
-                                                          {hotelData.description}
-                                                          </div>
+                                                               
+                                                      <div className="flex items-end ml-4 mt-1 sm:mt-1">
+                                                        {hotelData.address}
                                                       </div>
+                                                      <div className="flex items-end ml-4 mt-1 sm:mt-1">
+                                                        <div>Checkin:{hotelData.checkin_time}</div>
+                                                      </div>
+                                                      <div className="flex items-end ml-4 mt-1 sm:mt-1">
+                                                        <div>Trustyou Score:{hotelData.trustyou.score.overall}</div>
+                                                      </div>
+                                                      <div className="flex ml-4 mt-1">
+                                                        <div className="flex items-center gap-1">
+                                                                      {Object.entries(hotelData.amenities).map(([key, value]) =>
+                                                                             value && iconlist[key] ? (
+                                                                                    <span
+                                                                                           key={key}
+                                                                                           title={key}>
+                                                                                           {iconlist[key]}
+                                                                                    </span>
+                                                                             ) : null
+                                                                      )}
+                                                               </div>
+                                   
+                                                      </div>
+                                                      
               
-                                                      <div className="-title md:">Pricing:</div>
-                                                      <div className="flex items-end md:justify-center sm:mt-1">
+                                                      
+                                                      <div className="flex items-end md:justify-end mr-2 sm:mt-1">
+                                                        <div className="-title md:">Pricing:</div>
                                                           <span className="flex">${hotelData.price}</span>
                                                           <span className="text-variant1">/night</span>
                                                       </div>

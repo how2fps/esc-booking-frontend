@@ -1,41 +1,62 @@
-export interface Hotel {
-       id: string;
-       name: string;
-       address: string;
-       amenities: {
-              [key: string]: boolean;
-       };
-       priceRange: { min: number; max: number };
-       latitude: number;
-       longitude: number;
-       rating: number;
-       distance: number;
-       description: string;
-       imageCount: number;
-       trustyou: {
-              id: string | null;
-              score: {
-                     overall: number;
-                     kaligo_overall: number;
-                     solo: number | null;
-                     couple: number | null;
-                     family: number | null;
-                     business: number | null;
-              };
-       };
-       amenities_ratings: Array<{
-              name: string;
-              score: number;
-       }>;
-       image_details: {
-              suffix: string;
-              count: number;
-              prefix: string;
-       };
-       price: number;
-       currency: string;
-}
 
+interface CategoryDetail{
+    name: string;
+    score:number;
+    popularity: number;
+}
+interface AmenityRating {
+  name: string;
+  score: number;
+}
+export interface Hotel {
+  id: string;
+  imageCount: number;
+  latitude: number;
+  longitude: number;
+  name: string;
+  address: string;
+  address1: string;
+  rating: number;
+  distance: number;
+  trustyou: {
+    id: string;
+    score: {
+      overall: number;
+      kaligo_overall: number;
+      solo: number;
+      couple: number;
+      family: number;
+      business: number | null;
+    };
+  };
+  categories: {
+    overall: CategoryDetail | null;
+    romantic_hotel: CategoryDetail| null;
+    family_hotel: CategoryDetail | null;
+    business_hotel: CategoryDetail | null;
+  };
+  amenities_ratings: AmenityRating[];
+  description: string;
+  amenities: object;
+  original_metadata: {
+    name: string | null;
+    city: string;
+    state: string | null;
+    country: string;
+  };
+  image_details: {
+    suffix: string;
+    count: number;
+    prefix: string;
+  };
+  hires_image_index: string;
+  number_of_images: number;
+  default_image_index: number;
+  imgix_url: string;
+  cloudflare_image_url: string;
+  checkin_time: string;
+  
+}
 export interface HotelPrice {
        id: string;
        searchRank: number;
