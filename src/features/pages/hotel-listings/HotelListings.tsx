@@ -29,6 +29,9 @@ const HotelListings = () => {
        const destination_id = searchParams.get("location");
        const checkIn = formatDate(searchParams.get("startDate") as string);
        const checkOut = formatDate(searchParams.get("endDate") as string);
+       const numberOfRooms = searchParams.get("endDate");
+       const numberOfAdults = searchParams.get("adult");
+       const numberOfChildren = searchParams.get("children");
 
        const [allHotels, setAllHotels] = useState<HotelMarker[]>([]);
        const [hotelPrices, setHotelPrices] = useState<Map<string, HotelPrice>>(new Map());
@@ -42,7 +45,7 @@ const HotelListings = () => {
        const [isLoading, setIsLoading] = useState<boolean>(true);
        // eslint-disable-next-line @typescript-eslint/no-unused-vars
        const [error, setError] = useState<string | null>(null);
-
+       //DO GUEST RATING AS WELL
        const [filters, setFilters] = useState<HotelFilter>({
               amenities: new Set(),
               priceRange: { min: 0, max: 10000 },
@@ -69,11 +72,22 @@ const HotelListings = () => {
               };
        }, [searchTerm]);
 
+       function padDateWithZero(dateStr: string): string {
+              return dateStr
+                     .split("-")
+                     .map((n) => n.padStart(2, "0"))
+                     .join("-");
+       }
+
+       function getGuestsQueryString(numberOfGuests: number, numberOfRooms: number): string {
+              return Array(numberOfRooms).fill(numberOfGuests).join(" | ");
+       }
+
        useEffect(() => {
               const fetchHotelsByDestination = async () => {
                      setIsLoading(true);
                      try {
-                            const response = await fetch(`http://localhost:3000/api/hotels?destination_id=${destination_id}&checkin=${checkIn}&checkout=${checkOut}&lang=${"en_US"}&currency=${"SGD"}&country_code=${"SG"}&guests=${2}&partner_id=${1}`, {
+                            const response = await fetch(`http://localhost:3000/api/hotels?destination_id=${destination_id}`, {
                                    method: "GET",
                                    headers: {
                                           "Content-Type": "application/json",
@@ -101,8 +115,11 @@ const HotelListings = () => {
 
        useEffect(() => {
               let isMounted = true;
-              let timeoutId: number | undefined;
-
+              let timeoutId: ReturnType<typeof setTimeout> | undefined;
+              const formattedCheckinDate = padDateWithZero(checkIn);
+              const formattedCHeckoutDate = padDateWithZero(checkOut);
+              const numberOfGuests: number = numberOfAdults && numberOfChildren ? +numberOfAdults + +numberOfChildren : 0;
+              const guestQueryString = getGuestsQueryString(numberOfGuests, Number(numberOfRooms));
               const fetchHotelPricesWithPolling = async () => {
                      try {
                             let retries = 0;
@@ -110,7 +127,7 @@ const HotelListings = () => {
                             const delay = 2000;
 
                             while (retries < maxRetries) {
-                                   const response = await fetch(`http://localhost:3000/api/hotels/prices?destination_id=${destination_id}&checkin=${checkIn}&checkout=${checkOut}&lang=en_US&currency=SGD&country_code=SG&guests=2&partner_id=1`);
+                                   const response = await fetch(`http://localhost:3000/api/hotels/prices?destination_id=${destination_id}&checkin=${formattedCheckinDate}&checkout=${formattedCHeckoutDate}&lang=en_US&currency=SGD&country_code=SG&guests=2&partner_id=${1089}&landing_page=wl-acme-earn&product_type=earn`);
 
                                    const result = await response.json();
                                    if (result.complete && result.data?.hotels) {
