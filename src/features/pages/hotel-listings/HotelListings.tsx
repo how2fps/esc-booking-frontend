@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import * as Icon from "phosphor-react";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
+import { useDeferredValue } from "react";
 import { useSearchParams } from "react-router-dom";
 import HotelItem from "../../components/HotelItem/HotelItem";
 import HandlePagination from "../../components/Other/HandlePagination";
@@ -29,7 +30,7 @@ const HotelListings = () => {
        const destination_id = searchParams.get("location");
        const checkIn = formatDate(searchParams.get("startDate") as string);
        const checkOut = formatDate(searchParams.get("endDate") as string);
-       const numberOfRooms = searchParams.get("endDate");
+       const numberOfRooms = searchParams.get("room");
        const numberOfAdults = searchParams.get("adult");
        const numberOfChildren = searchParams.get("children");
 
@@ -79,8 +80,8 @@ const HotelListings = () => {
                      .join("-");
        }
 
-       function getGuestsQueryString(numberOfGuests: number, numberOfRooms: number): string {
-              return Array(numberOfRooms).fill(numberOfGuests).join(" | ");
+       function getGuestsQueryString(noOfGuests: number, noOfRooms: number): string {
+              return Array(noOfRooms).fill(noOfGuests).join("|");
        }
 
        useEffect(() => {
@@ -127,22 +128,20 @@ const HotelListings = () => {
                             const delay = 2000;
 
                             while (retries < maxRetries) {
-                                   const response = await fetch(`http://localhost:3000/api/hotels/prices?destination_id=${destination_id}&checkin=${formattedCheckinDate}&checkout=${formattedCHeckoutDate}&lang=en_US&currency=SGD&country_code=SG&guests=2&partner_id=${1089}&landing_page=wl-acme-earn&product_type=earn`);
-
+                                   const response = await fetch(`http://localhost:3000/api/hotels/prices?destination_id=${destination_id}&checkin=${formattedCheckinDate}&checkout=${formattedCHeckoutDate}&lang=en_US&currency=SGD&country_code=SG&guests=${guestQueryString}&partner_id=${1089}&landing_page=wl-acme-earn&product_type=earn`);
                                    const result = await response.json();
                                    if (result.complete && result.data?.hotels) {
                                           const priceMap = new Map<string, HotelPrice>();
                                           result.data.hotels.forEach((price: HotelPrice) => {
                                                  priceMap.set(price.id, price);
                                           });
+                                          console.log(priceMap);
                                           if (isMounted) setHotelPrices(priceMap);
                                           return;
                                    }
-
                                    retries++;
                                    await new Promise((resolve) => (timeoutId = setTimeout(resolve, delay)));
                             }
-
                             console.warn("Hotel price polling timed out");
                      } catch (error) {
                             if (error instanceof Error) {
@@ -157,22 +156,27 @@ const HotelListings = () => {
                      isMounted = false;
                      clearTimeout(timeoutId);
               };
-       }, [checkIn, checkOut, destination_id]);
+       }, [checkIn, checkOut, destination_id, numberOfAdults, numberOfChildren, numberOfRooms]);
 
        const mergedHotels = useMemo(() => {
               return allHotels.map((hotel) => {
                      const priceData = hotelPrices.get(hotel.id);
-                     return {
-                            ...hotel,
-                            price: priceData?.price ?? hotel.price,
-                     };
+                     if (priceData) {
+                            return {
+                                   ...hotel,
+                                   price: priceData?.price,
+                            };
+                     } else {
+                            return hotel;
+                     }
               });
        }, [allHotels, hotelPrices]);
 
+       const deferredFilters = useDeferredValue(filters);
+
        const filteredHotelsArray = useMemo(() => {
-              const filteredHotels: HotelMarker[] = mergedHotels.filter((hotel) => hotel.rating >= filters.minimumRating && [...filters.amenities].every((amenity) => hotel.amenities[amenity]) && hotel.name.toLowerCase().includes(debouncedSearchTerm.toLowerCase()));
-              return filteredHotels;
-       }, [filters, mergedHotels, debouncedSearchTerm]);
+              return mergedHotels.filter((hotel) => hotel.rating >= deferredFilters.minimumRating && [...deferredFilters.amenities].every((amenity) => hotel.amenities[amenity]) && hotel.name.toLowerCase().includes(debouncedSearchTerm.toLowerCase()));
+       }, [mergedHotels, deferredFilters, debouncedSearchTerm]);
 
        const sortedHotelsArray = useMemo(() => {
               const arr = [...filteredHotelsArray];
