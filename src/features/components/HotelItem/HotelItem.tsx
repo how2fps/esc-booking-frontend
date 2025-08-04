@@ -190,14 +190,14 @@ const HotelItem: React.FC<{ hotelData: Hotel,image_size:number, type:string }> =
                                                           </div>
                                                       </div>
                                                                
-                                                      <div className="flex items-end ml-4 mt-1 sm:mt-1">
-                                                        {hotelData.address}
+                                                      <div className="flex text-sm items-end ml-4 mt-1 sm:mt-1">
+                                                        Address: {hotelData.address}
+                                                      </div>
+                                                      <div className="flex text-sm items-end ml-4 mt-1 sm:mt-1">
+                                                        <div>Checkin: {hotelData.checkin_time}</div>
                                                       </div>
                                                       <div className="flex items-end ml-4 mt-1 sm:mt-1">
-                                                        <div>Checkin:{hotelData.checkin_time}</div>
-                                                      </div>
-                                                      <div className="flex items-end ml-4 mt-1 sm:mt-1">
-                                                        <div>Trustyou Score:{hotelData.trustyou.score.overall}</div>
+                                                        <div>Trustyou Score: {hotelData.trustyou.score.overall}</div>
                                                       </div>
                                                       <div className="flex ml-4 mt-1">
                                                         <div className="flex items-center gap-1">
