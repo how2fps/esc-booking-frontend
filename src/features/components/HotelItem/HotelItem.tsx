@@ -45,7 +45,7 @@ const HotelItem: React.FC<{ hotelData: Hotel,image_size:number, type:string }> =
        };
        return (
               <>
-              {type != "list" ? (
+              {type === "default" ? (
               <div
                      role="listitem"
                      className="hotel-item hover-scale"
@@ -101,9 +101,9 @@ const HotelItem: React.FC<{ hotelData: Hotel,image_size:number, type:string }> =
                                    </div>
                             )}
                      </div>
-                     <div className="infor m-4">
+                     <div className="infor m-4 min-h-[80px] ">
                             <div className="flex items-center justify-between flex gap-2">
-                                   <div className="name capitalize mt-1">{hotelData.name}</div>
+                                   <div className="name capitalize mt-1 line-clamp-3">{hotelData.name}</div>
                                    <div className="flex items-center gap-1">
                                           <div className="text-button-sm">{Number(hotelData.rating).toFixed(1)}</div>
                                           <StarIcon
@@ -132,7 +132,7 @@ const HotelItem: React.FC<{ hotelData: Hotel,image_size:number, type:string }> =
                                    </div>
                             </div>
                      </div>
-              </div>):(<>{type === 'list' ? (
+              </div>): type === 'list' ? (
                                       <>
                                       
                                           <div
@@ -180,7 +180,7 @@ const HotelItem: React.FC<{ hotelData: Hotel,image_size:number, type:string }> =
                                                           </div>
                                                           <div className="text-container w-full max-h-[200px] overflow-hidden">
                                                       <div className="flex items-center gap-2 ml-4 mt-1 mr-4">
-                                                          <div className="capitalize text-xl">{hotelData.name}</div>
+                                                          <div className="capitalize text-xl line-clamp-1">{hotelData.name}</div>
                                                           <div className="flex items-center gap-1 text-button">
                                                           <div className="text-button-sm">{Number(hotelData.rating).toFixed(1)}</div>
                                                           <StarIcon
@@ -226,9 +226,91 @@ const HotelItem: React.FC<{ hotelData: Hotel,image_size:number, type:string }> =
                                                       </div>
                                                  
                                           
-                                      </>):(<></>)}</>
-       )}
-       </>
+                                      </>):type === 'compact' ? (
+              <div
+                     role="listitem"
+                     className="hotel-item hover-scale"
+                     onClick={() => {
+                            handleClickItem(hotelData.id);
+                     }}>
+                     <div className="thumb-img relative">
+                            {imageArray.length > 0 && !allImagesFailed ? (
+                                   <Swiper
+                                          pagination={{
+                                                 type: "fraction",
+                                          }}
+                                          loop={imageArray.length > 1}
+                                          modules={[Pagination]}
+                                          className="mySwiper rounded-xl">
+                                          {imageArray.map((img, index) => (
+                                                 <SwiperSlide
+                                                        key={index}
+                                                        className="overflow-hidden">
+                                                        <div className="bg-img w-full aspect-[16/11]">
+                                                               {failedImages.has(img) ? (
+                                                                      <img
+                                                                             loading="lazy"
+                                                                             src={PlaceholderCat}
+                                                                             width={2500}
+                                                                             height={2500}
+                                                                             alt="Placeholder image"
+                                                                             className="w-full h-full object-cover rounded-xl"
+                                                                      />
+                                                               ) : (
+                                                                      <img
+                                                                             src={img}
+                                                                             width={2000}
+                                                                             height={2000}
+                                                                             alt="Hotel image"
+                                                                             className="w-full h-full object-cover"
+                                                                             onError={() => handleImageError(img)}
+                                                                      />
+                                                               )}
+                                                        </div>
+                                                 </SwiperSlide>
+                                          ))}
+                                   </Swiper>
+                            ) : (
+                                   <div className="bg-img w-full overflow-hidden aspect-[16/11]">
+                                          <img
+                                                 src={PlaceholderCat}
+                                                 width={2000}
+                                                 height={2000}
+                                                 alt="Placeholder image"
+                                                 className="w-full h-full object-scale-down"
+                                          />
+                                   </div>
+                            )}
+                     </div>
+                     <div className="infor m-4 min-h-[80px]">
+                            <div className="flex items-center justify-between flex gap-2">
+                                   <div className="name capitalize mt-1 line-clamp-2">{hotelData.name}</div>
+                                   <div className="flex items-center gap-1">
+                                          <div className="text-button-sm">{Number(hotelData.rating).toFixed(1)}</div>
+                                          <StarIcon
+                                                 className="text-yellow"
+                                                 weight="fill"
+                                          />
+                                   </div>
+                            </div>
+                            <div className="flex items-center gap-1">
+                                          {Object.entries(hotelData.amenities).map(([key, value]) =>
+                                                 value && iconlist[key] ? (
+                                                        <span
+                                                               key={key}
+                                                               title={key}>
+                                                               {iconlist[key]}
+                                                        </span>
+                                                 ) : null
+                                          )}
+                                   </div>
+                     </div>
+              </div>):(
+      <></>
+    )}
+  </>
 )};
+       
+
 
 export default HotelItem;
