@@ -20,7 +20,7 @@ const iconlist = {
        inHouseBar: <MartiniIcon />,
 };
 
-const HotelItem: React.FC<{ hotelData: Hotel }> = ({ hotelData }) => {
+const HotelItem: React.FC<{ hotelData: Hotel; destination_id: string }> = ({ hotelData, destination_id }) => {
        const router = useNavigate();
        const prefix = hotelData.image_details?.prefix || "";
        const suffix = hotelData.image_details?.suffix || "";
@@ -40,7 +40,7 @@ const HotelItem: React.FC<{ hotelData: Hotel }> = ({ hotelData }) => {
 
        const allImagesFailed = imageArray.length > 0 && failedImages.size === imageArray.length;
        const handleClickItem = (id: string) => {
-              router(`/hotel-details?id=${id}`);
+              router(`/hotels/${id}?destination_id=${destination_id}`);
        };
        return (
               <div
