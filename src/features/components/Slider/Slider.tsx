@@ -152,7 +152,9 @@ const DestinationSearch = () => {
                      }));
               }
        };
-
+       const today =new Date()
+       const min = new Date()
+       min.setDate(today.getDate()+3)
        return (
               <>
                      <div
@@ -226,6 +228,7 @@ const DestinationSearch = () => {
                                                                       months={2}
                                                                       ranges={state}
                                                                       direction="horizontal"
+                                                                      minDate={min}
                                                                />
                                                         </div>
                                                         <div className="relative lg:w-full md:w-[48%] w-full">
