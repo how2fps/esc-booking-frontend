@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import * as Icon from "phosphor-react";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
-import { useDeferredValue } from "react";
 import { useSearchParams } from "react-router-dom";
 import HotelItem from "../../components/HotelItem/HotelItem";
 import HandlePagination from "../../components/Other/HandlePagination";
@@ -34,11 +33,16 @@ const HotelListings = () => {
        const numberOfAdults = searchParams.get("adult");
        const numberOfChildren = searchParams.get("children");
 
+       const [hotelStarsFilter, setHotelStarsFilter] = useState(0);
+       const [priceFilter, setPriceFilter] = useState<{ min: number; max: number }>({ min: 0, max: 10000 });
+
        const [allHotels, setAllHotels] = useState<HotelMarker[]>([]);
        const [hotelPrices, setHotelPrices] = useState<Map<string, HotelPrice>>(new Map());
        const [searchTerm, setSearchTerm] = useState<string>("");
        const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>("");
        const [sortOption, setSortOption] = useState<string>();
+
+       const [filteredHotels, setFilteredHotels] = useState<{ hotels: HotelMarker[]; total: number }>({ hotels: [], total: 0 });
 
        const [currentPage, setCurrentPage] = useState<number>(1);
        const [itemsPerPage, setItemsPerPage] = useState<number>(8);
@@ -114,6 +118,20 @@ const HotelListings = () => {
               fetchHotelsByDestination();
        }, [checkIn, checkOut, destination_id]);
 
+       const workerRef = useRef<Worker | null>(null);
+
+       useEffect(() => {
+              workerRef.current = new Worker(new URL("./filterWorker.js", import.meta.url));
+
+              workerRef.current.onmessage = (event) => {
+                     setFilteredHotels(event.data);
+              };
+
+              return () => {
+                     workerRef.current?.terminate();
+              };
+       }, []);
+
        useEffect(() => {
               let isMounted = true;
               let timeoutId: ReturnType<typeof setTimeout> | undefined;
@@ -149,9 +167,7 @@ const HotelListings = () => {
                             }
                      }
               };
-
               fetchHotelPricesWithPolling();
-
               return () => {
                      isMounted = false;
                      clearTimeout(timeoutId);
@@ -172,35 +188,37 @@ const HotelListings = () => {
               });
        }, [allHotels, hotelPrices]);
 
-       const deferredFilters = useDeferredValue(filters);
+       useEffect(() => {
+              if (workerRef.current && mergedHotels.length > 0) {
+                     workerRef.current.postMessage({ type: "setHotels", hotels: mergedHotels });
+              }
+       }, [mergedHotels]);
 
-       const filteredHotelsArray = useMemo(() => {
-              return mergedHotels.filter((hotel) => hotel.rating >= deferredFilters.minimumRating && [...deferredFilters.amenities].every((amenity) => hotel.amenities[amenity]) && hotel.name.toLowerCase().includes(debouncedSearchTerm.toLowerCase()));
-       }, [mergedHotels, deferredFilters, debouncedSearchTerm]);
-
-       const sortedHotelsArray = useMemo(() => {
-              const arr = [...filteredHotelsArray];
-              if (sortOption === "starHighToLow") {
-                     return arr.sort((a, b) => b.rating - a.rating);
-              }
-              if (sortOption === "priceHighToLow") {
-                     return arr.sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
-              }
-              if (sortOption === "priceLowToHigh") {
-                     return arr.sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
-              }
-              return arr;
-       }, [filteredHotelsArray, sortOption]);
+       useEffect(() => {
+              workerRef.current?.postMessage({
+                     type: "filterAndSort",
+                     filters,
+                     searchTerm: debouncedSearchTerm,
+                     sortOption,
+                     page: currentPage,
+                     itemsPerPage,
+              });
+       }, [filters, debouncedSearchTerm, sortOption, currentPage, itemsPerPage]);
 
        const pageCount = useMemo(() => {
-              return Math.ceil(sortedHotelsArray.length / itemsPerPage) || 1;
-       }, [sortedHotelsArray, itemsPerPage]);
+              return Math.ceil(filteredHotels.total / itemsPerPage) || 1;
+       }, [filteredHotels.total, itemsPerPage]);
 
-       const currentPageHotels = useMemo(() => {
-              const startIndex = (currentPage - 1) * itemsPerPage;
-              const endIndex = startIndex + itemsPerPage;
-              return sortedHotelsArray.slice(startIndex, endIndex);
-       }, [itemsPerPage, currentPage, sortedHotelsArray]);
+       useEffect(() => {
+              const id = setTimeout(() => {
+                     setFilters((prev) => ({
+                            ...prev,
+                            minimumRating: hotelStarsFilter,
+                            priceRange: { min: priceFilter.min, max: priceFilter.max },
+                     }));
+              }, 200);
+              return () => clearTimeout(id);
+       }, [hotelStarsFilter, priceFilter]);
 
        return (
               <div className="bg-white text-black lg:py-20 md:py-14 max-lg:mt-10 max-md:mt-40 py-10 px-12">
@@ -228,7 +246,7 @@ const HotelListings = () => {
                                                                       defaultZoom={14}
                                                                       gestureHandling={"greedy"}
                                                                       disableDefaultUI={true}>
-                                                                      <ClusteredHotelMarkers hotels={filteredHotelsArray} />
+                                                                      <ClusteredHotelMarkers hotels={filteredHotels.hotels} />
                                                                </GoogleMap>
                                                         </div>
                                                  </APIProvider>
@@ -237,21 +255,17 @@ const HotelListings = () => {
                                           <div className="border-2 border-black rounded-[12px] p-4 mt-4">
                                                  <div className="heading6">Price Range</div>
                                                  <div className="price-block flex items-center justify-between flex-wrap mt-3">
-                                                        ${filters.priceRange.min} - ${filters.priceRange.max}
+                                                        ${priceFilter.min} - ${priceFilter.max}
                                                  </div>
                                                  <Slider
                                                         data-testid="price-slider"
                                                         range
-                                                        value={[filters.priceRange.min, filters.priceRange.max]}
+                                                        value={[priceFilter.min, priceFilter.max]}
                                                         min={0}
-                                                        max={30000}
+                                                        max={10000}
                                                         onChange={(value) => {
                                                                if (Array.isArray(value) && value.length === 2) {
-                                                                      const [min, max] = value;
-                                                                      setFilters((prev) => ({
-                                                                             ...prev,
-                                                                             priceRange: { min, max },
-                                                                      }));
+                                                                      setPriceFilter({ min: value[0], max: value[1] });
                                                                }
                                                         }}
                                                         className="mt-4"
@@ -263,7 +277,7 @@ const HotelListings = () => {
                                                  <div className="heading6">Rating</div>
                                                  <div className="price-block flex items-center justify-between flex-wrap">
                                                         <div className="flex items-center gap-1">
-                                                               ≥ {filters.minimumRating}
+                                                               ≥ {hotelStarsFilter}
                                                                <StarIcon
                                                                       className="text-yellow"
                                                                       weight="fill"
@@ -271,17 +285,16 @@ const HotelListings = () => {
                                                         </div>
                                                  </div>
                                                  <Slider
-                                                        value={filters.minimumRating}
+                                                        value={hotelStarsFilter}
                                                         min={0}
                                                         max={5}
                                                         step={0.5}
                                                         className="mt-2"
-                                                        onChange={(value) =>
-                                                               setFilters((prev) => ({
-                                                                      ...prev,
-                                                                      minimumRating: typeof value === "number" ? value : prev.minimumRating,
-                                                               }))
-                                                        }
+                                                        onChange={(value) => {
+                                                               if (typeof value === "number") {
+                                                                      setHotelStarsFilter(value);
+                                                               }
+                                                        }}
                                                  />
                                           </div>
                                           <AmenityFilter setFilters={setFilters} />
@@ -343,8 +356,8 @@ const HotelListings = () => {
                                           </div>
                                    ) : (
                                           <div className="list-tent md:mt-10 mt-6 grid lg:grid-cols-3 md:grid-cols-2 min-[360px]:grid-cols-2 lg:gap-[30px] gap-4 gap-y-7">
-                                                 {currentPageHotels.length > 0 ? (
-                                                        currentPageHotels.map((hotel) => (
+                                                 {filteredHotels.hotels.length > 0 ? (
+                                                        filteredHotels.hotels.map((hotel) => (
                                                                <HotelItem
                                                                       key={hotel.id}
                                                                       hotelData={hotel}
@@ -355,7 +368,7 @@ const HotelListings = () => {
                                                  )}
                                           </div>
                                    )}
-                                   {currentPageHotels.length > 0 ? (
+                                   {filteredHotels.total > 0 ? (
                                           <HandlePagination
                                                  pageCount={pageCount}
                                                  onPageChange={handlePageChange}
