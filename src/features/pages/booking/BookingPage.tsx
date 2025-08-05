@@ -16,7 +16,7 @@ const BookingPage = () => {
   const [children] = useState(0);
   const [startDate] = useState('2023-12-01');
   const [endDate] = useState('2023-12-05');
-  const [price] = useState(500);
+  const [price] = useState(5200);
   const [errors, setErrors] = useState<string[]>([]);
   const navigate = useNavigate();
 
@@ -55,7 +55,7 @@ const BookingPage = () => {
         specialRequests,
       };
       
-
+      
       fetch('http://localhost:3000/api/bookings', {
         method: 'POST',
         headers: {
@@ -72,7 +72,8 @@ const BookingPage = () => {
         })
         .then((data) => {
           alert('Booking submitted successfully!');
-          navigate('/checkout');
+          const { bookingId } = data;
+          navigate('/checkout', { state: { bookingId: bookingId } });
         })
         .catch((err) => {
           console.error(err);
