@@ -21,6 +21,16 @@ const formatDate = (dateString: string): string => {
        const day = date.getDate();
        return `${year}-${month}-${day}`;
 };
+function padDateWithZero(dateStr: string): string {
+       return dateStr
+              .split("-")
+              .map((n) => n.padStart(2, "0"))
+              .join("-");
+}
+
+function getGuestsQueryString(noOfGuests: number, noOfRooms: number): string {
+       return Array(noOfRooms).fill(noOfGuests).join("|");
+}
 
 //?location=RsBU&startDate=7/20/2025&endDate=7/27/2025&adult=1&children=1&room=2
 const HotelListings = () => {
@@ -35,12 +45,13 @@ const HotelListings = () => {
 
        const [hotelStarsFilter, setHotelStarsFilter] = useState(0);
        const [priceFilter, setPriceFilter] = useState<{ min: number; max: number }>({ min: 0, max: 10000 });
+       const [searchTerm, setSearchTerm] = useState<string>("");
+       const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>("");
+
+       const [sortOption, setSortOption] = useState<string>();
 
        const [allHotels, setAllHotels] = useState<HotelMarker[]>([]);
        const [hotelPrices, setHotelPrices] = useState<Map<string, HotelPrice>>(new Map());
-       const [searchTerm, setSearchTerm] = useState<string>("");
-       const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>("");
-       const [sortOption, setSortOption] = useState<string>();
 
        const [filteredHotels, setFilteredHotels] = useState<{ hotels: HotelMarker[]; total: number }>({ hotels: [], total: 0 });
 
@@ -57,15 +68,20 @@ const HotelListings = () => {
               minimumRating: 0,
        });
 
-       const handlePageChange = (selected: number) => {
-              setCurrentPage(selected + 1);
-              window.scrollTo({ top: 0, behavior: "smooth" });
-       };
+       const workerRef = useRef<Worker | null>(null);
 
-       const handleItemsPerPageChange = (newItemsPerPage: number) => {
-              setItemsPerPage(newItemsPerPage);
-              setCurrentPage(1);
-       };
+       useEffect(() => {
+              workerRef.current = new Worker(new URL("./filterWorker.js", import.meta.url));
+
+              workerRef.current.onmessage = (event) => {
+                     setFilteredHotels(event.data);
+                     setIsLoading(false);
+              };
+
+              return () => {
+                     workerRef.current?.terminate();
+              };
+       }, []);
 
        useEffect(() => {
               const handler = setTimeout(() => {
@@ -76,17 +92,6 @@ const HotelListings = () => {
                      clearTimeout(handler);
               };
        }, [searchTerm]);
-
-       function padDateWithZero(dateStr: string): string {
-              return dateStr
-                     .split("-")
-                     .map((n) => n.padStart(2, "0"))
-                     .join("-");
-       }
-
-       function getGuestsQueryString(noOfGuests: number, noOfRooms: number): string {
-              return Array(noOfRooms).fill(noOfGuests).join("|");
-       }
 
        useEffect(() => {
               const fetchHotelsByDestination = async () => {
@@ -103,7 +108,6 @@ const HotelListings = () => {
                                    return { ...hotel, key: hotel.id, position: { lat: hotel.latitude, lng: hotel.longitude } };
                             });
                             setAllHotels(updatedHotelResults);
-                            setIsLoading(false);
                      } catch (error: unknown) {
                             if (error instanceof Error) {
                                    console.error("Fetch error details:", {
@@ -118,25 +122,11 @@ const HotelListings = () => {
               fetchHotelsByDestination();
        }, [checkIn, checkOut, destination_id]);
 
-       const workerRef = useRef<Worker | null>(null);
-
-       useEffect(() => {
-              workerRef.current = new Worker(new URL("./filterWorker.js", import.meta.url));
-
-              workerRef.current.onmessage = (event) => {
-                     setFilteredHotels(event.data);
-              };
-
-              return () => {
-                     workerRef.current?.terminate();
-              };
-       }, []);
-
        useEffect(() => {
               let isMounted = true;
               let timeoutId: ReturnType<typeof setTimeout> | undefined;
               const formattedCheckinDate = padDateWithZero(checkIn);
-              const formattedCHeckoutDate = padDateWithZero(checkOut);
+              const formattedCheckoutDate = padDateWithZero(checkOut);
               const numberOfGuests: number = numberOfAdults && numberOfChildren ? +numberOfAdults + +numberOfChildren : 0;
               const guestQueryString = getGuestsQueryString(numberOfGuests, Number(numberOfRooms));
               const fetchHotelPricesWithPolling = async () => {
@@ -144,16 +134,14 @@ const HotelListings = () => {
                             let retries = 0;
                             const maxRetries = 40;
                             const delay = 2000;
-
                             while (retries < maxRetries) {
-                                   const response = await fetch(`http://localhost:3000/api/hotels/prices?destination_id=${destination_id}&checkin=${formattedCheckinDate}&checkout=${formattedCHeckoutDate}&lang=en_US&currency=SGD&country_code=SG&guests=${guestQueryString}&partner_id=${1089}&landing_page=wl-acme-earn&product_type=earn`);
+                                   const response = await fetch(`http://localhost:3000/api/hotels/prices?destination_id=${destination_id}&checkin=${formattedCheckinDate}&checkout=${formattedCheckoutDate}&lang=en_US&currency=SGD&country_code=SG&guests=${guestQueryString}&partner_id=${1089}&landing_page=wl-acme-earn&product_type=earn`);
                                    const result = await response.json();
                                    if (result.complete && result.data?.hotels) {
                                           const priceMap = new Map<string, HotelPrice>();
                                           result.data.hotels.forEach((price: HotelPrice) => {
                                                  priceMap.set(price.id, price);
                                           });
-                                          console.log(priceMap);
                                           if (isMounted) setHotelPrices(priceMap);
                                           return;
                                    }
@@ -219,6 +207,16 @@ const HotelListings = () => {
               }, 200);
               return () => clearTimeout(id);
        }, [hotelStarsFilter, priceFilter]);
+
+       const handlePageChange = (selected: number) => {
+              setCurrentPage(selected + 1);
+              window.scrollTo({ top: 0, behavior: "smooth" });
+       };
+
+       const handleItemsPerPageChange = (newItemsPerPage: number) => {
+              setItemsPerPage(newItemsPerPage);
+              setCurrentPage(1);
+       };
 
        return (
               <div className="bg-white text-black lg:py-20 md:py-14 max-lg:mt-10 max-md:mt-40 py-10 px-12">
