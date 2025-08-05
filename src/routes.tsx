@@ -9,6 +9,7 @@ import Listings from "./features/pages/hotel-listings/HotelListings";
 import Login from "./features/pages/login/LoginForm";
 import SignupForm from "./features/pages/signup-form/SignupForm";
 import ProfilePage from "./features/pages/profile/ProfilePage";
+// import RoomDetails from "./features/pages/hotel-detail/RoomDetails";
 
 import ReturnForm from "./features/pages/returnForm/Return";
 
@@ -28,6 +29,10 @@ const AppRoutes: React.FC = () => {
                             path="/dashboard"
                             element={<DestinationSearch />}
                      />
+                     {/* <Route
+                            path="/hotels/:id/rooms/:roomId"
+                            element={<RoomDetails />}
+                     /> */}
                      <Route
                             path="/hotels/:id"
                             element={<HotelDetails />}

@@ -110,7 +110,7 @@ const HotelListings = () => {
                             const delay = 2000;
 
                             while (retries < maxRetries) {
-                                   const response = await fetch(`http://localhost:3000/api/hotels/prices?destination_id=${destination_id}&checkin=${checkIn}&checkout=${checkOut}&lang=en_US&currency=SGD&country_code=SG&guests=2&partner_id=1`);
+                                   const response = await fetch(`http://localhost:3000/api/hotels/prices?destination_id=${destination_id}&checkin=${checkIn}&checkout=${checkOut}&lang=en_US&currency=SGD&country_code=SG&guests=2&partner_id=1089&landing_page=wl-acme-earn&product_type=earn `);
 
                                    const result = await response.json();
                                    if (result.complete && result.data?.hotels) {
@@ -134,7 +134,7 @@ const HotelListings = () => {
                      }
               };
 
-              fetchHotelPricesWithPolling();
+              // fetchHotelPricesWithPolling();
 
               return () => {
                      isMounted = false;
@@ -327,6 +327,7 @@ const HotelListings = () => {
                                                                <HotelItem
                                                                       key={hotel.id}
                                                                       hotelData={hotel}
+                                                                      destination_id={destination_id}
                                                                />
                                                         ))
                                                  ) : (

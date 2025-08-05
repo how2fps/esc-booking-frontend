@@ -32,6 +32,16 @@ export interface Hotel {
               count: number;
               prefix: string;
        };
+       hires_image_index: string; 
+       number_of_images: number; 
+       default_image_index: number;
+       imgix_url: string; 
+       cloudflare_image_url: string; 
+       images: Array<{
+              url: string;
+              high_resolution_url: string;
+              hero_image?: boolean;
+       }>;
        price: number;
        currency: string;
 }
