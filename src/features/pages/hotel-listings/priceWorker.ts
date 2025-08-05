@@ -32,7 +32,9 @@ self.onmessage = async (event) => {
                                    result.data.hotels.forEach((price: HotelPrice) => {
                                           priceMap.set(price.id, price);
                                    });
-                                   if (isMounted) setHotelPrices(priceMap);
+                                   if (isMounted) {
+                                          self.postMessage(priceMap);
+                                   }
                                    return;
                             }
                             retries++;

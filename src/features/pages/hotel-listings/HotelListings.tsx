@@ -21,22 +21,22 @@ const formatDate = (dateString: string): string => {
        const day = date.getDate();
        return `${year}-${month}-${day}`;
 };
-function padDateWithZero(dateStr: string): string {
-       return dateStr
-              .split("-")
-              .map((n) => n.padStart(2, "0"))
-              .join("-");
-}
+// function padDateWithZero(dateStr: string): string {
+//        return dateStr
+//               .split("-")
+//               .map((n) => n.padStart(2, "0"))
+//               .join("-");
+// }
 
-function getGuestsQueryString(noOfGuests: number, noOfRooms: number): string {
-       return Array(noOfRooms).fill(noOfGuests).join("|");
-}
+// function getGuestsQueryString(noOfGuests: number, noOfRooms: number): string {
+//        return Array(noOfRooms).fill(noOfGuests).join("|");
+// }
 
 //?location=RsBU&startDate=7/20/2025&endDate=7/27/2025&adult=1&children=1&room=2
 const HotelListings = () => {
        // eslint-disable-next-line @typescript-eslint/no-unused-vars
        const [searchParams, _] = useSearchParams();
-       const destination_id = searchParams.get("location");
+       const destinationId = searchParams.get("location");
        const checkIn = formatDate(searchParams.get("startDate") as string);
        const checkOut = formatDate(searchParams.get("endDate") as string);
        const numberOfRooms = searchParams.get("room");
@@ -68,18 +68,25 @@ const HotelListings = () => {
               minimumRating: 0,
        });
 
-       const workerRef = useRef<Worker | null>(null);
+       const filterWorkerRef = useRef<Worker | null>(null);
+       const priceWorkerRef = useRef<Worker | null>(null);
 
        useEffect(() => {
-              workerRef.current = new Worker(new URL("./filterWorker.js", import.meta.url));
+              filterWorkerRef.current = new Worker(new URL("./filterWorker.js", import.meta.url));
+              priceWorkerRef.current = new Worker(new URL("./priceWorker.js", import.meta.url));
 
-              workerRef.current.onmessage = (event) => {
+              priceWorkerRef.current.onmessage = (event) => {
+                     console.log(event.data);
+                     setHotelPrices(event.data);
+              };
+
+              filterWorkerRef.current.onmessage = (event) => {
                      setFilteredHotels(event.data);
                      setIsLoading(false);
               };
 
               return () => {
-                     workerRef.current?.terminate();
+                     filterWorkerRef.current?.terminate();
               };
        }, []);
 
@@ -97,7 +104,7 @@ const HotelListings = () => {
               const fetchHotelsByDestination = async () => {
                      setIsLoading(true);
                      try {
-                            const response = await fetch(`http://localhost:3000/api/hotels?destination_id=${destination_id}`, {
+                            const response = await fetch(`http://localhost:3000/api/hotels?destination_id=${destinationId}`, {
                                    method: "GET",
                                    headers: {
                                           "Content-Type": "application/json",
@@ -120,47 +127,7 @@ const HotelListings = () => {
                      }
               };
               fetchHotelsByDestination();
-       }, [checkIn, checkOut, destination_id]);
-
-       useEffect(() => {
-              let isMounted = true;
-              let timeoutId: ReturnType<typeof setTimeout> | undefined;
-              const formattedCheckinDate = padDateWithZero(checkIn);
-              const formattedCheckoutDate = padDateWithZero(checkOut);
-              const numberOfGuests: number = numberOfAdults && numberOfChildren ? +numberOfAdults + +numberOfChildren : 0;
-              const guestQueryString = getGuestsQueryString(numberOfGuests, Number(numberOfRooms));
-              const fetchHotelPricesWithPolling = async () => {
-                     try {
-                            let retries = 0;
-                            const maxRetries = 40;
-                            const delay = 2000;
-                            while (retries < maxRetries) {
-                                   const response = await fetch(`http://localhost:3000/api/hotels/prices?destination_id=${destination_id}&checkin=${formattedCheckinDate}&checkout=${formattedCheckoutDate}&lang=en_US&currency=SGD&country_code=SG&guests=${guestQueryString}&partner_id=${1089}&landing_page=wl-acme-earn&product_type=earn`);
-                                   const result = await response.json();
-                                   if (result.complete && result.data?.hotels) {
-                                          const priceMap = new Map<string, HotelPrice>();
-                                          result.data.hotels.forEach((price: HotelPrice) => {
-                                                 priceMap.set(price.id, price);
-                                          });
-                                          if (isMounted) setHotelPrices(priceMap);
-                                          return;
-                                   }
-                                   retries++;
-                                   await new Promise((resolve) => (timeoutId = setTimeout(resolve, delay)));
-                            }
-                            console.warn("Hotel price polling timed out");
-                     } catch (error) {
-                            if (error instanceof Error) {
-                                   console.error("Polling error:", error);
-                            }
-                     }
-              };
-              fetchHotelPricesWithPolling();
-              return () => {
-                     isMounted = false;
-                     clearTimeout(timeoutId);
-              };
-       }, [checkIn, checkOut, destination_id, numberOfAdults, numberOfChildren, numberOfRooms]);
+       }, [checkIn, checkOut, destinationId]);
 
        const mergedHotels = useMemo(() => {
               return allHotels.map((hotel) => {
@@ -177,13 +144,22 @@ const HotelListings = () => {
        }, [allHotels, hotelPrices]);
 
        useEffect(() => {
-              if (workerRef.current && mergedHotels.length > 0) {
-                     workerRef.current.postMessage({ type: "setHotels", hotels: mergedHotels });
+              if (filterWorkerRef.current && mergedHotels.length > 0) {
+                     filterWorkerRef.current.postMessage({ type: "setHotels", hotels: mergedHotels });
               }
        }, [mergedHotels]);
 
        useEffect(() => {
-              workerRef.current?.postMessage({
+              if (priceWorkerRef.current) {
+                     priceWorkerRef.current.postMessage({ checkIn, checkOut, destinationId, numberOfAdults, numberOfChildren, numberOfRooms });
+              }
+       }, [checkIn, checkOut, destinationId, numberOfAdults, numberOfChildren, numberOfRooms]);
+
+       useEffect(() => {
+              if (!filterWorkerRef.current) {
+                     return;
+              }
+              filterWorkerRef.current.postMessage({
                      type: "filterAndSort",
                      filters,
                      searchTerm: debouncedSearchTerm,
