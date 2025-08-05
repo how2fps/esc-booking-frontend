@@ -174,7 +174,6 @@ const HotelDetailContent = () => {
         }
     };
 
-    // ✅ Fixed: Added missing variables
     const basePrice = 200;
     const nights = Math.ceil((state[0].endDate.getTime() - state[0].startDate.getTime()) / (1000 * 60 * 60 * 24));
     const serviceTax = 0.19 * (basePrice * nights * roomCount);

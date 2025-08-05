@@ -19,7 +19,7 @@ const config: Config = {
     },
     container: {
       padding: {
-        DEFAULT: '5px',
+        DEFAULT: '16px',
       },
     },
     colors: {
@@ -29,9 +29,9 @@ const config: Config = {
       'black': '#382C28',
       'variant1': '#776E6B',
       'variant2': '#B4ABA8',
-      'white': '#ffffff',
+      'white': '#efefef',
       'outline': '#E4E4E4',
-      'surface': '#F8F8F8',
+      'surface': '#efefef',
       'red': '#C72929',
       'success': '#37B853',
       'yellow': '#F4D118',

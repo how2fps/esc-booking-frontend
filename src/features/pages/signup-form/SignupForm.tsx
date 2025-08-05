@@ -14,6 +14,8 @@ const SignupForm = () => {
        const [showConfirmPassword, setShowConfirmPassword] = useState(false);
        const [errors, setErrors] = useState<string[]>([]);
        const [isValid, setIsValid] = useState(false);
+       const [submitError, setSubmitError] = useState<string | null>(null);
+       const [submitting, setSubmitting] = useState(false);
        const navigate = useNavigate();
 
        useEffect(() => {
@@ -29,7 +31,9 @@ const SignupForm = () => {
 
        const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
               e.preventDefault();
+              setSubmitError(null);
               if (isValid) {
+                     setSubmitting(true);
                      try {
                             const response = await fetch("http://localhost:3000/api/users/signup", {
                                    method: "POST",
@@ -47,12 +51,14 @@ const SignupForm = () => {
                             if (data.success) {
                                    alert("Registration successful! Redirecting to login...");
                                    navigate("/login");
+                            } else {
+                                   setSubmitError(data.message || "Registration failed. Please try again.");
                             }
                      } catch (error) {
-                            console.log(error);
+                            setSubmitError("Network error. Please try again.");
+                     } finally {
+                            setSubmitting(false);
                      }
-
-                     console.log("Sign up with:", { name, email, password });
               }
        };
 

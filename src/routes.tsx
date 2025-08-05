@@ -7,8 +7,11 @@ import HomePage from "./features/pages/home/HomePage";
 import HotelDetails from "./features/pages/hotel-detail/HotelDetails";
 import Listings from "./features/pages/hotel-listings/HotelListings";
 import Login from "./features/pages/login/LoginForm";
-import ReturnForm from "./features/pages/returnForm/Return";
 import SignupForm from "./features/pages/signup-form/SignupForm";
+import ProfilePage from "./features/pages/profile/ProfilePage";
+
+import ReturnForm from "./features/pages/returnForm/Return";
+
 
 const AppRoutes: React.FC = () => {
        return (
@@ -26,7 +29,7 @@ const AppRoutes: React.FC = () => {
                             element={<DestinationSearch />}
                      />
                      <Route
-                            path="/hotel"
+                            path="/hotels/:id"
                             element={<HotelDetails />}
                      />
                      <Route
@@ -38,6 +41,10 @@ const AppRoutes: React.FC = () => {
                             element={<Login />}
                      />
                      <Route
+                            path="/profile"
+                            element={<ProfilePage />}
+                     />
+                     <Route
                             path="/booking"
                             element={<BookingPage />}
                      />
@@ -45,7 +52,6 @@ const AppRoutes: React.FC = () => {
                             path="/return"
                             element={<ReturnForm />}
                      />
-
                      <Route
                             path="/checkout"
                             element={<CheckoutForm />}

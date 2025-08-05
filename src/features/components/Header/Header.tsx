@@ -32,10 +32,10 @@ const HeaderOne = () => {
                      id="header"
                      className="header"
                      data-testid="header">
-                     <div className={`header-main h-20 w-full bg-white min-[1322px]:px-5 px-4 flex items-center justify-between`}>
+                     <div className={`header-main h-20 w-full bg-white :px-5 px-4 flex items-center justify-between`}>
                             <Link
                                    to="/"
-                                   className="logo">
+                                   className="logo" >
                                    <img
                                           src="/images/logo/Bloom.png"
                                           alt="logo"
@@ -62,27 +62,19 @@ const HeaderOne = () => {
                                    </ul>
                             </div>
 
-                            <div className="right flex items-center gap-3">
-                                   {user ? (
-                                          <span className="text-button max-sm:hidden">Hello, {user.name}</span>
-                                   ) : (
-                                          <>
-                                                 <Link
-                                                        to="/login"
-                                                        className="text-button max-sm:hidden">
-                                                        Log In
-                                                 </Link>
-                                                 <Link
-                                                        to="/signup"
-                                                        className="text-button max-sm:hidden">
-                                                        Sign Up
-                                                 </Link>
-                                          </>
-                                   )}
-                            </div>
-                     </div>
-              </div>
-       );
+				<div className="right flex items-center gap-3">
+					{user ? (
+						<Link to="/profile" className="text-button max-sm:hidden">Hello, {user.name}</Link>
+					) : (
+						<>
+							<Link to="/login" className="text-button max-sm:hidden">Log In</Link>
+							<Link to="/signup" className="text-button max-sm:hidden">Sign Up</Link>
+						</>
+					)}
+				</div>
+			</div>
+		</div>
+	);
 };
 
 export default HeaderOne;
