@@ -52,7 +52,7 @@ const HotelItem: React.FC<{ hotelData: Hotel }> = ({ hotelData }) => {
                             <StarIcon
                                    key={`full-${i}`}
                                    weight="fill"
-                                   className="text-yellow"
+                                   color="#facc15"
                             />
                      );
               }
@@ -61,7 +61,7 @@ const HotelItem: React.FC<{ hotelData: Hotel }> = ({ hotelData }) => {
                             <StarHalfIcon
                                    key="half"
                                    weight="fill"
-                                   className="text-yellow"
+                                   color="#facc15"
                             />
                      );
               }
@@ -146,7 +146,7 @@ const HotelItem: React.FC<{ hotelData: Hotel }> = ({ hotelData }) => {
                             <div className="flex items-center justify-between gap-2 mt-1">
                                    <div className="text-variant1">Nov. 12 - 15</div>
                                    <div className="flex lg:items-end">
-                                          <span className="text-button">${hotelData.price}</span>
+                                          <span className="text-button">${hotelData.price ?? "-"}</span>
                                           <span className="caption1 text-variant1">/night</span>
                                    </div>
                             </div>
