@@ -11,7 +11,7 @@ type AmenityOption = { key: string; label: string };
 
 const AmenityCheckbox = React.memo(({ amenity, checked, onChange }: { amenity: AmenityOption; checked: boolean; onChange: (key: string) => void }) => {
        return (
-              <div className="amenities-item flex items-center justify-between">
+              <div className="flex items-center justify-between">
                      <div className="left flex items-center cursor-pointer">
                             <div className="block-input">
                                    <input
@@ -53,7 +53,11 @@ export const AmenityFilter = React.memo(({ setFilters }: FilterCheckboxProps) =>
        }, []);
 
        useEffect(() => {
-              setFilters((prev) => ({ ...prev, amenities: selectedOptionsSet })); // low-priority
+              const id = setTimeout(() => {
+                     setFilters((prev) => ({ ...prev, amenities: selectedOptionsSet }));
+              }, 500);
+
+              return () => clearTimeout(id);
        }, [selectedOptionsSet, setFilters]);
 
        const amenityOptions: AmenityOption[] = [
@@ -67,8 +71,8 @@ export const AmenityFilter = React.memo(({ setFilters }: FilterCheckboxProps) =>
        ];
 
        return (
-              <div className="border-2 border-black rounded-[12px] p-4 mt-8">
-                     <div className="heading6">Amenities</div>
+              <div className="mt-2">
+                     <div className="font-semibold text-gray-800 mb-3 flex justify-left">Amenities:</div>
                      <div className="list-amenities flex flex-col gap-3 mt-3">
                             {amenityOptions.map((amenity) => (
                                    <AmenityCheckbox

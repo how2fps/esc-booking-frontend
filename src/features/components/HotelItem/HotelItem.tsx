@@ -1,6 +1,6 @@
 "use client";
 
-import { BarbellIcon, ForkKnifeIcon, GarageIcon, MartiniIcon, StarIcon, SwimmingPoolIcon, WashingMachineIcon } from "@phosphor-icons/react";
+import { BarbellIcon, ForkKnifeIcon, GarageIcon, MartiniIcon, StarHalfIcon, StarIcon, SwimmingPoolIcon, WashingMachineIcon } from "@phosphor-icons/react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "swiper/css";
@@ -42,6 +42,32 @@ const HotelItem: React.FC<{ hotelData: Hotel }> = ({ hotelData }) => {
        const handleClickItem = (id: string) => {
               router(`/hotel-details?id=${id}`);
        };
+
+       const renderStars = (rating: number) => {
+              const fullStars = Math.floor(rating);
+              const hasHalfStar = rating - fullStars >= 0.5;
+              const stars = [];
+              for (let i = 0; i < fullStars; i++) {
+                     stars.push(
+                            <StarIcon
+                                   key={`full-${i}`}
+                                   weight="fill"
+                                   className="text-yellow"
+                            />
+                     );
+              }
+              if (hasHalfStar) {
+                     stars.push(
+                            <StarHalfIcon
+                                   key="half"
+                                   weight="fill"
+                                   className="text-yellow"
+                            />
+                     );
+              }
+              return stars;
+       };
+
        return (
               <div
                      role="listitem"
@@ -111,12 +137,9 @@ const HotelItem: React.FC<{ hotelData: Hotel }> = ({ hotelData }) => {
                                                  ) : null
                                           )}
                                    </div>
-                                   <div className="flex items-center gap-1">
-                                          <div className="text-button-sm">{Number(hotelData.rating).toFixed(1)}</div>
-                                          <StarIcon
-                                                 className="text-yellow"
-                                                 weight="fill"
-                                          />
+                                   <div className="flex flex-col">
+                                          <div className="flex">{renderStars(Number(hotelData.rating))}</div>
+                                          <div className="text-button-sm">Rating: {Number(hotelData.trustyou.score.overall)}</div>
                                    </div>
                             </div>
                             <div className="name capitalize mt-1">{hotelData.name}</div>
