@@ -182,14 +182,23 @@ const HotelListings = () => {
        }, [filters, debouncedSearchTerm, hotelsWithPrices]);
 
        const sortedHotels = useMemo(() => {
+              const hotelsCopy = [...filteredHotels];
               if (sortOption === "starHighToLow") {
-                     filteredHotels.sort((a, b) => b.rating - a.rating);
+                     hotelsCopy.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
+              } else if (sortOption === "starLowToHigh") {
+                     hotelsCopy.sort((a, b) => (a.rating ?? 0) - (b.rating ?? 0));
               } else if (sortOption === "priceHighToLow") {
-                     filteredHotels.sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
+                     hotelsCopy.sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
               } else if (sortOption === "priceLowToHigh") {
-                     filteredHotels.sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
+                     hotelsCopy.sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
+              } else if (sortOption === "ratingHighToLow") {
+                     hotelsCopy.sort((a, b) => (b.trustyou.score.overall ?? 0) - (a.trustyou.score.overall ?? 0));
+              } else if (sortOption === "ratingLowToHigh") {
+                     hotelsCopy.sort((a, b) => (a.trustyou.score.overall ?? 0) - (b.trustyou.score.overall ?? 0));
+              } else {
+                     hotelsCopy.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
               }
-              return filteredHotels;
+              return hotelsCopy;
        }, [sortOption, filteredHotels]);
 
        const currentPageHotels = useMemo(() => {
@@ -327,9 +336,12 @@ const HotelListings = () => {
                                                                       setSortOption(e.target.value);
                                                                }}
                                                                defaultValue={"starHighToLow"}>
-                                                               <option value="starHighToLow">Review High To Low</option>
-                                                               <option value="priceHighToLow">Price High To Low</option>
-                                                               <option value="priceLowToHigh">Price Low To High</option>
+                                                               <option value="starHighToLow">Stars Descending</option>
+                                                               <option value="starLowToHigh">Stars Ascending</option>
+                                                               <option value="priceHighToLow">Price Descending</option>
+                                                               <option value="priceLowToHigh">Price Ascending</option>
+                                                               <option value="ratingHighToLow">Rating Descending</option>
+                                                               <option value="ratingLowToHigh">Rating Ascending</option>
                                                         </select>
                                                         <Icon.CaretDown className="absolute top-1/2 -translate-y-1/2 right-2 pointer-events-none text-gray-500" />
                                                  </div>
