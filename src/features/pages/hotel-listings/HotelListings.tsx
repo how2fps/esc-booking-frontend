@@ -11,9 +11,10 @@ import HandlePagination from "../../components/Other/HandlePagination";
 
 import { SpinnerIcon, StarIcon } from "@phosphor-icons/react";
 import { APIProvider, Map as GoogleMap } from "@vis.gl/react-google-maps";
-import type { Hotel, HotelFilter, HotelMarker, HotelPrice } from "../../type/HotelType";
+import type { Hotel, HotelFilter, HotelMarker } from "../../type/HotelType";
 import { AmenityFilter } from "./AmenityFilter";
 import { ClusteredHotelMarkers } from "./ClusteredHotelMarkers";
+
 const formatDate = (dateString: string): string => {
        const date = new Date(dateString);
        const year = date.getFullYear();
@@ -21,18 +22,7 @@ const formatDate = (dateString: string): string => {
        const day = date.getDate();
        return `${year}-${month}-${day}`;
 };
-// function padDateWithZero(dateStr: string): string {
-//        return dateStr
-//               .split("-")
-//               .map((n) => n.padStart(2, "0"))
-//               .join("-");
-// }
 
-// function getGuestsQueryString(noOfGuests: number, noOfRooms: number): string {
-//        return Array(noOfRooms).fill(noOfGuests).join("|");
-// }
-
-//?location=RsBU&startDate=7/20/2025&endDate=7/27/2025&adult=1&children=1&room=2
 const HotelListings = () => {
        // eslint-disable-next-line @typescript-eslint/no-unused-vars
        const [searchParams, _] = useSearchParams();
@@ -51,7 +41,6 @@ const HotelListings = () => {
        const [sortOption, setSortOption] = useState<string>();
 
        const [allHotels, setAllHotels] = useState<HotelMarker[]>([]);
-       const [hotelPrices, setHotelPrices] = useState<Map<string, HotelPrice>>(new Map());
 
        const [filteredHotels, setFilteredHotels] = useState<{ hotels: HotelMarker[]; total: number }>({ hotels: [], total: 0 });
 
@@ -69,20 +58,15 @@ const HotelListings = () => {
        });
 
        const filterWorkerRef = useRef<Worker | null>(null);
-       const priceWorkerRef = useRef<Worker | null>(null);
 
        useEffect(() => {
               filterWorkerRef.current = new Worker(new URL("./filterWorker.js", import.meta.url));
-              priceWorkerRef.current = new Worker(new URL("./priceWorker.js", import.meta.url));
-
-              priceWorkerRef.current.onmessage = (event) => {
-                     console.log(event.data);
-                     setHotelPrices(event.data);
-              };
 
               filterWorkerRef.current.onmessage = (event) => {
+                     if (isLoading) {
+                            return;
+                     }
                      setFilteredHotels(event.data);
-                     setIsLoading(false);
               };
 
               return () => {
@@ -93,12 +77,18 @@ const HotelListings = () => {
        useEffect(() => {
               const handler = setTimeout(() => {
                      setDebouncedSearchTerm(searchTerm);
-              }, 300);
+              }, 250);
 
               return () => {
                      clearTimeout(handler);
               };
        }, [searchTerm]);
+
+       useEffect(() => {
+              if (filterWorkerRef.current) {
+                     filterWorkerRef.current.postMessage({ type: "pollPrices", checkIn, checkOut, destinationId, numberOfAdults, numberOfChildren, numberOfRooms });
+              }
+       }, [checkIn, checkOut, destinationId, numberOfAdults, numberOfChildren, numberOfRooms]);
 
        useEffect(() => {
               const fetchHotelsByDestination = async () => {
@@ -115,6 +105,9 @@ const HotelListings = () => {
                                    return { ...hotel, key: hotel.id, position: { lat: hotel.latitude, lng: hotel.longitude } };
                             });
                             setAllHotels(updatedHotelResults);
+                            console.log(updatedHotelResults);
+                            setFilteredHotels({ hotels: updatedHotelResults, total: updatedHotelResults.length });
+                            setIsLoading(false);
                      } catch (error: unknown) {
                             if (error instanceof Error) {
                                    console.error("Fetch error details:", {
@@ -129,31 +122,14 @@ const HotelListings = () => {
               fetchHotelsByDestination();
        }, [checkIn, checkOut, destinationId]);
 
-       const mergedHotels = useMemo(() => {
-              return allHotels.map((hotel) => {
-                     const priceData = hotelPrices.get(hotel.id);
-                     if (priceData) {
-                            return {
-                                   ...hotel,
-                                   price: priceData?.price,
-                            };
-                     } else {
-                            return hotel;
-                     }
-              });
-       }, [allHotels, hotelPrices]);
-
        useEffect(() => {
-              if (filterWorkerRef.current && mergedHotels.length > 0) {
-                     filterWorkerRef.current.postMessage({ type: "setHotels", hotels: mergedHotels });
+              if (filterWorkerRef.current) {
+                     filterWorkerRef.current.postMessage({
+                            type: "setHotels",
+                            hotels: allHotels,
+                     });
               }
-       }, [mergedHotels]);
-
-       useEffect(() => {
-              if (priceWorkerRef.current) {
-                     priceWorkerRef.current.postMessage({ checkIn, checkOut, destinationId, numberOfAdults, numberOfChildren, numberOfRooms });
-              }
-       }, [checkIn, checkOut, destinationId, numberOfAdults, numberOfChildren, numberOfRooms]);
+       }, [allHotels]);
 
        useEffect(() => {
               if (!filterWorkerRef.current) {
@@ -220,7 +196,7 @@ const HotelListings = () => {
                                                                       defaultZoom={14}
                                                                       gestureHandling={"greedy"}
                                                                       disableDefaultUI={true}>
-                                                                      <ClusteredHotelMarkers hotels={filteredHotels.hotels} />
+                                                                      <ClusteredHotelMarkers hotels={filteredHotels?.hotels ?? []} />
                                                                </GoogleMap>
                                                         </div>
                                                  </APIProvider>
@@ -330,7 +306,7 @@ const HotelListings = () => {
                                           </div>
                                    ) : (
                                           <div className="list-tent md:mt-10 mt-6 grid lg:grid-cols-3 md:grid-cols-2 min-[360px]:grid-cols-2 lg:gap-[30px] gap-4 gap-y-7">
-                                                 {filteredHotels.hotels.length > 0 ? (
+                                                 {filteredHotels.total > 0 ? (
                                                         filteredHotels.hotels.map((hotel) => (
                                                                <HotelItem
                                                                       key={hotel.id}
