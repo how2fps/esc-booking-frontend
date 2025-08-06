@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Footer from '../../components/Footer/Footer';
 
 const BookingPage = () => {
   const [firstName, setFirstName] = useState('');
@@ -19,6 +18,28 @@ const BookingPage = () => {
   const [price] = useState(500);
   const [errors, setErrors] = useState<string[]>([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetch('http://localhost:3000/api/users/session', {
+      credentials: 'include', // required for sending cookies/session
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('User not logged in');
+        return res.json();
+      })
+      .then((data) => {
+        const user = data.data;
+        const [first, ...rest] = (user.name || '').split(' ');
+        setFirstName(first || '');
+        setLastName(rest.join(' ') || '');
+        setPhoneNumber(user.phone_number?.toString() || '');
+        setEmail(user.email || '');
+      })
+      .catch((err) => {
+        console.log('Not logged in or error fetching session:', err);
+      });
+  }, []);
+  
 
   const calculateNights = () => {
     const start = new Date(startDate);
@@ -39,45 +60,23 @@ const BookingPage = () => {
     setErrors(validationErrors);
 
     if (validationErrors.length === 0) {
-      const payload = {
-        hotelName: selectedHotel,
-        roomType,
-        numberOfNights: calculateNights(),
-        startDate,
-        endDate,
-        numAdults: adults,
-        numChildren: children,
-        price,
+      console.log('Booking details:', {
         firstName,
         lastName,
         phoneNumber,
         email,
         specialRequests,
-      };
-      
-
-      fetch('http://localhost:3000/api/bookings', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      })
-        .then(async (res) => {
-          if (!res.ok) {
-            const data = await res.json();
-            throw new Error(data.error || 'Booking failed');
-          }
-          return res.json();
-        })
-        .then((data) => {
-          alert('Booking submitted successfully!');
-          navigate('/checkout');
-        })
-        .catch((err) => {
-          console.error(err);
-          alert('Something went wrong while booking.');
-        });
+        selectedHotel,
+        roomType,
+        adults,
+        children,
+        startDate,
+        endDate,
+        nights: calculateNights(),
+        price,
+      });
+      alert('Booking submitted successfully!');
+      navigate('/checkout');
     }
   };
 
@@ -89,6 +88,7 @@ const BookingPage = () => {
             onSubmit={handleSubmit}
             className="flex flex-col lg:flex-row items-start gap-10"
           >
+            {/* Your Selection - small sidebar */}
             <div className="w-full lg:w-1/5 max-w-[220px]">
               <h2 className="text-md font-semibold mb-4">Your Selection</h2>
               {[
@@ -105,14 +105,15 @@ const BookingPage = () => {
                   <label className="block text-sm font-medium text-gray-600">{label}</label>
                   <input
                     type="text"
-                    className="w-full px-3 py-2 mt-1 rounded-md bg-white text-black text-sm text-center"
-                    value={value as string | number}
+                    className="w-full px-3 py-2 mt-1 rounded-md bg-white text-sm text-black border border-gray-300 text-center"
+                    value={value}
                     readOnly
                   />
                 </div>
               ))}
             </div>
 
+            {/* Your Details - centralized */}
             <div className="flex-1 max-w-2xl mx-auto w-full">
               <h2 className="text-xl font-semibold mb-6 text-center">Your Details</h2>
 
@@ -136,6 +137,7 @@ const BookingPage = () => {
                 </div>
               ))}
 
+              {/* Special Requests */}
               <div className="mb-6">
                 <label className="block font-medium mb-1">Special Requests to Hotel</label>
                 <textarea
@@ -146,6 +148,7 @@ const BookingPage = () => {
                 />
               </div>
 
+              {/* Error Messages */}
               {errors.length > 0 && (
                 <ul className="text-sm text-red-500 mb-4 list-disc pl-5">
                   {errors.map((err, i) => (
@@ -154,6 +157,7 @@ const BookingPage = () => {
                 </ul>
               )}
 
+              {/* Submit Button */}
               <button
                 type="submit"
                 className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-4 rounded-lg transition duration-300"
@@ -164,7 +168,6 @@ const BookingPage = () => {
           </form>
         </div>
       </div>
-      <Footer />
     </>
   );
 };
