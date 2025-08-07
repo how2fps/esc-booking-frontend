@@ -71,6 +71,10 @@ export const ClusteredHotelMarkers = ({ hotels }: { hotels: HotelMarkerType[] })
                                    anchor={markers[selectedHotelKey]}
                                    onCloseClick={handleInfoWindowClose}>
                                    <div className="bg-white rounded-xl shadow-lg p-4 w-64">
+                                          <img
+                                                 src={selectedHotel?.image_details?.prefix + "0" + selectedHotel?.image_details?.suffix}
+                                                 alt=""
+                                          />
                                           <div>
                                                  <div className="font-bold text-lg">{selectedHotel?.name}</div>
                                                  <div className="flex items-center gap-1">

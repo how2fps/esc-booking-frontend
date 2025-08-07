@@ -68,7 +68,8 @@ export interface HotelPrice {
 export interface HotelFilter {
        amenities: Set<string>;
        priceRange: { min: number; max: number };
-       minimumRating: number;
+       minimumStars: number;
+       minimumUsersRating: number;
 }
 
 export interface HotelMarker extends Hotel {
