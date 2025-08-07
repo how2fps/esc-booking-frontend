@@ -328,6 +328,8 @@ const HotelListings = () => {
                                                                       key={hotel.id}
                                                                       hotelData={hotel}
                                                                       destination_id={destination_id}
+                                                                      checkIn={checkIn}
+                                                                      checkOut={checkOut}
                                                                />
                                                         ))
                                                  ) : (

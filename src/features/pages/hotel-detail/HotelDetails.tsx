@@ -1,32 +1,66 @@
 'use client'
 
-import React, { useState, useEffect, useMemo } from 'react'
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect, useMemo,  useCallback } from 'react'
+import { useParams, Link } from "react-router-dom";
 import { useSearchParams } from 'react-router-dom';
 import * as Icon from 'phosphor-react'
+import { DateRangePicker } from 'react-date-range'
+import { addDays } from 'date-fns'
 import StickyBox from 'react-sticky-box'
 import type { Room } from "../../type/RoomType";
 import type { Hotel } from "../../type/HotelType";
-
-// Components
-import HeaderOne from '../../components/Header/Header'
-import Footer from '../../components/Footer/Footer'
 
 // Styles
 import 'react-date-range/dist/styles.css'
 import 'react-date-range/dist/theme/default.css'
 
+interface GuestType {
+    adult: number;
+    children: number;
+}
+
 const HotelDetailContent = () => {
     const { id } = useParams();  
     const [searchParams] = useSearchParams();
     const destination_id = searchParams.get('destination_id');
-    const checkIn = '2025-10-10'; // Fixed date
-    const checkOut = '2025-10-17'; // Fixed date
+    const checkIn = searchParams.get('checkIn');
+    const checkOut = searchParams.get('checkOut');
+    
     console.log(searchParams)
     const [viewMoreDesc, setViewMoreDesc] = useState<boolean>(false)
     const [hotelDetails, setHotelDetails] = useState<Hotel | null>(null);
     const [roomDetails, setRoomDetails] = useState<Room[]>([]);
     const [roomsLoading, setRoomsLoading] = useState<boolean>(false);
+    const [openDate, setOpenDate] = useState(false);
+    const [openGuest, setOpenGuest] = useState(false);
+
+    const [guest, setGuest] = useState<GuestType>({
+        adult: 2,
+        children: 0
+    });
+    
+    const [state, setState] = useState([
+        {
+            startDate: checkIn ? new Date(checkIn) : new Date(),
+            endDate: checkOut ? new Date(checkOut) : addDays(new Date(), 1),
+            key: 'selection'
+        }
+    ]);
+
+    const currentCheckIn = useMemo(() => {
+        return state[0].startDate.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+    }, [state]);
+
+    const currentCheckOut = useMemo(() => {
+        return state[0].endDate.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+    }, [state]);
+
+    const currentGuests = useMemo(() => {
+        return guest.adult + guest.children;
+    }, [guest]);
+
+    const [mainImage, setMainImage] = useState<string | null>(null) 
+    const [imageError, setImageError] = useState(false);
 
     useEffect(() => {
         const fetchHotelDetails = async () => {
@@ -68,7 +102,7 @@ const HotelDetailContent = () => {
             setRoomsLoading(true);
 
             try {
-                const response = await fetch(`http://localhost:3000/api/hotels/${id}/prices?destination_id=${destination_id}&checkin=${checkIn}&checkout=${checkOut}&lang=en_US&currency=SGD&country_code=SG&guests=2&partner_id=1089&landing_page=wl-acme-earn&product_type=earn`, {
+                const response = await fetch(`http://localhost:3000/api/hotels/${id}/prices?destination_id=${destination_id}&checkin=${currentCheckIn}&checkout=${currentCheckOut}&lang=en_US&currency=SGD&country_code=SG&guests=${currentGuests}&partner_id=1089&landing_page=wl-acme-earn&product_type=earn`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -103,12 +137,9 @@ const HotelDetailContent = () => {
         };
         fetchRoomDetails();
         console.log("running")
-    }, [destination_id]);
+    }, [destination_id, currentCheckIn, currentCheckOut, id, currentGuests]);
 
-    // Image handling logic 
-    const [mainImage, setMainImage] = useState<string | null>(null) 
-    const [imageError, setImageError] = useState(false);
-
+    // Image handling logic
     const image_array = useMemo(() => {
         // only run if there are image_details
         if (!hotelDetails?.image_details) return [];
@@ -118,20 +149,26 @@ const HotelDetailContent = () => {
         const suffix = hotelDetails?.image_details?.suffix || '.jpg';
         const hiresIndices = hotelDetails.hires_image_index?.split(',').map(num => parseInt(num.trim())) || [];
         const images: string[] = [];
-        // add all high res images
+
+        if (hiresIndices.length > 0) {
         hiresIndices.forEach(index => {
-        if (index < count) {
-            images.push(`${prefix}${index}${suffix}`);
-        }
-        });
-        // add remaining images (avoid duplicates)
-        for (let i = 0; i < count; i++) {
-            const imageUrl = `${prefix}${i}${suffix}`;
-            if (!images.includes(imageUrl)) {
-                images.push(imageUrl);
+            if (index < count) {
+                images.push(`${prefix}${index}${suffix}`);
             }
+        });
+        
+        // If we got high-res images, return them
+        if (images.length > 0) {
+            return images;
         }
-        return images;
+    }
+    
+    // Strategy 2: Fallback to all images if no high-res available
+    for (let i = 0; i < count; i++) {
+        images.push(`${prefix}${i}${suffix}`);
+    }
+    
+    return images;
     }, [hotelDetails?.image_details, hotelDetails?.hires_image_index]);
 
     const [validImages, setValidImages] = useState<string[]>([]);
@@ -170,16 +207,76 @@ const HotelDetailContent = () => {
         if (validImages.length > 0) {
         // Use default_image_index if available
         const defaultIndex = hotelDetails?.default_image_index || 0;
-        const defaultImage = validImages[defaultIndex] || validImages[0];
+        const safeIndex = Math.min(defaultIndex, validImages.length - 1);
+        const defaultImage = validImages[safeIndex] || validImages[0];
         setMainImage(defaultImage);
-    } else {
+        } else {
         setMainImage('/assets/Placeholder_Cat.jpg');
+        }
+    }, [validImages, hotelDetails?.default_image_index]);
+
+    const handleOpenDate = () => {
+        setOpenDate(!openDate);
+        setOpenGuest(false);
+        }
+    
+    const handleOpenGuest = () => {
+        setOpenGuest(!openGuest);
+        setOpenDate(false);
     }
-}, [validImages, hotelDetails?.default_image_index]);
+
+    // Check if the click event occurs outside the popup.
+    const handleClickOutsideDatePopup = useCallback((event: Event) => {
+        const targetElement = event.target as Element;
+        if (
+            openDate &&
+            !targetElement.closest('.sidebar-date-trigger') &&
+            !targetElement.closest('.sidebar-date-dropdown')
+        ) {
+            setOpenDate(false);
+        }
+    }, [openDate]);
+
+    const handleClickOutsideGuestPopup = useCallback((event: Event) => {
+        const targetElement = event.target as Element;
+        if (
+            openGuest &&
+            !targetElement.closest('.sub-menu-guest') &&
+            !targetElement.closest('.select-block')
+        ) {
+            setOpenGuest(false);
+        }
+    }, [openGuest]);
+    
+    useEffect(() => {
+        document.addEventListener('click', handleClickOutsideDatePopup);
+        document.addEventListener('click', handleClickOutsideGuestPopup);
+        return () => {
+            document.removeEventListener('click', handleClickOutsideDatePopup);
+            document.removeEventListener('click', handleClickOutsideGuestPopup);
+        };
+    }, [handleClickOutsideDatePopup, handleClickOutsideGuestPopup])
+
+    // Increase number of guests
+    const increaseGuest = (type: keyof GuestType) => {
+        setGuest((prevGuest) => ({
+            ...prevGuest,
+            [type]: prevGuest[type] + 1
+        }));
+    };
+
+    // Decrease number of guests
+    const decreaseGuest = (type: keyof GuestType) => {
+        if (guest[type] > 0) {
+            setGuest((prevGuest) => ({
+                ...prevGuest,
+                [type]: prevGuest[type] - 1
+            }));
+        }
+    };
 
     return (
         <div className='hotel-detail'>
-            <HeaderOne />
             {/* Image Gallery */}
             <div className="container mt-10">
 
@@ -328,12 +425,19 @@ const HotelDetailContent = () => {
 
                             {/* Rooms */}
                             <div className="rooms lg:mt-10 mt-6 lg:pt-10 pt-6 border-t border-outline">
-                                <div className="heading5">Available Rooms ({roomDetails.length})</div>
+                                <div className="heading5">
+                                    Available Rooms ({roomDetails.length})
+                                    {roomsLoading && (
+                                        <span className="text-sm text-gray-500 ml-2">
+                                            (Updating for {currentCheckIn} to {currentCheckOut}...)
+                                        </span>
+                                    )}
+                                </div>
                                 
                                 {roomsLoading ? (
                                     <div className="flex justify-center items-center py-8">
                                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mr-3"></div>
-                                        <span>Loading rooms...</span>
+                                        <span>Loading rooms for selected dates...</span>
                                     </div>
                                 ) : roomDetails.length > 0 ? (
                                     <div className="overflow-x-auto pb-4 mt-4">
@@ -368,9 +472,13 @@ const HotelDetailContent = () => {
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <button className="w-full bg-primary text-white py-2 rounded hover:bg-primary-dark transition-colors">
-                                                                View More Details
-                                                            </button>
+                                                            <Link 
+                                                                to={`/hotels/${id}/rooms/${room.key}?destination_id=${destination_id}&checkin=${currentCheckIn}&checkout=${currentCheckOut}&guests=${guest.adult + guest.children}`}
+                                                                className="block w-full bg-primary text-white py-2 rounded hover:bg-primary-dark transition-colors text-center"
+                                                                aria-label={`Book ${room.roomNormalizedDescription}`}
+                                                            >
+                                                                Book Now
+                                                            </Link>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -402,6 +510,137 @@ const HotelDetailContent = () => {
                         {/* Sidebar */}
                         <div className="sidebar xl:w-1/3 lg:w-[40%] lg:pl-[45px] w-full">
                             <StickyBox offsetTop={100} offsetBottom={20}>
+                                {/* Reservation Details */}
+                                <div className="reservation bg-surface p-6 rounded-md">
+                                    <div className="heading4 text-center">Reservation</div>
+                                    <div className="date-sidebar-detail bg-white border border-outline mt-5">
+                                        <div className="relative">
+                                            <div className="grid grid-cols-2 border-b border-outline sidebar-date-trigger">
+                                                <div className="left pl-5 py-4 border-r border-outline cursor-pointer" onClick={handleOpenDate}>
+                                                    <div className="flex items-center gap-1">
+                                                        <Icon.CalendarBlank className='text-xl' />
+                                                        <div className="text-button">Check In</div>
+                                                    </div>
+                                                    <div className="body2 mt-1">{state[0].startDate.toLocaleDateString()}</div>
+                                                </div>
+                                                <div className="left pr-5 py-4 cursor-pointer" onClick={handleOpenDate}>
+                                                    <div className="flex items-center justify-end gap-1">
+                                                        <Icon.CalendarBlank className='text-xl' />
+                                                        <div className="text-button">Check Out</div>
+                                                    </div>
+                                                    <div className="body2 mt-1 text-end">{state[0].endDate.toLocaleDateString()}</div>
+                                                </div>
+                                            </div>
+                                            {/* Date Picker dropdown */}
+                                            {openDate && (
+                                                <div className="absolute top-full left-0 w-full mt-2 sidebar-date-dropdown z-50">
+                                                    <DateRangePicker
+                                                        className="form-date-picker box-shadow open w-full border border-outline rounded-none bg-white"
+                                                        onChange={item => {
+                                                            const selection = item.selection;
+                                                            if (selection && selection.startDate && selection.endDate && selection.startDate <= selection.endDate) {
+                                                                setState([selection]);
+                                                            }
+                                                        }}
+                                                        moveRangeOnFirstSelection={false}
+                                                        months={2}
+                                                        ranges={state}
+                                                        direction="horizontal"
+                                                        minDate={new Date()}
+                                                        showMonthAndYearPickers={true}
+                                                        showDateDisplay={true}
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Guests */}
+                                        <div className="guest px-5 py-4 relative">
+                                            <div className="flex items-center justify-between select-block w-full">
+                                                <div
+                                                    className="flex flex-col cursor-pointer"
+                                                    style={{ minWidth: 0 }}
+                                                    onClick={handleOpenGuest}
+                                                    tabIndex={0}
+                                                    role="button"
+                                                    aria-label="Open guest dropdown"
+                                                >
+                                                    <div className="flex items-center gap-1">
+                                                        <Icon.Users className='text-xl' />
+                                                        <div className="text-button">Guest</div>
+                                                    </div>
+                                                    <div className="body2 mt-1 truncate">
+                                                        {guest.adult > 0 ? (guest.adult === 1 ? guest.adult + " adult" : guest.adult + " adults") : "0 adults"}
+                                                        {guest.children > 0 ? (guest.children === 1 ? " - " + guest.children + " child" : " - " + guest.children + " children") : " - 0 children"}
+                                                    </div>
+                                                </div>
+                                                <span
+                                                    className="cursor-pointer flex items-center"
+                                                    onClick={handleOpenGuest}
+                                                    tabIndex={0}
+                                                    role="button"
+                                                    aria-label="Open guest dropdown"
+                                                >
+                                                    <Icon.CaretDown className='text-2xl'/>
+                                                </span>
+                                            </div>
+                                            <div className={`sub-menu-guest bg-white rounded-b-xl overflow-hidden p-5 absolute top-full md:mt-5 mt-3 left-0 w-full box-shadow md:border-t border-outline z-50 ${openGuest ? "block" : "hidden"}`}>
+                                                <div className="item flex items-center justify-between pb-4 border-b border-outline">
+                                                        <div className="left">
+                                                            <p>Adults</p>
+                                                            <div className="caption1 text-variant1">(12 Years+)</div>
+                                                        </div>
+                                                        <div className="right flex items-center gap-5">
+                                                            <div
+                                                                className={`minus w-8 h-8 flex items-center justify-center rounded-full border border-outline duration-300 ${guest.adult === 0 ? "opacity-[0.4] cursor-default" : "cursor-pointer hover:bg-black hover:text-white"}`}
+                                                                role="button"
+                                                                aria-label="Minus adult"
+                                                                onClick={() => decreaseGuest("adult")}> 
+                                                                <Icon.Minus weight="bold" />
+                                                            </div>
+                                                            <div className="text-title">{guest.adult}</div>
+                                                            <div
+                                                                className="plus w-8 h-8 flex items-center justify-center rounded-full border border-outline cursor-pointer duration-300 hover:bg-black hover:text-white"
+                                                                role="button"
+                                                                aria-label="Plus adult"
+                                                                onClick={() => increaseGuest("adult")}> 
+                                                                <Icon.Plus weight="bold" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="item flex items-center justify-between pb-4 pt-4 border-b border-outline">
+                                                            <div className="left">
+                                                                <p>Children</p>
+                                                                <div className="caption1 text-variant1">(2-12 Years)</div>
+                                                            </div>
+                                                            <div className="right flex items-center gap-5">
+                                                                <div
+                                                                    className={`minus w-8 h-8 flex items-center justify-center rounded-full border border-outline duration-300 ${guest.children === 0 ? "opacity-[0.4] cursor-default" : "cursor-pointer hover:bg-black hover:text-white"}`}
+                                                                    role="button"
+                                                                    aria-label="Minus child"
+                                                                    onClick={() => decreaseGuest("children")}> 
+                                                                    <Icon.Minus weight="bold" />
+                                                                </div>
+                                                                <div className="text-title">{guest.children}</div>
+                                                                <div
+                                                                    className="plus w-8 h-8 flex items-center justify-center rounded-full border border-outline cursor-pointer duration-300 hover:bg-black hover:text-white"
+                                                                    role="button"
+                                                                    aria-label="Plus child"
+                                                                    onClick={() => increaseGuest("children")}> 
+                                                                    <Icon.Plus weight="bold" />
+                                                                </div>
+                                                            </div>
+                                                    </div>
+                                                    <div
+                                                        className="button-main w-full text-center mt-4"
+                                                        onClick={() => setOpenGuest(false)}>
+                                                        Done
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 {/* Why Book With Us */}
                                 <div className="reservation bg-surface p-6 rounded-md md:mt-10 mt-6">
                                     <div className="heading6">Why Book With Us?</div>
@@ -424,12 +663,13 @@ const HotelDetailContent = () => {
                                         </div>
                                     </div>
                                 </div>
+
                             </StickyBox>
                         </div>
+
                     </div>
                 </div>
             </div>
-            <Footer />
         </div>
     )
 }

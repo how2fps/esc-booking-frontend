@@ -1,24 +1,16 @@
 'use client'
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react' // ✅ Added useMemo import
-import { useParams } from "react-router-dom"
-import { addDays } from 'date-fns'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { Pagination } from 'swiper/modules'
+import React, { useState, useEffect, useMemo,  useCallback } from 'react'
+import { useParams, Link } from "react-router-dom";
+import { useSearchParams } from 'react-router-dom';
 import * as Icon from 'phosphor-react'
 import { DateRangePicker } from 'react-date-range'
+import { addDays } from 'date-fns'
 import StickyBox from 'react-sticky-box'
-
-// Components
-import HeaderOne from '../../components/Header/Header'
-import Footer from '../../components/Footer/Footer'
-
-// Data
-import hotelsData from '../../components/data/hotels.json'
+import type { Room } from "../../type/RoomType";
+import type { Hotel } from "../../type/HotelType";
 
 // Styles
-import "swiper/css"
-import "swiper/css/pagination"
 import 'react-date-range/dist/styles.css'
 import 'react-date-range/dist/theme/default.css'
 
@@ -27,60 +19,149 @@ interface GuestType {
     children: number;
 }
 
-const HotelDetailContent = () => {
+const RoomDetailContent = () => {
     const { id } = useParams();  
-    const hotelId = id || '4PXS';
+    const { roomKey } = useParams();
+    const [searchParams] = useSearchParams();
+    const destination_id = searchParams.get('destination_id');
+    const checkIn = searchParams.get('checkIn');
+    const checkOut = searchParams.get('checkOut');
     
-    // Find the hotel from JSON data
-    const hotel = hotelsData.find((h: any) => h.id === hotelId);
-    
-    // If no hotel found, show error
-    if (!hotel) {
-        return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="text-center">
-                    <h2 className="text-2xl font-bold">Hotel not found!</h2>
-                    <p>Hotel ID: {hotelId}</p>
-                    <div className="mt-4 text-red-500">Page has failed to load. Please reload the page.</div>
-                </div>
-            </div>
-        );
-    }
-    
+    console.log(searchParams)
     const [viewMoreDesc, setViewMoreDesc] = useState<boolean>(false)
-    const [openDate, setOpenDate] = useState(false)
-    const [openGuest, setOpenGuest] = useState(false)
-    const [mainImage, setMainImage] = useState<string | null>(null) 
-    const [imageError, setImageError] = useState(false);
-    const [roomCount, setRoomCount] = useState(1);
+    const [hotelDetails, setHotelDetails] = useState<Hotel | null>(null);
+    const [roomDetail, setRoomDetail] = useState<Room | null>(null);
+    const [allRoomDetails, setAllRoomDetails] = useState<Room[]>([]);
+    const [roomsLoading, setRoomsLoading] = useState<boolean>(false);
+    const [openDate, setOpenDate] = useState(false);
+    const [openGuest, setOpenGuest] = useState(false);
+
+    const [guest, setGuest] = useState<GuestType>({
+        adult: 2,
+        children: 0
+    });
+    
     const [state, setState] = useState([
         {
-            startDate: new Date(),
-            endDate: addDays(new Date(), 7),
+            startDate: checkIn ? new Date(checkIn) : new Date(),
+            endDate: checkOut ? new Date(checkOut) : addDays(new Date(), 1),
             key: 'selection'
         }
     ]);
-    const [guest, setGuest] = useState<GuestType>({
-        adult: 0,
-        children: 0,
-    });
 
-    // Only display images that actually exist, fallback if none
+    const currentCheckIn = useMemo(() => {
+        return state[0].startDate.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+    }, [state]);
+
+    const currentCheckOut = useMemo(() => {
+        return state[0].endDate.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+    }, [state]);
+
+    const currentGuests = useMemo(() => {
+        return guest.adult + guest.children;
+    }, [guest]);
+
+    const [mainImage, setMainImage] = useState<string | null>(null) 
+    const [imageError, setImageError] = useState(false);
+
+    useEffect(() => {
+        const fetchHotelDetails = async () => {
+            try {
+                const response = await fetch(`http://localhost:3000/api/hotels/${id}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const hotelResult: Hotel = await response.json();
+            setHotelDetails(hotelResult);
+            } catch (error: unknown) {
+                if (error instanceof Error) {
+                        console.error("Fetch error details:", {
+                                name: error.name,
+                                message: error.message,
+                                stack: error.stack,
+                        });
+                }
+                console.error("Something went wrong while loading hotels. Please try again later.");
+            }
+        };
+        fetchHotelDetails();
+    }, [id]);
+    
+
+    useEffect(() => {
+        const fetchRoomDetails = async () => {
+
+            setRoomsLoading(true);
+
+            try {
+                const response = await fetch(`http://localhost:3000/api/hotels/${id}/prices?destination_id=${destination_id}&checkin=${currentCheckIn}&checkout=${currentCheckOut}&lang=en_US&currency=SGD&country_code=SG&guests=${currentGuests}&partner_id=1089&landing_page=wl-acme-earn&product_type=earn`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+
+            console.log(response)
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const roomResult = await response.json();
+            if (roomResult.rooms && Array.isArray(roomResult.rooms)) {
+                const specificRoom = roomResult.rooms.find((room: Room) => room.key === roomKey);
+                if (specificRoom) {
+                    setRoomDetail(specificRoom); 
+                    console.log('Found room:', specificRoom);
+                } else {
+                    console.warn('Room not found with key:', roomKey);
+                    setRoomDetail(null);
+                }
+            } else {
+                console.warn('No room found in API response:', roomResult);
+                setRoomDetail(null);
+                setAllRoomDetails([]);
+            }
+            } catch (error: unknown) {
+                if (error instanceof Error) {
+                        console.error("Fetch error details:", {
+                                name: error.name,
+                                message: error.message,
+                                stack: error.stack,
+                        });
+                }
+                console.error("Something went wrong while loading rooms. Please try again later.");
+            } finally {
+            setRoomsLoading(false); 
+            }
+        };
+        fetchRoomDetails();
+        console.log("running")
+    }, [destination_id, currentCheckIn, currentCheckOut, id, currentGuests, roomKey]);
+
+    // Image handling logic
     const image_array = useMemo(() => {
-        const prefix = hotel.image_details?.prefix || '';
-        const count = hotel.image_details?.count || 0;
-        const suffix = hotel.image_details?.suffix || '.jpg';
-        const image_count = Math.min(count, 10);
-        const images: string[] = [];
-        for (let i = 0; i < image_count; i++) {
-            images.push(`${prefix}${i}${suffix}`);
+        if (roomDetail?.images && roomDetail.images.length > 0) {
+            return roomDetail.images.map(img => img.high_resolution_url);
         }
-        return images;
-    }, [hotel.id]);
+    // No fallback to hotel images - return empty array
+        return [];
+    }, [roomDetail?.images]);
 
     const [validImages, setValidImages] = useState<string[]>([]);
 
     useEffect(() => {
+        if (image_array.length === 0) {
+            setValidImages(['/assets/Placeholder_Cat.png']); 
+            return;
+        }
         let isMounted = true;
         const checkImages = async () => {
             const results: string[] = [];
@@ -98,7 +179,7 @@ const HotelDetailContent = () => {
                 )
             );
             if (isMounted) {
-                setValidImages(results.length > 0 ? results : ['/assets/cityhero.jpg']);
+                setValidImages(results.length > 0 ? results : ['/assets/Placeholder_Cat.png']);
             }
         };
         checkImages();
@@ -107,26 +188,32 @@ const HotelDetailContent = () => {
 
     // Set main image after validImages is created
     useEffect(() => {
-        const firstImage = validImages.length > 0 
-            ? validImages[0] 
-            : '/assets/cityhero.jpg';
-        setMainImage(firstImage);
-    }, [validImages]);
+        if (roomDetail?.images) {
+            const heroImage = roomDetail.images.find(img => img.hero_image);
+            if (heroImage?.high_resolution_url) {
+                setMainImage(heroImage.high_resolution_url);
+                return;
+            }
+        }
+        setMainImage(validImages[0]);
+        } else {
+        setMainImage('/assets/Placeholder_Cat.png'); // Use placeholder when no images
+    }
+    }, [validImages, roomDetail?.images]);
 
     const handleOpenDate = () => {
-        setOpenDate(!openDate)
-        setOpenGuest(false)
-    }
-
+        setOpenDate(!openDate);
+        setOpenGuest(false);
+        }
+    
     const handleOpenGuest = () => {
         setOpenGuest(!openGuest);
         setOpenDate(false);
     }
 
     // Check if the click event occurs outside the popup.
-    const handleClickOutsideDatePopup: EventListener = useCallback((event) => {
+    const handleClickOutsideDatePopup = useCallback((event: Event) => {
         const targetElement = event.target as Element;
-        // Only close if click is outside both the trigger and the dropdown
         if (
             openDate &&
             !targetElement.closest('.sidebar-date-trigger') &&
@@ -136,7 +223,7 @@ const HotelDetailContent = () => {
         }
     }, [openDate]);
 
-    const handleClickOutsideGuestPopup: EventListener = useCallback((event) => {
+    const handleClickOutsideGuestPopup = useCallback((event: Event) => {
         const targetElement = event.target as Element;
         if (
             openGuest &&
@@ -146,7 +233,7 @@ const HotelDetailContent = () => {
             setOpenGuest(false);
         }
     }, [openGuest]);
-
+    
     useEffect(() => {
         document.addEventListener('click', handleClickOutsideDatePopup);
         document.addEventListener('click', handleClickOutsideGuestPopup);
@@ -174,17 +261,11 @@ const HotelDetailContent = () => {
         }
     };
 
-    const basePrice = 200;
-    const nights = Math.ceil((state[0].endDate.getTime() - state[0].startDate.getTime()) / (1000 * 60 * 60 * 24));
-    const serviceTax = 0.19 * (basePrice * nights * roomCount);
-    const total = (basePrice * nights * roomCount) + serviceTax;
-
     return (
         <div className='hotel-detail'>
-            <HeaderOne />
-            
             {/* Image Gallery */}
             <div className="container mt-10">
+
                 {/* Main Image */}
                 <div className="w-full mx-auto">
                     <div
@@ -192,22 +273,18 @@ const HotelDetailContent = () => {
                         style={{ maxWidth: '100%' }}
                     >
                         <img
-                            src={mainImage || "/assets/cityhero.jpg"}
+                            src={mainImage || "/assets/Placeholder_Cat.jpg"}
                             alt="Main Hotel View"
                             className="w-full h-full object-cover rounded-xl"
                             style={{ width: '100%', height: '100%' }}
                             onError={(e) => {
                                 setImageError(true);
-                                e.currentTarget.src = "/images/placeholder-hotel.jpg";
+                                e.currentTarget.src = "/assets/Placeholder_Cat.jpg";
                             }}
                         />
-                        {imageError && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-80">
-                                <span className="text-red-500 font-semibold">Images/Content has failed to load. Please reload the page.</span>
-                            </div>
-                        )}
                     </div>
                 </div>
+
                 {/* Thumbnail Grid */}
                 <div className="w-full mt-6">
                     <div className="flex gap-3.5 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
@@ -221,7 +298,7 @@ const HotelDetailContent = () => {
                                         onClick={() => setMainImage(imageUrl)}
                                         onError={(e) => {
                                             setImageError(true);
-                                            e.currentTarget.src = "/images/placeholder-hotel.jpg";
+                                            e.currentTarget.src = "/assets/Placeholder_Cat.jpg";
                                         }}
                                     />
                                 </div>
@@ -235,28 +312,29 @@ const HotelDetailContent = () => {
                 </div>
             </div>
 
+            {/* Hotel Details Section */}
             <div className="content-detail lg:py-20 md:py-14 py-10">
                 <div className="container">
                     <div className="flex flex-col lg:flex-row gap-y-10 justify-between">
                         <div className="content xl:w-2/3 lg:w-[60%] lg:pr-[15px] w-full">
                             
-                            {/* Hotel Header */}
+                            {/* Room Header */}
                             <div className="flex items-center justify-between gap-6">
-                                <h1 className="heading3" role="heading" aria-level="1">{hotel.name}</h1>
+                                <h1 className="heading3" role="heading" aria-level={1}>{hotelDetails?.name}</h1>
                                 <div className="share w-12 h-12 rounded-full bg-white border border-outline flex-shrink-0 flex items-center justify-center cursor-pointer duration-300 hover:bg-black hover:text-white">
                                     <Icon.ShareNetwork className='text-2xl' />
                                 </div>
                             </div>
 
-                            {/* Location & Rating */}
+                            {/* Location */}
                             <div className="flex items-center gap-4 flex-wrap gap-y-1 mt-2">
                                 <div className="flex items-center gap-1.5">
                                     <Icon.MapPin className='text-variant1' />
-                                    <span className='text-variant1 capitalize'>{hotel.address}</span>
+                                    <span className='text-variant1 capitalize'>{hotelDetails?.address}</span>
                                 </div>
-                                {hotel.latitude && hotel.longitude && (
+                                {hotelDetails?.latitude && hotelDetails?.longitude && (
                                     <a 
-                                        href={`http://maps.google.com/?q=${hotel.latitude},${hotel.longitude}`} 
+                                        href={`http://maps.google.com/?q=${hotelDetails?.latitude},${hotelDetails?.longitude}`} 
                                         target='_blank' 
                                         rel='noopener noreferrer'
                                         className='text-primary underline'
@@ -269,12 +347,12 @@ const HotelDetailContent = () => {
                             {/* Rating */}
                             <div className="flex items-center gap-2 mt-3">
                                 <div className="flex items-center gap-1">
-                                    <div className="text-lg font-semibold">{hotel.rating?.toFixed(1) || 'N/A'}</div>
+                                    <div className="text-lg font-semibold">{hotelDetails?.rating?.toFixed(1) || 'N/A'}</div>
                                     <Icon.Star className='text-yellow-400' weight='fill' />
                                 </div>
-                                {hotel.trustyou?.score?.overall && (
+                                {hotelDetails?.trustyou?.score?.overall && (
                                     <div className="text-variant1">
-                                        TrustYou Score: {hotel.trustyou.score.overall}
+                                        TrustYou Score: {hotelDetails?.trustyou.score.overall}
                                     </div>
                                 )}
                             </div>
@@ -282,13 +360,13 @@ const HotelDetailContent = () => {
                             {/* Description */}
                             <div className="desc lg:mt-10 mt-6 lg:pt-10 pt-6 border-t border-outline">
                                 <div className="heading5">Description</div>
-                                {hotel.description ? (
+                                {hotelDetails?.description ? (
                                     <>
                                         <div className="body2 text-variant1 mt-3 text-justify">
-                                            {viewMoreDesc ? hotel.description : hotel.description.substring(0, 300)}
-                                            {!viewMoreDesc && hotel.description.length > 300 && '...'}
+                                            {viewMoreDesc ? hotelDetails?.description : hotelDetails?.description.substring(0, 300)}
+                                            {!viewMoreDesc && hotelDetails.description.length > 300 && '...'}
                                         </div>
-                                        {hotel.description.length > 300 && (
+                                        {hotelDetails.description.length > 300 && (
                                             <span
                                                 className="text-button-sm underline inline-block duration-300 cursor-pointer mt-3 hover:text-primary"
                                                 role="button"
@@ -308,9 +386,9 @@ const HotelDetailContent = () => {
                             <div className="feature lg:mt-10 mt-6 lg:pt-10 pt-6 border-t border-outline">
                                 <div className="heading5">Amenities and Features</div>
                                 <div className="list w-full mt-4">
-                                    {hotel.amenities_ratings && hotel.amenities_ratings.length > 0 ? (
+                                    {hotelDetails?.amenities_ratings && hotelDetails?.amenities_ratings.length > 0 ? (
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            {hotel.amenities_ratings.map((item: any, index: number) => (
+                                            {hotelDetails?.amenities_ratings.map((item: any, index: number) => (
                                                 <div key={index} className="item">
                                                     <div className="flex items-center justify-between mb-2">
                                                         <span className="capitalize font-medium">{item.name}</span>
@@ -331,16 +409,84 @@ const HotelDetailContent = () => {
                                 </div>
                             </div>
 
+                            {/* Rooms */}
+                            <div className="rooms lg:mt-10 mt-6 lg:pt-10 pt-6 border-t border-outline">
+                                <div className="heading5">
+                                    Other Available Rooms ({roomDetails.length})
+                                    {roomsLoading && (
+                                        <span className="text-sm text-gray-500 ml-2">
+                                            (Updating for {currentCheckIn} to {currentCheckOut}...)
+                                        </span>
+                                    )}
+                                </div>
+                                
+                                {roomsLoading ? (
+                                    <div className="flex justify-center items-center py-8">
+                                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mr-3"></div>
+                                        <span>Loading rooms for selected dates...</span>
+                                    </div>
+                                ) : roomDetails.length > 0 ? (
+                                    <div className="overflow-x-auto pb-4 mt-4">
+                                        <div className="flex gap-4" style={{ width: 'max-content' }}>
+                                            {roomDetails.map((room, index) => (
+                                                <div key={room.key || index} className="room-card bg-white border border-gray-200 rounded-lg p-4 min-w-[300px] flex-shrink-0">
+                                                    <div className="room-image mb-4">
+                                                        <img
+                                                            src={room.images?.find(img => img.hero_image)?.high_resolution_url || '/assets/Placeholder_Cat.jpg'}
+                                                            alt={room.roomNormalizedDescription}
+                                                            className="w-full h-48 object-cover rounded-lg"
+                                                            onError={(e) => {
+                                                                e.currentTarget.src = "/assets/default-room.jpg";
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div className="room-details">
+                                                        <h3 className="text-lg font-semibold mb-2">
+                                                            {room.roomNormalizedDescription}
+                                                        </h3>
+                                                        <div className="pricing-section">
+                                                            <div className="flex items-center justify-between mb-3">
+                                                                <div>
+                                                                    <div className="text-xl font-bold">
+                                                                        SGD {room.converted_price?.toLocaleString()}
+                                                                    </div>
+                                                                    <div className="text-sm text-gray-500">per night</div>
+                                                                </div>
+                                                                <div className="text-right text-sm">
+                                                                    <div className="text-gray-600">
+                                                                        {room.rooms_available} left
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <Link 
+                                                                to={`/hotels/${id}/rooms/${room.key}?destination_id=${destination_id}&checkin=${currentCheckIn}&checkout=${currentCheckOut}&guests=${guest.adult + guest.children}`}
+                                                                className="block w-full bg-primary text-white py-2 rounded hover:bg-primary-dark transition-colors text-center"
+                                                                aria-label={`Book ${room.roomNormalizedDescription}`}
+                                                            >
+                                                                Book Now
+                                                            </Link>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="text-center py-8 text-gray-500">
+                                        No rooms available for the selected dates
+                                    </div>
+                                )}
+                            </div>
 
                             {/* Map */}
-                            {hotel.latitude && hotel.longitude && (
+                            {hotelDetails?.latitude && hotelDetails?.longitude && (
                                 <div className="map lg:mt-10 mt-6 lg:pt-10 pt-6 border-t border-outline">
                                     <div className="heading5">Map</div>
                                     <div className="bg-img relative mt-3">
                                         <iframe
                                             className='w-full h-[360px]'
-                                            src={`https://maps.google.com/maps?q=${hotel.latitude}, ${hotel.longitude}&hl=en&z=14&output=embed`}
-                                            title={`Map of ${hotel.name}`}
+                                            src={`https://maps.google.com/maps?q=${hotelDetails?.latitude}, ${hotelDetails?.longitude}&hl=en&z=14&output=embed`}
+                                            title={`Map of ${hotelDetails?.name}`}
                                         />
                                     </div>
                                 </div>
@@ -373,12 +519,12 @@ const HotelDetailContent = () => {
                                             </div>
                                             {/* Date Picker dropdown */}
                                             {openDate && (
-                                                <div className="w-full mt-2 sidebar-date-dropdown">
+                                                <div className="absolute top-full left-0 w-full mt-2 sidebar-date-dropdown z-50">
                                                     <DateRangePicker
                                                         className="form-date-picker box-shadow open w-full border border-outline rounded-none bg-white"
                                                         onChange={item => {
                                                             const selection = item.selection;
-                                                            if (selection.startDate && selection.endDate && selection.startDate <= selection.endDate) {
+                                                            if (selection && selection.startDate && selection.endDate && selection.startDate <= selection.endDate) {
                                                                 setState([selection]);
                                                             }
                                                         }}
@@ -424,7 +570,7 @@ const HotelDetailContent = () => {
                                                     <Icon.CaretDown className='text-2xl'/>
                                                 </span>
                                             </div>
-                                            <div className={`sub-menu-guest bg-white rounded-b-xl overflow-hidden p-5 absolute top-full md:mt-5 mt-3 left-0 w-full box-shadow md:border-t border-outline ${openGuest ? "open" : ""}`}>
+                                            <div className={`sub-menu-guest bg-white rounded-b-xl overflow-hidden p-5 absolute top-full md:mt-5 mt-3 left-0 w-full box-shadow md:border-t border-outline z-50 ${openGuest ? "block" : "hidden"}`}>
                                                 <div className="item flex items-center justify-between pb-4 border-b border-outline">
                                                         <div className="left">
                                                             <p>Adults</p>
@@ -447,86 +593,39 @@ const HotelDetailContent = () => {
                                                                 <Icon.Plus weight="bold" />
                                                             </div>
                                                         </div>
-                                                </div>
-                                                <div className="item flex items-center justify-between pb-4 pt-4 border-b border-outline">
-                                                        <div className="left">
-                                                            <p>Children</p>
-                                                            <div className="caption1 text-variant1">(2-12 Years)</div>
-                                                        </div>
-                                                        <div className="right flex items-center gap-5">
-                                                            <div
-                                                                className={`minus w-8 h-8 flex items-center justify-center rounded-full border border-outline duration-300 ${guest.children === 0 ? "opacity-[0.4] cursor-default" : "cursor-pointer hover:bg-black hover:text-white"}`}
-                                                                role="button"
-                                                                aria-label="Minus child"
-                                                                onClick={() => decreaseGuest("children")}> 
-                                                                <Icon.Minus weight="bold" />
+                                                    </div>
+                                                    <div className="item flex items-center justify-between pb-4 pt-4 border-b border-outline">
+                                                            <div className="left">
+                                                                <p>Children</p>
+                                                                <div className="caption1 text-variant1">(2-12 Years)</div>
                                                             </div>
-                                                            <div className="text-title">{guest.children}</div>
-                                                            <div
-                                                                className="plus w-8 h-8 flex items-center justify-center rounded-full border border-outline cursor-pointer duration-300 hover:bg-black hover:text-white"
-                                                                role="button"
-                                                                aria-label="Plus child"
-                                                                onClick={() => increaseGuest("children")}> 
-                                                                <Icon.Plus weight="bold" />
+                                                            <div className="right flex items-center gap-5">
+                                                                <div
+                                                                    className={`minus w-8 h-8 flex items-center justify-center rounded-full border border-outline duration-300 ${guest.children === 0 ? "opacity-[0.4] cursor-default" : "cursor-pointer hover:bg-black hover:text-white"}`}
+                                                                    role="button"
+                                                                    aria-label="Minus child"
+                                                                    onClick={() => decreaseGuest("children")}> 
+                                                                    <Icon.Minus weight="bold" />
+                                                                </div>
+                                                                <div className="text-title">{guest.children}</div>
+                                                                <div
+                                                                    className="plus w-8 h-8 flex items-center justify-center rounded-full border border-outline cursor-pointer duration-300 hover:bg-black hover:text-white"
+                                                                    role="button"
+                                                                    aria-label="Plus child"
+                                                                    onClick={() => increaseGuest("children")}> 
+                                                                    <Icon.Plus weight="bold" />
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                </div>
+                                                    </div>
                                                     <div
                                                         className="button-main w-full text-center mt-4"
                                                         onClick={() => setOpenGuest(false)}>
                                                         Done
                                                     </div>
                                                 </div>
-
-                                        </div>
-                                    </div>
-
-                                    {/* Room Numbers */}
-                                    <div className="room-numbers mt-5">
-                                        <div className="flex items-center justify-between w-full">
-                                            <div className="heading6">Number of Rooms</div>
-                                            <div className="flex items-center gap-5">
-                                                <div
-                                                    className={`minus w-8 h-8 flex items-center justify-center rounded-full border border-outline duration-300 ${roomCount === 1 ? "opacity-[0.4] cursor-default" : "cursor-pointer hover:bg-black hover:text-white"}`}
-                                                    role="button"
-                                                    aria-label="Minus room"
-                                                    onClick={() => roomCount > 1 && setRoomCount(roomCount - 1)}
-                                                >
-                                                    <Icon.Minus weight="bold" />
-                                                </div>
-                                                <div className="text-title">{roomCount}</div>
-                                                <div
-                                                    className="plus w-8 h-8 flex items-center justify-center rounded-full border border-outline cursor-pointer duration-300 hover:bg-black hover:text-white"
-                                                    role="button"
-                                                    aria-label="Plus room"
-                                                    onClick={() => setRoomCount(roomCount + 1)}
-                                                >
-                                                    <Icon.Plus weight="bold" />
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
-
-                                    {/* Price Summary */}
-                                    <div className="price-block mt-5">
-                                        <div className="heading6">Price Summary</div>
-                                        <div className="list mt-2">
-                                            <div className="flex items-center justify-between">
-                                                <div>${basePrice} x {nights} Nights x {roomCount} Room{roomCount > 1 ? "s" : ""}</div>
-                                                <div className="text-button">${basePrice * nights * roomCount}</div>
-                                            </div>
-                                            <div className="flex items-center justify-between mt-1">
-                                                <div>Service Tax</div>
-                                                <div className="text-button">${serviceTax.toFixed(2)}</div>
-                                            </div>
-                                        </div>
-                                        <div className="total-block mt-5 pt-5 border-t border-outline flex items-center justify-between">
-                                            <div className="heading6">Total</div>
-                                            <div className="heading5">${total.toFixed(2)}</div>
-                                        </div>
-                                        <div className="button-main w-full text-center mt-5">Book Now</div>
-                                    </div>
-                                </div>
 
                                 {/* Why Book With Us */}
                                 <div className="reservation bg-surface p-6 rounded-md md:mt-10 mt-6">
@@ -550,14 +649,15 @@ const HotelDetailContent = () => {
                                         </div>
                                     </div>
                                 </div>
+
                             </StickyBox>
                         </div>
+
                     </div>
                 </div>
             </div>
-            <Footer />
         </div>
     )
 }
 
-export default HotelDetailContent
+export default RoomDetailContent
