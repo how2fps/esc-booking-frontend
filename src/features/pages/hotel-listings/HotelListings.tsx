@@ -95,7 +95,7 @@ const HotelListings = () => {
                             minimumStars: hotelStarsFilter,
                             minimumUsersRating: hotelRatingFilter,
                      }));
-              }, 500);
+              }, 150);
               return () => clearTimeout(id);
        }, [hotelStarsFilter, priceFilter, hotelRatingFilter]);
 
