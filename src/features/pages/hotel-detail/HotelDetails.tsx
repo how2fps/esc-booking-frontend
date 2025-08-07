@@ -8,6 +8,7 @@ import { Pagination } from 'swiper/modules'
 import * as Icon from 'phosphor-react'
 import { DateRangePicker } from 'react-date-range'
 import StickyBox from 'react-sticky-box'
+import { useNavigate } from 'react-router-dom';
 
 // Components
 import HeaderOne from '../../components/Header/Header'
@@ -30,6 +31,8 @@ interface GuestType {
 const HotelDetailContent = () => {
     const { id } = useParams();  
     const hotelId = id || '4PXS';
+
+    const navigate = useNavigate();
     
     // Find the hotel from JSON data
     const hotel = hotelsData.find((h: any) => h.id === hotelId);
@@ -182,7 +185,6 @@ const HotelDetailContent = () => {
 
     return (
         <div className='hotel-detail'>
-            <HeaderOne />
             
             {/* Image Gallery */}
             <div className="container mt-10">
@@ -525,7 +527,26 @@ const HotelDetailContent = () => {
                                             <div className="heading6">Total</div>
                                             <div className="heading5">${total.toFixed(2)}</div>
                                         </div>
-                                        <div className="button-main w-full text-center mt-5">Book Now</div>
+                                        <div
+                                        className="button-main w-full text-center mt-5 cursor-pointer"
+                                        onClick={() =>
+                                            navigate('/booking', {
+                                              state: {
+                                                hotelName: hotel.name,
+                                                hotelImage: mainImage,
+                                                roomType: "Double Room",
+                                                price: total.toFixed(2),
+                                                startDate: state[0].startDate.toISOString(),
+                                                endDate: state[0].endDate.toISOString(),
+                                                numberOfRooms: roomCount,
+                                                adults: guest.adult,
+                                                children: guest.children,
+                                              },
+                                            })
+                                          }
+                                        >
+                                        Book Now
+                                        </div>
                                     </div>
                                 </div>
 
@@ -556,7 +577,6 @@ const HotelDetailContent = () => {
                     </div>
                 </div>
             </div>
-            <Footer />
         </div>
     )
 }
