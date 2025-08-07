@@ -74,6 +74,8 @@ const HotelListings = () => {
        const [allHotels, setAllHotels] = useState<HotelMarker[]>([]);
        const [hotelPrices, setHotelPrices] = useState<Map<string, HotelPrice>>(new Map());
 
+       const [isPricePollingDone, setIsPricePollingDone] = useState<boolean>(false);
+
        const [pageCount, setPageCount] = useState<number>(1);
        const [currentPage, setCurrentPage] = useState<number>(1);
        const [itemsPerPage, setItemsPerPage] = useState<number>(8);
@@ -150,6 +152,7 @@ const HotelListings = () => {
                                           const priceMap = new Map<string, HotelPrice>();
                                           data.hotels.forEach((p: HotelPrice) => priceMap.set(p.id, p));
                                           setHotelPrices(priceMap);
+                                          setIsPricePollingDone(true);
                                           return;
                                    }
                                    retries++;
@@ -169,22 +172,24 @@ const HotelListings = () => {
        }, [checkIn, checkOut, destinationId, numberOfAdults, numberOfChildren, numberOfRooms]);
 
        const hotelsWithPrices = useMemo(() => {
-              return allHotels.map((hotel) => {
-                     const priceData = hotelPrices.get(hotel.id);
-                     const newPrice = typeof priceData?.price === "number" ? priceData.price : hotel.price ?? 0;
-                     if (hotel.price === newPrice) return hotel;
-                     return {
-                            ...hotel,
-                            price: newPrice,
-                     };
-              });
-       }, [allHotels, hotelPrices]);
+              if (isPricePollingDone) {
+                     return allHotels.map((hotel) => {
+                            const priceData = hotelPrices.get(hotel.id);
+                            const newPrice = typeof priceData?.price === "number" ? priceData.price : hotel.price ?? undefined;
+                            if (hotel.price === newPrice) return hotel;
+                            return {
+                                   ...hotel,
+                                   price: newPrice,
+                            };
+                     });
+              }
+              return allHotels;
+       }, [allHotels, hotelPrices, isPricePollingDone]);
 
        const filteredHotels = useMemo(() => {
-              const result = hotelsWithPrices.filter((hotel) => hotel.rating >= filters.minimumStars && (hotel.trustyou?.score?.overall ?? 0) >= filters.minimumUsersRating && [...filters.amenities].every((amenity) => hotel.amenities[amenity]) && hotel.name.toLowerCase().includes(searchTerm.toLowerCase()) && (!hotel.price || (hotel.price >= filters.priceRange.min && hotel.price <= filters.priceRange.max)));
-              return result;
+              return hotelsWithPrices.filter((hotel) => hotel.rating >= filters.minimumStars && (hotel.trustyou?.score?.overall ?? 0) >= filters.minimumUsersRating && [...filters.amenities].every((amenity) => hotel.amenities[amenity]) && hotel.name.toLowerCase().includes(searchTerm.toLowerCase()) && (hotel.price ?? 0) >= filters.priceRange.min && (hotel.price ?? 0) <= filters.priceRange.max);
        }, [filters, searchTerm, hotelsWithPrices]);
-
+       
        const sortedHotels = useMemo(() => {
               const hotelsCopy = [...filteredHotels];
               if (sortOption === "starHighToLow") {
