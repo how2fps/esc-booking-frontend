@@ -15,7 +15,9 @@ import { AmenityFilter } from "./AmenityFilter";
 import { ClusteredHotelMarkers as ClusteredHotelMarkersBase } from "./ClusteredHotelMarkers";
 import { HotelRatingSlider } from "./HotelRatingSlider";
 import { HotelSearch } from "./HotelSearch";
+import { ItemsPerPageSelector } from "./ItemsPerPageSelector";
 import { PriceRangeSlider } from "./PriceRangeSlider";
+import { SortSelector } from "./SortSelector";
 import { StarRatingPicker } from "./StarRatingPicker";
 
 const ClusteredHotelMarkers = memo(ClusteredHotelMarkersBase);
@@ -67,10 +69,12 @@ const HotelListings = () => {
        const [priceFilter, setPriceFilter] = useState<{ min: number; max: number }>({ min: 0, max: 10000 });
        const [searchTerm, setSearchTerm] = useState<string>("");
 
-       const [sortOption, setSortOption] = useState<string>();
+       const [sortOption, setSortOption] = useState<string>("");
 
        const [allHotels, setAllHotels] = useState<HotelMarker[]>([]);
        const [hotelPrices, setHotelPrices] = useState<Map<string, HotelPrice>>(new Map());
+
+       const [isPricePollingDone, setIsPricePollingDone] = useState<boolean>(false);
 
        const [pageCount, setPageCount] = useState<number>(1);
        const [currentPage, setCurrentPage] = useState<number>(1);
@@ -144,11 +148,11 @@ const HotelListings = () => {
                             while (isActive && retries < maxRetries) {
                                    const res = await fetch(`http://localhost:3000/api/hotels/prices?destination_id=${destinationId}&checkin=${formattedCheckinDate}&checkout=${formattedCheckoutDate}&lang=en_US&currency=SGD&country_code=SG&guests=${guestQueryString}&partner_id=${1089}&landing_page=wl-acme-earn&product_type=earn`);
                                    const data = await res.json();
-
                                    if (data.completed && data.hotels) {
                                           const priceMap = new Map<string, HotelPrice>();
                                           data.hotels.forEach((p: HotelPrice) => priceMap.set(p.id, p));
                                           setHotelPrices(priceMap);
+                                          setIsPricePollingDone(true);
                                           return;
                                    }
                                    retries++;
@@ -168,22 +172,24 @@ const HotelListings = () => {
        }, [checkIn, checkOut, destinationId, numberOfAdults, numberOfChildren, numberOfRooms]);
 
        const hotelsWithPrices = useMemo(() => {
-              return allHotels.map((hotel) => {
-                     const priceData = hotelPrices.get(hotel.id);
-                     const newPrice = typeof priceData?.price === "number" ? priceData.price : hotel.price ?? 0;
-                     if (hotel.price === newPrice) return hotel;
-                     return {
-                            ...hotel,
-                            price: newPrice,
-                     };
-              });
-       }, [allHotels, hotelPrices]);
+              if (isPricePollingDone) {
+                     return allHotels.map((hotel) => {
+                            const priceData = hotelPrices.get(hotel.id);
+                            const newPrice = typeof priceData?.price === "number" ? priceData.price : hotel.price ?? undefined;
+                            if (hotel.price === newPrice) return hotel;
+                            return {
+                                   ...hotel,
+                                   price: newPrice,
+                            };
+                     });
+              }
+              return allHotels;
+       }, [allHotels, hotelPrices, isPricePollingDone]);
 
        const filteredHotels = useMemo(() => {
-              const result = hotelsWithPrices.filter((hotel) => hotel.rating >= filters.minimumStars && (hotel.trustyou?.score?.overall ?? 0) >= filters.minimumUsersRating && [...filters.amenities].every((amenity) => hotel.amenities[amenity]) && hotel.name.toLowerCase().includes(searchTerm.toLowerCase()) && (!hotel.price || (hotel.price >= filters.priceRange.min && hotel.price <= filters.priceRange.max)));
-              return result;
+              return hotelsWithPrices.filter((hotel) => hotel.rating >= filters.minimumStars && (hotel.trustyou?.score?.overall ?? 0) >= filters.minimumUsersRating && [...filters.amenities].every((amenity) => hotel.amenities[amenity]) && hotel.name.toLowerCase().includes(searchTerm.toLowerCase()) && (hotel.price ?? 0) >= filters.priceRange.min && (hotel.price ?? 0) <= filters.priceRange.max);
        }, [filters, searchTerm, hotelsWithPrices]);
-
+       
        const sortedHotels = useMemo(() => {
               const hotelsCopy = [...filteredHotels];
               if (sortOption === "starHighToLow") {
@@ -258,56 +264,12 @@ const HotelListings = () => {
                                    <div className="border border-gray-200 rounded-xl p-4 flex items-center gap-4 shadow-sm mb-6">
                                           <HotelSearch setSearchTerm={setSearchTerm} />
 
-                                          <div className="flex items-center gap-2">
-                                                 <label
-                                                        htmlFor="items-per-page"
-                                                        className="font-medium text-gray-700">
-                                                        Items Per Page:
-                                                 </label>
-                                                 <div className="relative p-">
-                                                        <select
-                                                               id="items-per-page"
-                                                               name="select-filter"
-                                                               className="h-12 bg-white text-black pr-8 cursor-pointer p-2"
-                                                               onChange={(e) => {
-                                                                      setItemsPerPage(Number.parseInt(e.target.value));
-                                                                      setCurrentPage(1);
-                                                               }}
-                                                               value={itemsPerPage}>
-                                                               <option value="8">8</option>
-                                                               <option value="9">9</option>
-                                                               <option value="12">12</option>
-                                                               <option value="16">16</option>
-                                                        </select>
-                                                        <Icon.CaretDown className="absolute top-1/2 -translate-y-1/2 right-2 pointer-events-none text-gray-500" />
-                                                 </div>
-                                          </div>
+                                          <ItemsPerPageSelector
+                                                 setCurrentPage={setCurrentPage}
+                                                 setItemsPerPage={setItemsPerPage}
+                                          />
 
-                                          <div className="flex items-center gap-2">
-                                                 <label
-                                                        htmlFor="sort"
-                                                        className="font-medium text-gray-700">
-                                                        Sort By:
-                                                 </label>
-                                                 <div className="relative">
-                                                        <select
-                                                               id="sort"
-                                                               name="select-filter"
-                                                               className="h-12 bg-white text-black pr-8 cursor-pointer p-2"
-                                                               onChange={(e) => {
-                                                                      setSortOption(e.target.value);
-                                                               }}
-                                                               defaultValue={"starHighToLow"}>
-                                                               <option value="starHighToLow">Stars Descending</option>
-                                                               <option value="starLowToHigh">Stars Ascending</option>
-                                                               <option value="priceHighToLow">Price Descending</option>
-                                                               <option value="priceLowToHigh">Price Ascending</option>
-                                                               <option value="ratingHighToLow">Rating Descending</option>
-                                                               <option value="ratingLowToHigh">Rating Ascending</option>
-                                                        </select>
-                                                        <Icon.CaretDown className="absolute top-1/2 -translate-y-1/2 right-2 pointer-events-none text-gray-500" />
-                                                 </div>
-                                          </div>
+                                          <SortSelector setSortOption={setSortOption} />
                                    </div>
                                    {isLoading ? (
                                           <div

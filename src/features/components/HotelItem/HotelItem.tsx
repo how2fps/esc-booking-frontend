@@ -69,7 +69,7 @@ const HotelItem: React.FC<{ hotelData: Hotel; dateRange: string }> = ({ hotelDat
        return (
               <div
                      role="listitem"
-                     className="hotel-item hover-scale"
+                     className="hotel-item hover-scale animate-fadeIn opacity-0 animate-duration-300 animate-fill-forwards"
                      onClick={() => {
                             handleClickItem(hotelData.id);
                      }}>
