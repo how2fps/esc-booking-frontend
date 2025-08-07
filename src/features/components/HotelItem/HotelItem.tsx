@@ -18,7 +18,7 @@ const iconlist = {
        inHouseBar: <MartiniIcon />,
 };
 
-const HotelItem: React.FC<{ hotelData: Hotel }> = ({ hotelData }) => {
+const HotelItem: React.FC<{ hotelData: Hotel; dateRange: string }> = ({ hotelData, dateRange }) => {
        const router = useNavigate();
        const prefix = hotelData.image_details?.prefix || "";
        const suffix = hotelData.image_details?.suffix || "";
@@ -142,7 +142,7 @@ const HotelItem: React.FC<{ hotelData: Hotel }> = ({ hotelData }) => {
                             </div>
                             <div className="name capitalize mt-1">{hotelData.name}</div>
                             <div className="flex items-center justify-between gap-2 mt-1">
-                                   <div className="text-variant1">Nov. 12 - 15</div>
+                                   <div className="text-variant1">{dateRange}</div>
                                    <div className="flex lg:items-end">
                                           <span className="text-button">${hotelData.price ?? "-"}</span>
                                           <span className="caption1 text-variant1">/night</span>
