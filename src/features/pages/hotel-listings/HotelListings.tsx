@@ -363,7 +363,7 @@ const HotelListings = () => {
                                                                <HotelItem
                                                                       key={hotel.id}
                                                                       hotelData={hotel}
-                                                                      destination_id={destination_id}
+                                                                      destination_id={destinationId}
                                                                       checkIn={checkIn}
                                                                       checkOut={checkOut}
                                                                />

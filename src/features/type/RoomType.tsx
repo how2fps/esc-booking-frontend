@@ -6,6 +6,7 @@ export interface Room {
         free_cancellation: boolean;
         long_description: string;
         roomAdditionalInfo: {
+            breakfastInfo?: string;
             displayFields: {
                 special_check_in_instructions?: string;
                 check_in_instructions?: string;

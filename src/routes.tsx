@@ -5,6 +5,7 @@ import CheckoutForm from "./features/pages/CheckoutForm/Checkout";
 import DestinationSearch from "./features/pages/destination-search/DestinationSearch";
 import HomePage from "./features/pages/home/HomePage";
 import HotelDetails from "./features/pages/hotel-detail/HotelDetails";
+import RoomDetails from "./features/pages/hotel-detail/RoomDetails";
 import Listings from "./features/pages/hotel-listings/HotelListings";
 import Login from "./features/pages/login/LoginForm";
 import SignupForm from "./features/pages/signup-form/SignupForm";
@@ -29,10 +30,10 @@ const AppRoutes: React.FC = () => {
                             path="/dashboard"
                             element={<DestinationSearch />}
                      />
-                     {/* <Route
+                     <Route
                             path="/hotels/:id/rooms/:key"
                             element={<RoomDetails />}
-                     /> */}
+                     />
                      <Route
                             path="/hotels/:id"
                             element={<HotelDetails />}

@@ -26,11 +26,21 @@ const HotelDetailContent = () => {
     const checkIn = searchParams.get('checkIn');
     const checkOut = searchParams.get('checkOut');
     
-    console.log(searchParams)
+    // Debug logging
+    console.log('=== HOTEL DETAILS COMPONENT MOUNT ===');
+    console.log('URL params:', { id });
+    console.log('Search params:', { 
+        destination_id, 
+        checkIn, 
+        checkOut,
+        allParams: Object.fromEntries(searchParams.entries())
+    });
+    
     const [viewMoreDesc, setViewMoreDesc] = useState<boolean>(false)
     const [hotelDetails, setHotelDetails] = useState<Hotel | null>(null);
     const [roomDetails, setRoomDetails] = useState<Room[]>([]);
     const [roomsLoading, setRoomsLoading] = useState<boolean>(false);
+    const [hotelLoading, setHotelLoading] = useState<boolean>(true);
     const [openDate, setOpenDate] = useState(false);
     const [openGuest, setOpenGuest] = useState(false);
 
@@ -59,161 +69,142 @@ const HotelDetailContent = () => {
         return guest.adult + guest.children;
     }, [guest]);
 
-    const [mainImage, setMainImage] = useState<string | null>(null) 
-    const [imageError, setImageError] = useState(false);
+    const [mainImage, setMainImage] = useState<string | null>(null)
 
     useEffect(() => {
         const fetchHotelDetails = async () => {
+            setHotelLoading(true);
+            console.log('=== HOTEL DETAILS FETCH ===');
+            console.log('Hotel ID:', id);
+            
             try {
                 const response = await fetch(`http://localhost:3000/api/hotels/${id}`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    }
+                });
+                
+                console.log('Hotel API Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-            });
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            const hotelResult: Hotel = await response.json();
-            setHotelDetails(hotelResult);
+                
+                const hotelResult: Hotel = await response.json();
+                console.log('Hotel data received:', hotelResult);
+                setHotelDetails(hotelResult);
             } catch (error: unknown) {
                 if (error instanceof Error) {
-                        console.error("Fetch error details:", {
-                                name: error.name,
-                                message: error.message,
-                                stack: error.stack,
-                        });
+                    console.error("Hotel fetch error details:", {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack,
+                    });
                 }
                 console.error("Something went wrong while loading hotels. Please try again later.");
+            } finally {
+                setHotelLoading(false);
             }
         };
-        fetchHotelDetails();
+        
+        if (id) {
+            fetchHotelDetails();
+        } else {
+            console.warn('No hotel ID provided');
+            setHotelLoading(false);
+        }
     }, [id]);
-    
 
     useEffect(() => {
         const fetchRoomDetails = async () => {
-            // if (!destination_id || !id) {
-            //     return;
-            // }
+            console.log('=== ROOM DETAILS FETCH ===');
+            console.log('Params:', { destination_id, id, currentCheckIn, currentCheckOut, currentGuests });
+            
+            if (!destination_id || !id) {
+                console.warn('Missing required parameters for room fetch:', { destination_id, id });
+                return;
+            }
 
             setRoomsLoading(true);
 
             try {
-                const response = await fetch(`http://localhost:3000/api/hotels/${id}/prices?destination_id=${destination_id}&checkin=${currentCheckIn}&checkout=${currentCheckOut}&lang=en_US&currency=SGD&country_code=SG&guests=${currentGuests}&partner_id=1089&landing_page=wl-acme-earn&product_type=earn`, {
+                const apiUrl = `http://localhost:3000/api/hotels/${id}/prices?destination_id=${destination_id}&checkin=${currentCheckIn}&checkout=${currentCheckOut}&lang=en_US&currency=SGD&country_code=SG&guests=${currentGuests}&partner_id=1089&landing_page=wl-acme-earn&product_type=earn`;
+                console.log('Room API URL:', apiUrl);
+                
+                const response = await fetch(apiUrl, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
                 }
             });
 
-            console.log(response)
-            
+            console.log('Room API Response status:', response.status);
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             
             const roomResult = await response.json();
+            console.log('Room data received:', roomResult);
+            
             if (roomResult.rooms && Array.isArray(roomResult.rooms)) {
-                setRoomDetails(roomResult.rooms);
+                // Limit rooms for performance
+                setRoomDetails(roomResult.rooms.slice(0, 20));
+                console.log('Set room details:', roomResult.rooms.length, 'rooms');
             } else {
                 console.warn('No rooms found in API response:', roomResult);
                 setRoomDetails([]);
             }
             } catch (error: unknown) {
                 if (error instanceof Error) {
-                        console.error("Fetch error details:", {
+                        console.error("Room fetch error details:", {
                                 name: error.name,
                                 message: error.message,
                                 stack: error.stack,
                         });
                 }
                 console.error("Something went wrong while loading rooms. Please try again later.");
+                setRoomDetails([]);
             } finally {
             setRoomsLoading(false); 
             }
         };
-        fetchRoomDetails();
-        console.log("running")
+        
+        // Only fetch if we have required parameters
+        if (destination_id && id) {
+            fetchRoomDetails();
+        } else {
+            console.log('Skipping room fetch - missing parameters:', { destination_id, id });
+        }
     }, [destination_id, currentCheckIn, currentCheckOut, id, currentGuests]);
 
-    // Image handling logic
+    // Image handling logic - optimized
     const image_array = useMemo(() => {
-        // only run if there are image_details
-        if (!hotelDetails?.image_details) return [];
+        if (!hotelDetails?.image_details) return ['/assets/Placeholder_Cat.png'];
         
         const prefix = hotelDetails?.image_details?.prefix || '';
-        const count = hotelDetails?.image_details?.count || 0;
+        const count = Math.min(hotelDetails?.image_details?.count || 0, 10); // Limit to 10 images
         const suffix = hotelDetails?.image_details?.suffix || '.jpg';
-        const hiresIndices = hotelDetails.hires_image_index?.split(',').map(num => parseInt(num.trim())) || [];
         const images: string[] = [];
 
-        if (hiresIndices.length > 0) {
-        hiresIndices.forEach(index => {
-            if (index < count) {
-                images.push(`${prefix}${index}${suffix}`);
-            }
-        });
-        
-        // If we got high-res images, return them
-        if (images.length > 0) {
-            return images;
+        for (let i = 0; i < count; i++) {
+            images.push(`${prefix}${i}${suffix}`);
         }
-    }
     
-    // Strategy 2: Fallback to all images if no high-res available
-    for (let i = 0; i < count; i++) {
-        images.push(`${prefix}${i}${suffix}`);
-    }
-    
-    return images;
-    }, [hotelDetails?.image_details, hotelDetails?.hires_image_index]);
+        return images.length > 0 ? images : ['/assets/Placeholder_Cat.png'];
+    }, [hotelDetails?.image_details]);
 
-    const [validImages, setValidImages] = useState<string[]>([]);
-
+    // Set main image immediately without validation
     useEffect(() => {
-        if (image_array.length === 0) {
-            setValidImages(['/assets/Placeholder_Cat.png']); // Use consistent fallback
-            return;
-        }
-        let isMounted = true;
-        const checkImages = async () => {
-            const results: string[] = [];
-            await Promise.all(
-                image_array.map((url) =>
-                    new Promise<void>((resolve) => {
-                        const img = new window.Image();
-                        img.src = url;
-                        img.onload = () => {
-                            if (isMounted) results.push(url);
-                            resolve();
-                        };
-                        img.onerror = () => resolve();
-                    })
-                )
-            );
-            if (isMounted) {
-                setValidImages(results.length > 0 ? results : ['/assets/Placeholder_Cat.png']);
-            }
-        };
-        checkImages();
-        return () => { isMounted = false; };
-    }, [image_array]);
-
-    // Set main image after validImages is created
-    useEffect(() => {
-        if (validImages.length > 0) {
-        // Use default_image_index if available
-        const defaultIndex = hotelDetails?.default_image_index || 0;
-        const safeIndex = Math.min(defaultIndex, validImages.length - 1);
-        const defaultImage = validImages[safeIndex] || validImages[0];
-        setMainImage(defaultImage);
+        if (image_array.length > 0 && image_array[0] !== '/assets/Placeholder_Cat.png') {
+            const defaultIndex = hotelDetails?.default_image_index || 0;
+            const safeIndex = Math.min(defaultIndex, image_array.length - 1);
+            setMainImage(image_array[safeIndex] || image_array[0]);
         } else {
-        setMainImage('/assets/Placeholder_Cat.jpg');
+            setMainImage('/assets/Placeholder_Cat.jpg');
         }
-    }, [validImages, hotelDetails?.default_image_index]);
+    }, [image_array, hotelDetails?.default_image_index]);
 
     const handleOpenDate = () => {
         setOpenDate(!openDate);
@@ -275,6 +266,32 @@ const HotelDetailContent = () => {
         }
     };
 
+    // Show loading state while hotel details are being fetched
+    if (hotelLoading) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+            </div>
+        );
+    }
+
+    // Show error state if hotel details failed to load
+    if (!hotelDetails) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <div className="text-center">
+                    <div className="text-red-600 text-lg mb-4">Failed to load hotel details</div>
+                    <button 
+                        onClick={() => window.location.reload()} 
+                        className="bg-primary text-white px-4 py-2 rounded hover:bg-primary-dark"
+                    >
+                        Retry
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className='hotel-detail'>
             {/* Image Gallery */}
@@ -292,7 +309,6 @@ const HotelDetailContent = () => {
                             className="w-full h-full object-cover rounded-xl"
                             style={{ width: '100%', height: '100%' }}
                             onError={(e) => {
-                                setImageError(true);
                                 e.currentTarget.src = "/assets/Placeholder_Cat.jpg";
                             }}
                         />
@@ -302,8 +318,8 @@ const HotelDetailContent = () => {
                 {/* Thumbnail Grid */}
                 <div className="w-full mt-6">
                     <div className="flex gap-3.5 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-                        {validImages.length > 0 ? (
-                            validImages.map((imageUrl, index) => (
+                        {image_array.length > 0 && image_array[0] !== '/assets/Placeholder_Cat.png' ? (
+                            image_array.map((imageUrl: string, index: number) => (
                                 <div key={index} className="aspect-[16/11] min-w-[120px] w-[120px] flex-shrink-0">
                                     <img
                                         src={imageUrl}
@@ -311,14 +327,13 @@ const HotelDetailContent = () => {
                                         className="w-full h-full rounded-xl shadow-md object-cover cursor-pointer transition-transform hover:scale-105"
                                         onClick={() => setMainImage(imageUrl)}
                                         onError={(e) => {
-                                            setImageError(true);
                                             e.currentTarget.src = "/assets/Placeholder_Cat.jpg";
                                         }}
                                     />
                                 </div>
                             ))
                         ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-xl">
+                            <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-xl p-4">
                                 <span className="text-gray-500">No images available</span>
                             </div>
                         )}
@@ -539,7 +554,11 @@ const HotelDetailContent = () => {
                                                         onChange={item => {
                                                             const selection = item.selection;
                                                             if (selection && selection.startDate && selection.endDate && selection.startDate <= selection.endDate) {
-                                                                setState([selection]);
+                                                                setState([{
+                                                                    startDate: selection.startDate,
+                                                                    endDate: selection.endDate,
+                                                                    key: 'selection'
+                                                                }]);
                                                             }
                                                         }}
                                                         moveRangeOnFirstSelection={false}
