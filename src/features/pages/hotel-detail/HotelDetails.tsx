@@ -488,7 +488,7 @@ const HotelDetailContent = () => {
                                                                 </div>
                                                             </div>
                                                             <Link 
-                                                                to={`/hotels/${id}/rooms/${room.key}?destination_id=${destination_id}&checkin=${currentCheckIn}&checkout=${currentCheckOut}&guests=${guest.adult + guest.children}`}
+                                                                to={`/hotels/${id}/rooms/${encodeURIComponent(room.key)}?destination_id=${destination_id}&checkin=${currentCheckIn}&checkout=${currentCheckOut}&guests=${guest.adult + guest.children}`}
                                                                 className="block w-full bg-primary text-white py-2 rounded hover:bg-primary-dark transition-colors text-center"
                                                                 aria-label={`Book ${room.roomNormalizedDescription}`}
                                                             >

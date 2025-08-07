@@ -31,7 +31,7 @@ const AppRoutes: React.FC = () => {
                             element={<DestinationSearch />}
                      />
                      <Route
-                            path="/hotels/:id/rooms/:key"
+                            path="/hotels/:id/rooms/:roomKey"
                             element={<RoomDetails />}
                      />
                      <Route

@@ -20,7 +20,8 @@ interface GuestType {
 }
 
 const RoomDetailContent = () => {
-    const { id, roomKey } = useParams();  
+    const { id } = useParams();  
+    const { roomKey } = useParams();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const destination_id = searchParams.get('destination_id');
@@ -111,24 +112,24 @@ const RoomDetailContent = () => {
 
     useEffect(() => {
         const fetchRoomDetails = async () => {
-            setRoomLoading(true);
-            console.log('=== ROOM DETAILS FETCH DEBUG ===');
-            console.log('URL roomKey:', roomKey);
-            console.log('Hotel ID:', id);
-            console.log('Destination ID:', destination_id);
-            
-            if (!id || !roomKey || !destination_id) {
-                console.warn('Missing required parameters:', { id, roomKey, destination_id });
-                setRoomLoading(false);
-                return;
-            }
+            try {
+                setRoomLoading(true);
+                console.log('=== ROOM DETAILS FETCH DEBUG ===');
+                console.log('URL roomKey:', roomKey);
+                console.log('Hotel ID:', id);
+                console.log('Destination ID:', destination_id);
+                
+                if (!id || !roomKey || !destination_id) {
+                    console.warn('Missing required parameters:', { id, roomKey, destination_id });
+                    setRoomLoading(false);
+                    return;
+                }
 
-            // Polling logic similar to HotelListings
-            let timeoutId: ReturnType<typeof setTimeout>;
-            let isActive = true;
-            
-            const pollRoomData = async () => {
-                try {
+                // Polling logic similar to HotelListings
+                let timeoutId: ReturnType<typeof setTimeout>;
+                let isActive = true;
+                
+                const pollRoomData = async () => {
                     let retries = 0;
                     const maxRetries = 40; // 40 retries * 2 seconds = 80 seconds max
                     const delay = 2000; // 2 seconds between retries
@@ -137,52 +138,55 @@ const RoomDetailContent = () => {
                     console.log('Room API URL:', apiUrl);
 
                     while (isActive && retries < maxRetries) {
-                        console.log(`Polling attempt ${retries + 1}/${maxRetries}`);
-                        
-                        const response = await fetch(apiUrl, {
-                            method: "GET",
-                            headers: {
-                                "Content-Type": "application/json",
+                        try {
+                            console.log(`Polling attempt ${retries + 1}/${maxRetries}`);
+                            
+                            const response = await fetch(apiUrl, {
+                                method: "GET",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                }
+                            });
+
+                            console.log('Room API Response status:', response.status);
+
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
                             }
-                        });
-
-                        console.log('Room API Response status:', response.status);
-
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        
-                        const roomResult = await response.json();
-                        console.log('Room polling response:', {
-                            completed: roomResult.completed,
-                            hasRooms: roomResult.rooms?.length > 0,
-                            totalRooms: roomResult.rooms?.length || 0
-                        });
-                        
-                        // Check if the API has completed processing and has rooms
-                        if (roomResult.completed && roomResult.rooms && Array.isArray(roomResult.rooms)) {
-                            console.log('✅ Room data completed! Processing...');
                             
-                            // Log all available room keys for debugging
-                            const availableKeys = roomResult.rooms.map((room: Room) => room.key);
-                            console.log('Available room keys:', availableKeys);
-                            console.log('Looking for roomKey:', roomKey);
+                            const roomResult = await response.json();
+                            console.log('Room polling response:', {
+                                completed: roomResult.completed,
+                                hasRooms: roomResult.rooms?.length > 0,
+                                totalRooms: roomResult.rooms?.length || 0
+                            });
                             
-                            // Find the specific room
-                            const specificRoom = roomResult.rooms.find((room: Room) => room.key === roomKey);
-                            
-                            if (specificRoom) {
-                                console.log('✅ ROOM FOUND!');
-                                console.log('Room details:', {
-                                    key: specificRoom.key,
-                                    description: specificRoom.roomNormalizedDescription,
-                                    price: specificRoom.converted_price,
-                                    availability: specificRoom.rooms_available
-                                });
-                                setRoomDetail(specificRoom);
-                                setRoomLoading(false);
-                                return; // Exit polling loop
-                            } else {
+                            // Check if the API has completed processing and has rooms
+                            if (roomResult.completed && roomResult.rooms && Array.isArray(roomResult.rooms)) {
+                                console.log('✅ Room data completed! Processing...');
+                                
+                                // Log all available room keys for debugging
+                                const availableKeys = roomResult.rooms.map((room: Room) => room.key);
+                                console.log('Available room keys:', availableKeys);
+                                console.log('Looking for roomKey:', roomKey);
+                                
+                                // Find the specific room
+                                const specificRoom = roomResult.rooms.find((room: Room) => room.key === roomKey);
+                                
+                                if (specificRoom) {
+                                    console.log('✅ ROOM FOUND!');
+                                    console.log('Room details:', {
+                                        key: specificRoom.key,
+                                        description: specificRoom.roomNormalizedDescription,
+                                        price: specificRoom.converted_price,
+                                        availability: specificRoom.rooms_available
+                                    });
+                                    setRoomDetail(specificRoom);
+                                    setRoomLoading(false);
+                                    isActive = false; // Stop the polling loop
+                                    break; // Exit the while loop
+                                }
+                                
                                 console.log('❌ ROOM NOT FOUND in completed data');
                                 console.log('Exact comparison results:');
                                 roomResult.rooms.forEach((room: Room, index: number) => {
@@ -204,21 +208,26 @@ const RoomDetailContent = () => {
                                     console.log('✅ Found with decoded key');
                                     setRoomDetail(decodedMatch);
                                     setRoomLoading(false);
-                                    return;
-                                } else {
-                                    console.log('❌ No match even with decoded key');
-                                    setRoomDetail(null);
-                                    setRoomLoading(false);
-                                    return;
+                                    isActive = false; // Stop the polling loop
+                                    break; // Exit the while loop
                                 }
+                                
+                                console.log('❌ No match even with decoded key');
+                                setRoomDetail(null);
+                                setRoomLoading(false);
+                                isActive = false; // Stop the polling loop
+                                break; // Exit the while loop
+                            } else {
+                                console.log(`⏳ Room data not ready yet (attempt ${retries + 1}), retrying in ${delay}ms...`);
+                                console.log('Response status:', {
+                                    completed: roomResult.completed,
+                                    hasRoomsArray: Array.isArray(roomResult.rooms),
+                                    roomsLength: roomResult.rooms?.length
+                                });
                             }
-                        } else {
-                            console.log(`⏳ Room data not ready yet (attempt ${retries + 1}), retrying in ${delay}ms...`);
-                            console.log('Response status:', {
-                                completed: roomResult.completed,
-                                hasRoomsArray: Array.isArray(roomResult.rooms),
-                                roomsLength: roomResult.rooms?.length
-                            });
+                            
+                        } catch (error: unknown) {
+                            console.error(`Polling attempt ${retries + 1} failed:`, error);
                         }
                         
                         retries++;
@@ -230,29 +239,25 @@ const RoomDetailContent = () => {
                     }
                     
                     // If we've exhausted all retries
-                    if (retries >= maxRetries) {
+                    if (retries >= maxRetries && isActive) {
                         console.error('❌ Room data polling timed out after', maxRetries, 'attempts');
                         setRoomDetail(null);
                         setRoomLoading(false);
                     }
-                    
-                } catch (error: unknown) {
-                    if (error instanceof Error) {
-                        console.error("Room polling error:", error.message);
-                    }
-                    console.error("Failed to load room details");
-                    setRoomDetail(null);
-                    setRoomLoading(false);
-                }
-            };
+                };
 
-            pollRoomData();
-            
-            // Cleanup function
-            return () => {
-                isActive = false;
-                clearTimeout(timeoutId);
-            };
+                pollRoomData();
+                
+                // Cleanup function
+                return () => {
+                    isActive = false;
+                    clearTimeout(timeoutId);
+                };
+            } catch (error: unknown) {
+                console.error("Room fetch setup error:", error);
+                setRoomDetail(null);
+                setRoomLoading(false);
+            }
         };
 
         fetchRoomDetails();
@@ -260,23 +265,38 @@ const RoomDetailContent = () => {
 
     // Image handling logic - optimized
     const image_array = useMemo(() => {
-        if (roomDetail?.images && roomDetail.images.length > 0) {
-            // Limit to max 10 images for performance
-            return roomDetail.images.slice(0, 10).map(img => img.high_resolution_url);
+        try {
+            if (roomDetail?.images && Array.isArray(roomDetail.images) && roomDetail.images.length > 0) {
+                // Limit to max 10 images for performance and filter out invalid images
+                return roomDetail.images
+                    .filter(img => img && img.high_resolution_url)
+                    .slice(0, 10)
+                    .map(img => img.high_resolution_url);
+            }
+            return ['/assets/Placeholder_Cat.png'];
+        } catch (error) {
+            console.error('Error processing room images:', error);
+            return ['/assets/Placeholder_Cat.png'];
         }
-        return ['/assets/Placeholder_Cat.png'];
     }, [roomDetail?.images]);
 
     // Set main image immediately without pre-validation
     useEffect(() => {
-        if (roomDetail?.images && roomDetail.images.length > 0) {
-            const heroImage = roomDetail.images.find(img => img.hero_image);
-            if (heroImage?.high_resolution_url) {
-                setMainImage(heroImage.high_resolution_url);
+        try {
+            if (roomDetail?.images && Array.isArray(roomDetail.images) && roomDetail.images.length > 0) {
+                const heroImage = roomDetail.images.find(img => img && img.hero_image);
+                if (heroImage?.high_resolution_url) {
+                    setMainImage(heroImage.high_resolution_url);
+                } else if (roomDetail.images[0]?.high_resolution_url) {
+                    setMainImage(roomDetail.images[0].high_resolution_url);
+                } else {
+                    setMainImage('/assets/Placeholder_Cat.png');
+                }
             } else {
-                setMainImage(roomDetail.images[0]?.high_resolution_url || '/assets/Placeholder_Cat.png');
+                setMainImage('/assets/Placeholder_Cat.png');
             }
-        } else {
+        } catch (error) {
+            console.error('Error setting main image:', error);
             setMainImage('/assets/Placeholder_Cat.png');
         }
     }, [roomDetail?.images]);
