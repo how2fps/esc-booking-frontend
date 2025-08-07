@@ -65,10 +65,32 @@ const BookingPage = () => {
     e.preventDefault();
   
     const validationErrors: string[] = [];
-    if (!firstName) validationErrors.push('First name is required');
-    if (!lastName) validationErrors.push('Last name is required');
-    if (!phoneNumber) validationErrors.push('Phone number is required');
-    if (!email) validationErrors.push('Email address is required');
+    const nameRegex = /^[A-Za-z]+$/;
+    const phoneRegex = /^\+?[0-9]{7,15}$/;  // Allows optional +, and 7 to 15 digits
+  
+    if (!firstName) {
+      validationErrors.push('First name is required');
+    } else if (!nameRegex.test(firstName)) {
+      validationErrors.push('First name must contain only letters');
+    }
+  
+    if (!lastName) {
+      validationErrors.push('Last name is required');
+    } else if (!nameRegex.test(lastName)) {
+      validationErrors.push('Last name must contain only letters');
+    }
+  
+    if (!phoneNumber) {
+      validationErrors.push('Phone number is required');
+    } else if (!phoneRegex.test(phoneNumber)) {
+      validationErrors.push(
+        'Phone number must contain only digits and an optional +, and be 7 to 15 digits long'
+      );
+    }
+  
+    if (!email) {
+      validationErrors.push('Email address is required');
+    }
   
     setErrors(validationErrors);
   
@@ -91,7 +113,7 @@ const BookingPage = () => {
             lastName,
             phoneNumber,
             email,
-            specialRequests
+            specialRequests,
           }),
         });
   
@@ -107,7 +129,9 @@ const BookingPage = () => {
         alert('There was an error submitting your booking.');
       }
     }
-  };  
+  };
+  
+  
 
   return (
     <div className="booking-page lg:py-20 md:py-14 py-10 bg-white">
