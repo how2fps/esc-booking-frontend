@@ -202,10 +202,13 @@ const HotelListings = () => {
        }, [sortOption, filteredHotels]);
 
        const currentPageHotels = useMemo(() => {
-              setPageCount(Math.ceil(sortedHotels.length / itemsPerPage) || 1);
               const startIndex = (currentPage - 1) * itemsPerPage;
               return sortedHotels.slice(startIndex, startIndex + itemsPerPage);
        }, [sortedHotels, currentPage, itemsPerPage]);
+
+       useEffect(() => {
+              setPageCount(Math.ceil(filteredHotels.length / itemsPerPage) || 1);
+       }, [filteredHotels, itemsPerPage]);
 
        return (
               <div className="bg-white text-black lg:py-20 md:py-14 max-lg:mt-10 max-md:mt-40 py-10 px-12">
@@ -283,7 +286,6 @@ const HotelListings = () => {
                             </div>
                             <div className="right lg:w-3/4 md:w-2/3 md:pl-[15px]">
                                    <div className="border border-gray-200 rounded-xl p-4 flex items-center gap-4 shadow-sm mb-6">
-                                          {/* Search box */}
                                           <div className="flex-1">
                                                  <input
                                                         type="text"
@@ -294,7 +296,6 @@ const HotelListings = () => {
                                                  />
                                           </div>
 
-                                          {/* Items per page */}
                                           <div className="flex items-center gap-2">
                                                  <label
                                                         htmlFor="items-per-page"
@@ -320,7 +321,6 @@ const HotelListings = () => {
                                                  </div>
                                           </div>
 
-                                          {/* Sort By */}
                                           <div className="flex items-center gap-2">
                                                  <label
                                                         htmlFor="sort"
