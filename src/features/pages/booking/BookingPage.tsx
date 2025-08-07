@@ -61,38 +61,77 @@ const BookingPage = () => {
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+  
     const validationErrors: string[] = [];
-    if (!firstName) validationErrors.push('First name is required');
-    if (!lastName) validationErrors.push('Last name is required');
-    if (!phoneNumber) validationErrors.push('Phone number is required');
-    if (!email) validationErrors.push('Email address is required');
-
+    const nameRegex = /^[A-Za-z]+$/;
+    const phoneRegex = /^\+?[0-9]{7,15}$/;  // Allows optional +, and 7 to 15 digits
+  
+    if (!firstName) {
+      validationErrors.push('First name is required');
+    } else if (!nameRegex.test(firstName)) {
+      validationErrors.push('First name must contain only letters');
+    }
+  
+    if (!lastName) {
+      validationErrors.push('Last name is required');
+    } else if (!nameRegex.test(lastName)) {
+      validationErrors.push('Last name must contain only letters');
+    }
+  
+    if (!phoneNumber) {
+      validationErrors.push('Phone number is required');
+    } else if (!phoneRegex.test(phoneNumber)) {
+      validationErrors.push(
+        'Phone number must contain only digits and an optional +, and be 7 to 15 digits long'
+      );
+    }
+  
+    if (!email) {
+      validationErrors.push('Email address is required');
+    }
+  
     setErrors(validationErrors);
-
+  
     if (validationErrors.length === 0) {
-      console.log('Booking details:', {
-        firstName,
-        lastName,
-        phoneNumber,
-        email,
-        specialRequests,
-        selectedHotel,
-        roomType,
-        numberOfRooms,
-        adults,
-        children,
-        startDate,
-        endDate,
-        nights: calculateNights(),
-        price,
-      });
-      alert('Booking submitted successfully!');
-      navigate('/checkout');
+      try {
+        const response = await fetch('http://localhost:3000/api/bookings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            hotelName: selectedHotel,
+            roomType,
+            numberOfNights: calculateNights(),
+            startDate,
+            endDate,
+            numAdults: adults,
+            numChildren: children,
+            price,
+            firstName,
+            lastName,
+            phoneNumber,
+            email,
+            specialRequests,
+          }),
+        });
+  
+        if (!response.ok) throw new Error('Booking creation failed');
+  
+        const data = await response.json();
+        const bookingId = data.bookingId;
+  
+        console.log('Booking submitted, navigating to checkout with ID:', bookingId);
+        navigate('/checkout', { state: { bookingId } });
+      } catch (error) {
+        console.error('Error submitting booking:', error);
+        alert('There was an error submitting your booking.');
+      }
     }
   };
+  
+  
 
   return (
     <div className="booking-page lg:py-20 md:py-14 py-10 bg-white">

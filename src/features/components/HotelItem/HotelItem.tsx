@@ -3,8 +3,6 @@
 import { BarbellIcon, ForkKnifeIcon, GarageIcon, MartiniIcon, StarHalfIcon, StarIcon, SwimmingPoolIcon, WashingMachineIcon } from "@phosphor-icons/react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "swiper/css";
-import "swiper/css/pagination";
 import { Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import PlaceholderCat from "../../../assets/Placeholder_Cat.png";
@@ -71,7 +69,7 @@ const HotelItem: React.FC<{ hotelData: Hotel; destination_id: string; checkIn: s
        return (
               <div
                      role="listitem"
-                     className="hotel-item hover-scale"
+                     className="hotel-item hover-scale animate-fadeIn opacity-0 animate-duration-300 animate-fill-forwards"
                      onClick={() => {
                             handleClickItem(hotelData.id);
                      }}>
@@ -128,11 +126,11 @@ const HotelItem: React.FC<{ hotelData: Hotel; destination_id: string; checkIn: s
                             <div className="flex items-center justify-between flex-wrap gap-2">
                                    <div className="flex items-center gap-1">
                                           {Object.entries(hotelData.amenities).map(([key, value]) =>
-                                                 value && iconlist[key] ? (
+                                                 value && iconlist[key as keyof typeof iconlist] ? (
                                                         <span
                                                                key={key}
                                                                title={key}>
-                                                               {iconlist[key]}
+                                                               {iconlist[key as keyof typeof iconlist]}
                                                         </span>
                                                  ) : null
                                           )}
@@ -144,7 +142,7 @@ const HotelItem: React.FC<{ hotelData: Hotel; destination_id: string; checkIn: s
                             </div>
                             <div className="name capitalize mt-1">{hotelData.name}</div>
                             <div className="flex items-center justify-between gap-2 mt-1">
-                                   <div className="text-variant1">Nov. 12 - 15</div>
+                                   <div className="text-variant1">{dateRange}</div>
                                    <div className="flex lg:items-end">
                                           <span className="text-button">${hotelData.price ?? "-"}</span>
                                           <span className="caption1 text-variant1">/night</span>
