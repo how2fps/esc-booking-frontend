@@ -88,7 +88,7 @@ const HotelListings = () => {
                             minimumStars: hotelStarsFilter,
                             minimumUsersRating: hotelRatingFilter,
                      }));
-              }, 300);
+              }, 500);
               return () => clearTimeout(id);
        }, [hotelStarsFilter, priceFilter, hotelRatingFilter]);
 
@@ -127,6 +127,7 @@ const HotelListings = () => {
               let isActive = true;
               const pollPrices = async () => {
                      try {
+                            console.log("running");
                             let retries = 0;
                             const maxRetries = 40;
                             const delay = 2000;
@@ -165,14 +166,14 @@ const HotelListings = () => {
        const hotelsWithPrices = useMemo(() => {
               return allHotels.map((hotel) => {
                      const priceData = hotelPrices.get(hotel.id);
-                     if (priceData) {
-                            return {
-                                   ...hotel,
-                                   price: priceData?.price,
-                            };
-                     } else {
-                            return hotel;
-                     }
+                     const newPrice = priceData?.price ?? null;
+
+                     if (hotel.price === newPrice) return hotel;
+
+                     return {
+                            ...hotel,
+                            price: newPrice,
+                     };
               });
        }, [allHotels, hotelPrices]);
 
@@ -233,7 +234,7 @@ const HotelListings = () => {
                                                                       defaultZoom={14}
                                                                       gestureHandling={"greedy"}
                                                                       disableDefaultUI={true}>
-                                                                      <ClusteredHotelMarkers hotels={filteredHotels} />
+                                                                      {/* <ClusteredHotelMarkers hotels={filteredHotels} /> */}
                                                                </GoogleMap>
                                                         </div>
                                                  </APIProvider>

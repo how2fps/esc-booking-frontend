@@ -3,8 +3,6 @@
 import { BarbellIcon, ForkKnifeIcon, GarageIcon, MartiniIcon, StarHalfIcon, StarIcon, SwimmingPoolIcon, WashingMachineIcon } from "@phosphor-icons/react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "swiper/css";
-import "swiper/css/pagination";
 import { Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import PlaceholderCat from "../../../assets/Placeholder_Cat.png";
@@ -128,11 +126,11 @@ const HotelItem: React.FC<{ hotelData: Hotel }> = ({ hotelData }) => {
                             <div className="flex items-center justify-between flex-wrap gap-2">
                                    <div className="flex items-center gap-1">
                                           {Object.entries(hotelData.amenities).map(([key, value]) =>
-                                                 value && iconlist[key] ? (
+                                                 value && iconlist[key as keyof typeof iconlist] ? (
                                                         <span
                                                                key={key}
                                                                title={key}>
-                                                               {iconlist[key]}
+                                                               {iconlist[key as keyof typeof iconlist]}
                                                         </span>
                                                  ) : null
                                           )}
