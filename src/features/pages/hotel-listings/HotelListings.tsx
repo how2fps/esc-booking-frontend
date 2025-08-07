@@ -3,7 +3,6 @@
 import { memo, useEffect, useMemo, useState } from "react";
 
 import * as Icon from "phosphor-react";
-import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import { useSearchParams } from "react-router-dom";
 import HotelItem from "../../components/HotelItem/HotelItem";
@@ -14,6 +13,9 @@ import { APIProvider, Map as GoogleMap } from "@vis.gl/react-google-maps";
 import type { Hotel, HotelFilter, HotelMarker, HotelPrice } from "../../type/HotelType";
 import { AmenityFilter } from "./AmenityFilter";
 import { ClusteredHotelMarkers as ClusteredHotelMarkersBase } from "./ClusteredHotelMarkers";
+import { HotelRatingSlider } from "./HotelRatingSlider";
+import { HotelSearch } from "./HotelSearch";
+import { PriceRangeSlider } from "./PriceRangeSlider";
 import { StarRatingPicker } from "./StarRatingPicker";
 
 const ClusteredHotelMarkers = memo(ClusteredHotelMarkersBase);
@@ -33,22 +35,37 @@ const padDateWithZero = (dateStr: string) =>
 
 const getGuestsQueryString = (noOfGuests: number, noOfRooms: number) => Array(noOfRooms).fill(noOfGuests).join("|");
 
+function formatDateRange(start: string, end: string): string {
+       const format = (dateStr: string) => {
+              const date = new Date(dateStr);
+              const day = date.getDate();
+              const month = date.toLocaleString("en-GB", { month: "short" });
+              const year = date.getFullYear().toString().slice(-2);
+              return `${day} ${month} ${year}`;
+       };
+
+       return `${format(start)} – ${format(end)}`;
+}
+
 //?location=RsBU&startDate=7/20/2025&endDate=7/27/2025&adult=1&children=1&room=2
 const HotelListings = () => {
        // eslint-disable-next-line @typescript-eslint/no-unused-vars
        const [searchParams, _] = useSearchParams();
+
        const destinationId = searchParams.get("location");
-       const checkIn = formatDate(searchParams.get("startDate") as string);
-       const checkOut = formatDate(searchParams.get("endDate") as string);
+
        const numberOfRooms = searchParams.get("room");
        const numberOfAdults = searchParams.get("adult");
        const numberOfChildren = searchParams.get("children");
+
+       const checkIn = formatDate(searchParams.get("startDate") as string);
+       const checkOut = formatDate(searchParams.get("endDate") as string);
+       const formattedDateString = formatDateRange(checkIn, checkOut);
 
        const [hotelStarsFilter, setHotelStarsFilter] = useState(0);
        const [hotelRatingFilter, setHotelRatingFilter] = useState(0);
        const [priceFilter, setPriceFilter] = useState<{ min: number; max: number }>({ min: 0, max: 10000 });
        const [searchTerm, setSearchTerm] = useState<string>("");
-       const [debouncedSearchTerm, setDebouncedSearchTerm] = useState<string>("");
 
        const [sortOption, setSortOption] = useState<string>();
 
@@ -71,16 +88,6 @@ const HotelListings = () => {
        });
 
        useEffect(() => {
-              const handler = setTimeout(() => {
-                     setDebouncedSearchTerm(searchTerm);
-              }, 300);
-
-              return () => {
-                     clearTimeout(handler);
-              };
-       }, [searchTerm]);
-
-       useEffect(() => {
               const id = setTimeout(() => {
                      setFilters((prev) => ({
                             ...prev,
@@ -88,7 +95,7 @@ const HotelListings = () => {
                             minimumStars: hotelStarsFilter,
                             minimumUsersRating: hotelRatingFilter,
                      }));
-              }, 300);
+              }, 500);
               return () => clearTimeout(id);
        }, [hotelStarsFilter, priceFilter, hotelRatingFilter]);
 
@@ -130,12 +137,10 @@ const HotelListings = () => {
                             let retries = 0;
                             const maxRetries = 40;
                             const delay = 2000;
-
                             const formattedCheckinDate = padDateWithZero(checkIn);
                             const formattedCheckoutDate = padDateWithZero(checkOut);
                             const numberOfGuests = numberOfAdults && numberOfChildren ? +numberOfAdults + +numberOfChildren : 0;
                             const guestQueryString = getGuestsQueryString(numberOfGuests, Number(numberOfRooms));
-
                             while (isActive && retries < maxRetries) {
                                    const res = await fetch(`http://localhost:3000/api/hotels/prices?destination_id=${destinationId}&checkin=${formattedCheckinDate}&checkout=${formattedCheckoutDate}&lang=en_US&currency=SGD&country_code=SG&guests=${guestQueryString}&partner_id=${1089}&landing_page=wl-acme-earn&product_type=earn`);
                                    const data = await res.json();
@@ -165,21 +170,19 @@ const HotelListings = () => {
        const hotelsWithPrices = useMemo(() => {
               return allHotels.map((hotel) => {
                      const priceData = hotelPrices.get(hotel.id);
-                     if (priceData) {
-                            return {
-                                   ...hotel,
-                                   price: priceData?.price,
-                            };
-                     } else {
-                            return hotel;
-                     }
+                     const newPrice = typeof priceData?.price === "number" ? priceData.price : hotel.price ?? 0;
+                     if (hotel.price === newPrice) return hotel;
+                     return {
+                            ...hotel,
+                            price: newPrice,
+                     };
               });
        }, [allHotels, hotelPrices]);
 
        const filteredHotels = useMemo(() => {
-              const result = hotelsWithPrices.filter((hotel) => hotel.rating >= filters.minimumStars && (hotel.trustyou?.score?.overall ?? 0) >= filters.minimumUsersRating && [...filters.amenities].every((amenity) => hotel.amenities[amenity]) && hotel.name.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) && (!hotel.price || (hotel.price >= filters.priceRange.min && hotel.price <= filters.priceRange.max)));
+              const result = hotelsWithPrices.filter((hotel) => hotel.rating >= filters.minimumStars && (hotel.trustyou?.score?.overall ?? 0) >= filters.minimumUsersRating && [...filters.amenities].every((amenity) => hotel.amenities[amenity]) && hotel.name.toLowerCase().includes(searchTerm.toLowerCase()) && (!hotel.price || (hotel.price >= filters.priceRange.min && hotel.price <= filters.priceRange.max)));
               return result;
-       }, [filters, debouncedSearchTerm, hotelsWithPrices]);
+       }, [filters, searchTerm, hotelsWithPrices]);
 
        const sortedHotels = useMemo(() => {
               const hotelsCopy = [...filteredHotels];
@@ -202,10 +205,13 @@ const HotelListings = () => {
        }, [sortOption, filteredHotels]);
 
        const currentPageHotels = useMemo(() => {
-              setPageCount(Math.ceil(sortedHotels.length / itemsPerPage) || 1);
               const startIndex = (currentPage - 1) * itemsPerPage;
               return sortedHotels.slice(startIndex, startIndex + itemsPerPage);
        }, [sortedHotels, currentPage, itemsPerPage]);
+
+       useEffect(() => {
+              setPageCount(Math.ceil(filteredHotels.length / itemsPerPage) || 0);
+       }, [filteredHotels, itemsPerPage]);
 
        return (
               <div className="bg-white text-black lg:py-20 md:py-14 max-lg:mt-10 max-md:mt-40 py-10 px-12">
@@ -237,64 +243,21 @@ const HotelListings = () => {
                                                  </APIProvider>
                                           )}
 
-                                          <div className="border rounded-xl p-8">
-                                                 <section>
-                                                        <div className="mb-8">
-                                                               <div className="font-semibold text-gray-800 mb-2 flex justify-left">
-                                                                      Price Range: ${priceFilter.min} – ${priceFilter.max}
-                                                               </div>
-                                                               <Slider
-                                                                      data-testid="price-slider"
-                                                                      range
-                                                                      value={[priceFilter.min, priceFilter.max]}
-                                                                      min={0}
-                                                                      max={10000}
-                                                                      onChange={(value) => {
-                                                                             if (Array.isArray(value) && value.length === 2) {
-                                                                                    setPriceFilter({ min: value[0], max: value[1] });
-                                                                             }
-                                                                      }}
-                                                               />
-                                                        </div>
-                                                        <div className="mb-7">
-                                                               <div className="font-semibold text-gray-800 mb-2 flex justify-left">Minimum Rating: {hotelRatingFilter}</div>
-                                                               <Slider
-                                                                      value={hotelRatingFilter}
-                                                                      min={0}
-                                                                      max={100}
-                                                                      step={1}
-                                                                      onChange={(value) => {
-                                                                             if (typeof value === "number") {
-                                                                                    setHotelRatingFilter(value);
-                                                                             }
-                                                                      }}
-                                                               />
-                                                        </div>
-                                                        <div className="mb-8">
-                                                               <StarRatingPicker
-                                                                      value={hotelStarsFilter}
-                                                                      onChange={(val) => setHotelStarsFilter(val)}
-                                                               />
-                                                        </div>
-                                                        <AmenityFilter setFilters={setFilters} />
-                                                 </section>
-                                          </div>
+                                          <section className="border rounded-xl p-8">
+                                                 <PriceRangeSlider setPriceFilter={setPriceFilter} />
+                                                 <HotelRatingSlider setHotelRatingFilter={setHotelRatingFilter} />
+                                                 <StarRatingPicker
+                                                        value={hotelStarsFilter}
+                                                        onChange={(val) => setHotelStarsFilter(val)}
+                                                 />
+                                                 <AmenityFilter setFilters={setFilters} />
+                                          </section>
                                    </div>
                             </div>
                             <div className="right lg:w-3/4 md:w-2/3 md:pl-[15px]">
                                    <div className="border border-gray-200 rounded-xl p-4 flex items-center gap-4 shadow-sm mb-6">
-                                          {/* Search box */}
-                                          <div className="flex-1">
-                                                 <input
-                                                        type="text"
-                                                        placeholder="Search hotels..."
-                                                        value={searchTerm}
-                                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                                        className="w-full h-12 px-4 rounded-lg border border-gray-300 bg-white text-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                                 />
-                                          </div>
+                                          <HotelSearch setSearchTerm={setSearchTerm} />
 
-                                          {/* Items per page */}
                                           <div className="flex items-center gap-2">
                                                  <label
                                                         htmlFor="items-per-page"
@@ -320,7 +283,6 @@ const HotelListings = () => {
                                                  </div>
                                           </div>
 
-                                          {/* Sort By */}
                                           <div className="flex items-center gap-2">
                                                  <label
                                                         htmlFor="sort"
@@ -363,15 +325,24 @@ const HotelListings = () => {
                                                                <HotelItem
                                                                       key={hotel.id}
                                                                       hotelData={hotel}
+                                                                      dateRange={formattedDateString}
                                                                />
                                                         ))
                                                  ) : (
-                                                        <div>No results available.</div>
+                                                        <div className="col-span-full text-center text-gray-600 py-16">
+                                                               <Icon.MagnifyingGlass
+                                                                      size={48}
+                                                                      className="mx-auto mb-4 text-gray-400"
+                                                               />
+                                                               <p className="text-lg font-semibold">No hotels match your filters</p>
+                                                               <p className="text-sm text-gray-500 mt-2">Try adjusting your filters or search term to see more results.</p>
+                                                        </div>
                                                  )}
                                           </div>
                                    )}
                                    {pageCount > 0 ? (
                                           <HandlePagination
+                                                 currentPage={currentPage}
                                                  pageCount={pageCount}
                                                  onPageChange={(selected: number) => {
                                                         setCurrentPage(selected + 1);
