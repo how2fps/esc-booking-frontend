@@ -202,11 +202,13 @@ const HotelListings = () => {
        }, [sortOption, filteredHotels]);
 
        const currentPageHotels = useMemo(() => {
-              setPageCount(Math.ceil(sortedHotels.length / itemsPerPage) || 1);
               const startIndex = (currentPage - 1) * itemsPerPage;
               return sortedHotels.slice(startIndex, startIndex + itemsPerPage);
        }, [sortedHotels, currentPage, itemsPerPage]);
 
+       useEffect(() => {
+              setPageCount(Math.ceil(filteredHotels.length / itemsPerPage) || 0);
+       }, [filteredHotels, itemsPerPage]);
        return (
               <div className="bg-white text-black lg:py-20 md:py-14 max-lg:mt-10 max-md:mt-40 py-10 px-12">
                      <div className="flex">
@@ -283,7 +285,6 @@ const HotelListings = () => {
                             </div>
                             <div className="right lg:w-3/4 md:w-2/3 md:pl-[15px]">
                                    <div className="border border-gray-200 rounded-xl p-4 flex items-center gap-4 shadow-sm mb-6">
-                                          {/* Search box */}
                                           <div className="flex-1">
                                                  <input
                                                         type="text"
@@ -294,7 +295,6 @@ const HotelListings = () => {
                                                  />
                                           </div>
 
-                                          {/* Items per page */}
                                           <div className="flex items-center gap-2">
                                                  <label
                                                         htmlFor="items-per-page"
@@ -320,7 +320,6 @@ const HotelListings = () => {
                                                  </div>
                                           </div>
 
-                                          {/* Sort By */}
                                           <div className="flex items-center gap-2">
                                                  <label
                                                         htmlFor="sort"
@@ -366,7 +365,14 @@ const HotelListings = () => {
                                                                />
                                                         ))
                                                  ) : (
-                                                        <div>No results available.</div>
+                                                        <div className="col-span-full text-center text-gray-600 py-16">
+                                                               <Icon.MagnifyingGlass
+                                                                      size={48}
+                                                                      className="mx-auto mb-4 text-gray-400"
+                                                               />
+                                                               <p className="text-lg font-semibold">No hotels match your filters</p>
+                                                               <p className="text-sm text-gray-500 mt-2">Try adjusting your filters or search term to see more results.</p>
+                                                        </div>
                                                  )}
                                           </div>
                                    )}
