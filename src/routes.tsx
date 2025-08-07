@@ -5,13 +5,12 @@ import CheckoutForm from "./features/pages/CheckoutForm/Checkout";
 import DestinationSearch from "./features/pages/destination-search/DestinationSearch";
 import HomePage from "./features/pages/home/HomePage";
 import HotelDetails from "./features/pages/hotel-detail/HotelDetails";
-import Listings from "./features/pages/hotel-listings/HotelListings";
+import Listings from "./features/pages/hotel-listings/HotelListingsPage";
 import Login from "./features/pages/login/LoginForm";
-import SignupForm from "./features/pages/signup-form/SignupForm";
 import ProfilePage from "./features/pages/profile/ProfilePage";
+import SignupForm from "./features/pages/signup-form/SignupForm";
 
 import ReturnForm from "./features/pages/returnForm/Return";
-
 
 const AppRoutes: React.FC = () => {
        return (
