@@ -3,8 +3,6 @@
 import { BarbellIcon, ForkKnifeIcon, GarageIcon, MartiniIcon, StarHalfIcon, StarIcon, SwimmingPoolIcon, WashingMachineIcon } from "@phosphor-icons/react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "swiper/css";
-import "swiper/css/pagination";
 import { Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import PlaceholderCat from "../../../assets/Placeholder_Cat.png";
@@ -20,7 +18,7 @@ const iconlist = {
        inHouseBar: <MartiniIcon />,
 };
 
-const HotelItem: React.FC<{ hotelData: Hotel }> = ({ hotelData }) => {
+const HotelItem: React.FC<{ hotelData: Hotel; dateRange: string }> = ({ hotelData, dateRange }) => {
        const router = useNavigate();
        const prefix = hotelData.image_details?.prefix || "";
        const suffix = hotelData.image_details?.suffix || "";
@@ -128,11 +126,11 @@ const HotelItem: React.FC<{ hotelData: Hotel }> = ({ hotelData }) => {
                             <div className="flex items-center justify-between flex-wrap gap-2">
                                    <div className="flex items-center gap-1">
                                           {Object.entries(hotelData.amenities).map(([key, value]) =>
-                                                 value && iconlist[key] ? (
+                                                 value && iconlist[key as keyof typeof iconlist] ? (
                                                         <span
                                                                key={key}
                                                                title={key}>
-                                                               {iconlist[key]}
+                                                               {iconlist[key as keyof typeof iconlist]}
                                                         </span>
                                                  ) : null
                                           )}
@@ -144,7 +142,7 @@ const HotelItem: React.FC<{ hotelData: Hotel }> = ({ hotelData }) => {
                             </div>
                             <div className="name capitalize mt-1">{hotelData.name}</div>
                             <div className="flex items-center justify-between gap-2 mt-1">
-                                   <div className="text-variant1">Nov. 12 - 15</div>
+                                   <div className="text-variant1">{dateRange}</div>
                                    <div className="flex lg:items-end">
                                           <span className="text-button">${hotelData.price ?? "-"}</span>
                                           <span className="caption1 text-variant1">/night</span>
