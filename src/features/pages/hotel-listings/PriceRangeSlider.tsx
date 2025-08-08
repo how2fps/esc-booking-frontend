@@ -10,23 +10,24 @@ export const PriceRangeSlider: React.FC<{
                      <div className="font-semibold text-gray-800 mb-2 flex justify-left">
                             Price Range: ${priceSliderValue[0]} – ${priceSliderValue[1]}
                      </div>
-                     <Slider
-                            data-testid="price-slider"
-                            range
-                            value={priceSliderValue}
-                            min={0}
-                            max={10000}
-                            onChange={(value) => {
-                                   if (Array.isArray(value)) {
-                                          setPriceSliderValue(value as [number, number]);
-                                   }
-                            }}
-                            onChangeComplete={(value) => {
-                                   if (Array.isArray(value) && value.length === 2) {
-                                          setPriceFilter({ min: value[0], max: value[1] });
-                                   }
-                            }}
-                     />
+                     <div data-testid="price-slider">
+                            <Slider
+                                   range
+                                   value={priceSliderValue}
+                                   min={0}
+                                   max={10000}
+                                   onChange={(value) => {
+                                          if (Array.isArray(value)) {
+                                                 setPriceSliderValue(value as [number, number]);
+                                          }
+                                   }}
+                                   onChangeComplete={(value) => {
+                                          if (Array.isArray(value) && value.length === 2) {
+                                                 setPriceFilter({ min: value[0], max: value[1] });
+                                          }
+                                   }}
+                            />
+                     </div>
               </div>
        );
 };

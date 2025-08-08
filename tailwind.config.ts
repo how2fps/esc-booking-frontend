@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import * as colors from "tailwindcss/colors";
 
 const config: Config = {
        content: ["./src/pages/**/*.{js,ts,jsx,tsx,mdx}", "./src/features/components/**/*.{js,ts,jsx,tsx,mdx}", "./src/features/pages/**/*.{js,ts,jsx,tsx,mdx}"],
@@ -21,6 +22,7 @@ const config: Config = {
                             fadeIn: "fadeIn 0.4s ease-out forwards",
                      },
                      colors: {
+                            ...colors,
                             transparent: "transparent",
                             primary: "#E05028",
                             "primary-hover": "#c42e04",
@@ -30,9 +32,9 @@ const config: Config = {
                             white: "#efefef",
                             outline: "#E4E4E4",
                             surface: "#efefef",
-                            red: "#C72929",
+                            // red: "#C72929",
                             success: "#37B853",
-                            yellow: "#F4D118",
+                            // yellow: "#F4D118",
                             line: "#E9E9E9",
                      },
                      container: {
