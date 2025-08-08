@@ -13,7 +13,7 @@ import { APIProvider, Map as GoogleMap } from "@vis.gl/react-google-maps";
 import type { Hotel, HotelFilter, HotelMarker, HotelPrice } from "../../type/HotelType";
 import { AmenityFilter } from "./AmenityFilter";
 import { ClusteredHotelMarkers as ClusteredHotelMarkersBase } from "./ClusteredHotelMarkers";
-import { HotelRatingSlider } from "./HotelRatingSlider";
+import { HotelRatingSlider } from "./HotelRatingSlider" ;
 import { HotelSearch } from "./HotelSearch";
 import { ItemsPerPageSelector } from "./ItemsPerPageSelector";
 import { PriceRangeSlider } from "./PriceRangeSlider";
