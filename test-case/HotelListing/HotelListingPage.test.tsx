@@ -110,7 +110,6 @@ describe("HotelListings Component", () => {
               fireEvent.change(searchInput, { target: { value: "Nonexistent Hotel" } });
               await waitFor(() => {
                      expect(screen.queryByTestId("hotel-name")).not.toBeInTheDocument();
-
                      expect(screen.getByText((t) => t.includes("No hotels match your filters"))).toBeInTheDocument();
               });
        });
