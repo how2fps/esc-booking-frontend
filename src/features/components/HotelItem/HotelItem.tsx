@@ -140,7 +140,11 @@ const HotelItem: React.FC<{ hotelData: Hotel; dateRange: string }> = ({ hotelDat
                                           <div className="text-button-sm">Rating: {Number(hotelData.trustyou.score.overall)}</div>
                                    </div>
                             </div>
-                            <div className="name capitalize mt-1">{hotelData.name}</div>
+                            <div
+                                   data-testid="hotel-name"
+                                   className="name capitalize mt-1">
+                                   {hotelData.name}
+                            </div>
                             <div className="flex items-center justify-between gap-2 mt-1">
                                    <div className="text-variant1">{dateRange}</div>
                                    <div className="flex lg:items-end">
