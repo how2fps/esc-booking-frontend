@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { vi } from "vitest";
-import { StarRatingPicker } from "../../../src/features/pages/hotel-listings/StarRatingPicker";
+import { StarRatingPicker } from "../../src/features/pages/hotel-listings/StarRatingPicker";
 
 describe("StarRatingPicker", () => {
        let mockOnChange: ReturnType<typeof vi.fn>;

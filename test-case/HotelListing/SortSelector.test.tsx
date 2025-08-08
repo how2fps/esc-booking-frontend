@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { vi } from "vitest";
-import { SortSelector } from "../../../src/features/pages/hotel-listings/SortSelector";
+import { SortSelector } from "../../src/features/pages/hotel-listings/SortSelector";
 
 describe("SortSelector", () => {
        let mockSetSortOption: ReturnType<typeof vi.fn>;

@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { PriceRangeSlider } from "../../../src/features/pages/hotel-listings/PriceRangeSlider";
+import { PriceRangeSlider } from "../../src/features/pages/hotel-listings/PriceRangeSlider";
 
 describe("PriceRangeSlider", () => {
        it("renders default label", () => {

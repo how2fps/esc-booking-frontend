@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { vi } from "vitest";
-import { ItemsPerPageSelector } from "../../../src/features/pages/hotel-listings/ItemsPerPageSelector";
+import { ItemsPerPageSelector } from "../../src/features/pages/hotel-listings/ItemsPerPageSelector";
 
 describe("ItemsPerPageSelector", () => {
        let mockSetItemsPerPage: ReturnType<typeof vi.fn>;

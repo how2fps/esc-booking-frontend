@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { vi } from "vitest";
-import { HotelSearch } from "../../../src/features/pages/hotel-listings/HotelSearch";
+import { HotelSearch } from "../../src/features/pages/hotel-listings/HotelSearch";
 
 describe("HotelSearch", () => {
        it("renders input with correct placeholder", () => {
