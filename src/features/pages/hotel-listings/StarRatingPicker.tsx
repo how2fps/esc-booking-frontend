@@ -44,6 +44,7 @@ export const StarRatingPicker = ({ value, onChange }: { value: number; onChange:
                                                                       weight="fill"
                                                                       size={24}
                                                                       color="#facc15"
+                                                                      data-testid={`star-${i + 1}-full`}
                                                                       className={`${getStarClass(true)} transform transition-transform duration-150 ${hoverValue !== null ? "scale-110" : "scale-100"}`}
                                                                />
                                                         </>
@@ -53,6 +54,7 @@ export const StarRatingPicker = ({ value, onChange }: { value: number; onChange:
                                                                       weight="fill"
                                                                       size={24}
                                                                       color="#facc15"
+                                                                      data-testid={`star-${i + 1}-half`}
                                                                       className={`${getStarClass(true)} transform transition-transform duration-150 ${hoverValue !== null ? "scale-110" : "scale-100"}`}
                                                                />
                                                         </>
@@ -61,6 +63,7 @@ export const StarRatingPicker = ({ value, onChange }: { value: number; onChange:
                                                                weight="regular"
                                                                size={24}
                                                                color="#facc15"
+                                                               data-testid={`star-${i + 1}-empty`}
                                                                className={`${getStarClass(false)} transform transition-transform duration-150 ${hoverValue !== null ? "scale-110" : "scale-100"}`}
                                                         />
                                                  )}
