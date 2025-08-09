@@ -3,8 +3,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react' // ✅ Added useMemo import
 import { useParams } from "react-router-dom"
 import { addDays } from 'date-fns'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { Pagination } from 'swiper/modules'
+
 import * as Icon from 'phosphor-react'
 import { DateRangePicker } from 'react-date-range'
 import StickyBox from 'react-sticky-box'
@@ -26,6 +25,11 @@ interface GuestType {
     adult: number;
     children: number;
 }
+type DateRange = {
+  startDate?: Date;
+  endDate?: Date;
+  key: string;
+};
 
 const HotelDetailContent = () => {
     const { id } = useParams();  
@@ -53,13 +57,13 @@ const HotelDetailContent = () => {
     const [mainImage, setMainImage] = useState<string | null>(null) 
     const [imageError, setImageError] = useState(false);
     const [roomCount, setRoomCount] = useState(1);
-    const [state, setState] = useState([
-        {
-            startDate: new Date(),
-            endDate: addDays(new Date(), 7),
-            key: 'selection'
-        }
-    ]);
+    const [state, setState] = useState<DateRange[]>([
+  {
+    startDate: new Date(),
+    endDate: addDays(new Date(), 7),
+    key: 'selection',
+  },
+]);
     const [guest, setGuest] = useState<GuestType>({
         adult: 0,
         children: 0,
@@ -175,7 +179,9 @@ const HotelDetailContent = () => {
     };
 
     const basePrice = 200;
-    const nights = Math.ceil((state[0].endDate.getTime() - state[0].startDate.getTime()) / (1000 * 60 * 60 * 24));
+    const nights = state[0].startDate && state[0].endDate
+        ? Math.ceil((state[0].endDate.getTime() - state[0].startDate.getTime()) / (1000 * 60 * 60 * 24))
+        : 0;
     const serviceTax = 0.19 * (basePrice * nights * roomCount);
     const total = (basePrice * nights * roomCount) + serviceTax;
 
@@ -242,7 +248,7 @@ const HotelDetailContent = () => {
                             
                             {/* Hotel Header */}
                             <div className="flex items-center justify-between gap-6">
-                                <h1 className="heading3" role="heading" aria-level="1">{hotel.name}</h1>
+                                <h1 className="heading3" role="heading" aria-level={1}>{hotel.name}</h1>
                                 <div className="share w-12 h-12 rounded-full bg-white border border-outline flex-shrink-0 flex items-center justify-center cursor-pointer duration-300 hover:bg-black hover:text-white">
                                     <Icon.ShareNetwork className='text-2xl' />
                                 </div>
@@ -361,14 +367,14 @@ const HotelDetailContent = () => {
                                                         <Icon.CalendarBlank className='text-xl' />
                                                         <div className="text-button">Check In</div>
                                                     </div>
-                                                    <div className="body2 mt-1">{state[0].startDate.toLocaleDateString()}</div>
+                                                    <div className="body2 mt-1">{state[0].startDate ? state[0].startDate.toLocaleDateString() : ''}</div>
                                                 </div>
                                                 <div className="left pr-5 py-4 cursor-pointer" onClick={handleOpenDate}>
                                                     <div className="flex items-center justify-end gap-1">
                                                         <Icon.CalendarBlank className='text-xl' />
                                                         <div className="text-button">Check Out</div>
                                                     </div>
-                                                    <div className="body2 mt-1 text-end">{state[0].endDate.toLocaleDateString()}</div>
+                                                    <div className="body2 mt-1 text-end">{state[0].endDate ? state[0].endDate.toLocaleDateString() : ''}</div>
                                                 </div>
                                             </div>
                                             {/* Date Picker dropdown */}
@@ -379,7 +385,13 @@ const HotelDetailContent = () => {
                                                         onChange={item => {
                                                             const selection = item.selection;
                                                             if (selection.startDate && selection.endDate && selection.startDate <= selection.endDate) {
-                                                                setState([selection]);
+                                                                setState([
+                                                                    {
+                                                                        startDate: selection.startDate,
+                                                                        endDate: selection.endDate,
+                                                                        key: selection.key ?? 'selection',
+                                                                    },
+                                                                ]);
                                                             }
                                                         }}
                                                         moveRangeOnFirstSelection={false}

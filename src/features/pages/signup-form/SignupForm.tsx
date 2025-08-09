@@ -14,8 +14,8 @@ const SignupForm = () => {
        const [showConfirmPassword, setShowConfirmPassword] = useState(false);
        const [errors, setErrors] = useState<string[]>([]);
        const [isValid, setIsValid] = useState(false);
-       const [submitError, setSubmitError] = useState<string | null>(null);
-       const [submitting, setSubmitting] = useState(false);
+       const [_submitError, setSubmitError] = useState<string | null>(null);
+       const [_submitting, setSubmitting] = useState(false);
        const navigate = useNavigate();
 
        useEffect(() => {

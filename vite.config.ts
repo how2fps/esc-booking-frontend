@@ -17,10 +17,13 @@ export default defineConfig(({ mode }) => {
          setupFiles: "./src/setupTests.ts",
        },
        server: {
+            host: "0.0.0.0",
+            strictPort: true,
     proxy: {
       '/api': {
         target: 'https://hotelapi.loyalty.dev', // Your backend server
         changeOrigin: true,
+        
         rewrite: (path) => path.replace(/^\/api/, ''),
         // Optional: Add more options as needed
       },

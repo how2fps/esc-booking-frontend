@@ -22,7 +22,8 @@ describe("BookingPage - Primitive Tests", () => {
 
   it("can type into all user input fields", () => {
     renderWithRouter();
-    const inputs = screen.getAllByRole("textbox").filter(i => !i.readOnly);
+    const inputs = screen.getAllByRole("textbox").filter((element) => !(element as HTMLInputElement).readOnly
+);
 
     fireEvent.change(inputs[0], { target: { value: "Joe" } });   // First name
     fireEvent.change(inputs[1], { target: { value: "Mama" } }); // Last name
@@ -52,7 +53,9 @@ describe("BookingPage - Primitive Tests", () => {
 
     renderWithRouter();
 
-    const inputs = screen.getAllByRole("textbox").filter(i => !i.readOnly && i.tagName === "INPUT");
+    const inputs = screen.getAllByRole("textbox").filter(
+  (elem) => elem.tagName === "INPUT" && !(elem as HTMLInputElement).readOnly
+);
     fireEvent.change(inputs[0], { target: { value: "Ian" } });
     fireEvent.change(inputs[1], { target: { value: "Varella" } });
     fireEvent.change(inputs[2], { target: { value: "98765432" } });

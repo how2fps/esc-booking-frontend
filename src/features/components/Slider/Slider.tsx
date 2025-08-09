@@ -1,5 +1,6 @@
 import { addDays } from "date-fns";
 import * as Icon from "phosphor-react";
+import type { GroupBase, OptionsOrGroups, SingleValue, ActionMeta } from 'react-select';
 
 import { useCallback, useEffect, useState } from "react";
 import { DateRangePicker } from "react-date-range";
@@ -38,6 +39,7 @@ const noOptionsMessage = (input: { inputValue: string }) => {
 
 const optionsPerPage = 10;
 
+
 const loadOptions = async (search: string, page: number) => {
        if (!search || search.length < 3) {
               return {
@@ -61,30 +63,25 @@ const loadOptions = async (search: string, page: number) => {
 
 const defaultAdditional = { page: 1 };
 
-const loadPageOptions = async (q: string, loadedOptions: DestinationType[], additional = defaultAdditional) => {
-       const { page = 1 } = additional;
-
-       const { options, hasMore } = await loadOptions(q, page);
-       console.log("Fetching page:", page, "query:", q, "Option:", options);
-
-       return {
-              options,
-              hasMore,
-              additional: { page: page + 1 },
-       };
+const loadPageOptions = async (
+  q: string,
+  _loadedOptions: OptionsOrGroups<DestinationType, GroupBase<DestinationType>>,
+  additional = defaultAdditional
+) => {
+  const { page = 1 } = additional;
+  const { options, hasMore } = await loadOptions(q, page);
+  console.log("Fetching page:", page, "query:", q, "Option:", options);
+  return {
+    options,
+    hasMore,
+    additional: { page: page + 1 },
+  };
 };
-
 const DestinationSearch = () => {
        const [openDate, setOpenDate] = useState(false);
        const [openGuest, setOpenGuest] = useState(false);
-       const [location, setLocation] = useState({
-              term: "",
-              uid: "",
-              lat: 0,
-              lng: 0,
-              type: "",
-              state: "",
-       });
+       const [location, setLocation] = useState<DestinationType | null>(null);
+
 
        const [state, setState] = useState([
               {
@@ -129,7 +126,17 @@ const DestinationSearch = () => {
               },
               [openGuest]
        );
-
+       const handleLocationChange = (
+              newValue: SingleValue<DestinationType>,
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              _actionMeta: ActionMeta<DestinationType>
+              ) => {
+              if (newValue === null) {
+              // Handle null case, e.g., reset state or ignore
+              return;
+              }
+              setLocation(newValue);
+              };
        useEffect(() => {
               return () => {
                      document.removeEventListener("click", handleClickOutsideDatePopup);
@@ -192,7 +199,7 @@ const DestinationSearch = () => {
                                                                       getOptionLabel={(i: DestinationType) => i.term}
                                                                      getOptionValue={(i: DestinationType) => i.uid}
                                                                       noOptionsMessage={noOptionsMessage}
-                                                                      onChange={setLocation}
+                                                                      onChange={handleLocationChange}
                                                                       styles={{
                                                                              control: (provided) => ({
                                                                                     ...provided,

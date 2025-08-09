@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -9,7 +10,7 @@ const BookingPage = () => {
   const state = location.state || {};
 
   // Non-editable booking details (from state)
-  const [hotelImage] = useState(state.hotelImage || '');
+  //const [hotelImage] = useState(state.hotelImage || '');
   const [selectedHotel] = useState(state.hotelName || '');
   const [roomType] = useState(state.roomType || '');
   const [price] = useState(state.price || 0);
