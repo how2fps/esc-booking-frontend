@@ -70,7 +70,7 @@ const BookingPage = () => {
   
     const validationErrors: string[] = [];
     const nameRegex = /^[A-Za-z]+$/;
-    const phoneRegex = /^\+?[0-9]{7,15}$/;  // Allows optional +, and 7 to 15 digits
+    const phoneRegex = /^(?:\+)?(?=(?:.*\d){7,15}$)[\d\s\-()]+$/;
   
     if (!firstName) {
       validationErrors.push('First name is required');
