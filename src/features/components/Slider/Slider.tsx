@@ -59,6 +59,12 @@ const loadOptions = async (search: string, page: number) => {
        };
 };
 
+const heroImages = [
+  "/images/home/mountainhero.jpg",
+  "/images/home/riverhero.jpg",
+  "/images/home/sandhero.jpg",
+];
+
 const defaultAdditional = { page: 1 };
 
 const loadPageOptions = async (q: string, loadedOptions: DestinationType[], additional = defaultAdditional) => {
@@ -93,6 +99,14 @@ const DestinationSearch = () => {
                      key: "selection",
               },
        ]);
+
+       const [slideIdx, setSlideIdx] = useState<number>(0);
+
+       useEffect(() => {
+              heroImages.forEach((src) => { const img = new Image(); img.src = src; });
+              const t = setInterval(() => setSlideIdx((p) => (p + 1) % heroImages.length), 6000);
+              return () => clearInterval(t);
+       }, []);
 
        const [guest, setGuest] = useState<GuestType>({
               adult: 0,
@@ -157,22 +171,19 @@ const DestinationSearch = () => {
        min.setDate(today.getDate()+3)
        return (
               <>
-                     <div
-                            className="slider-block style-one relative h-[620px]"
-                            data-testid="slider">
-                            <div className="bg-img absolute top-0 left-0 w-full h-full">
-                                   <img
-                                          src={"/images/slider/hotel-lobby-2024-12-05-23-25-27-utc.jpg"}
-                                          width={5000}
-                                          height={3000}
-                                          alt="slider"
-                                          className="w-full h-full object-cover"
-                                          style={{
-                                                 filter: "brightness(0.5)",
-                                                 WebkitFilter: "brightness(0.5)",
-                                                 position: "relative",
-                                          }}
-                                   />
+                     <div className="slider-block style-one relative h-[620px]" data-testid="slider">
+                            <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
+                                   {heroImages.map((src, i) => (
+                                          <img
+                                          key={src}
+                                          src={src}
+                                          alt={`Slide ${i + 1}`}
+                                          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
+                                                 i === slideIdx ? "opacity-100" : "opacity-0"
+                                          }`}
+                                          style={{ filter: "brightness(0.5)" }}
+                                          />
+                                   ))}
                             </div>
                             <div className="container py-[176px]">
                                    <div className="content w-full relative">
