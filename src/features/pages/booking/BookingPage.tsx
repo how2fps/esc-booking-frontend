@@ -25,7 +25,7 @@ const BookingPage = () => {
   const [adults] = useState(state.adults || 0);
   const [children] = useState(state.children || 0);
   
-
+  const [userId, setUserId] = useState<number | null>(null);
 
   // Editable user info
   const [firstName, setFirstName] = useState('');
@@ -45,6 +45,7 @@ const BookingPage = () => {
       })
       .then((data) => {
         const user = data.data;
+        setUserId(user.id);
         const [first, ...rest] = (user.name || '').split(' ');
         setFirstName(first || '');
         setLastName(rest.join(' ') || '');
@@ -52,7 +53,7 @@ const BookingPage = () => {
         setEmail(user.email || '');
         setLoading(false);
       })
-      .catch((err) => {
+      .catch((_err) => {
         console.log('Not logged in, redirecting...');
         navigate('/login', { replace: true });
       });
@@ -105,6 +106,7 @@ const BookingPage = () => {
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
           body: JSON.stringify({
+            user_id: userId,
             hotelName: selectedHotel,
             roomType,
             numberOfNights: calculateNights(),
