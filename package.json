@@ -4,7 +4,7 @@
        "version": "0.0.0",
        "type": "module",
        "scripts": {
-                   "start": "vite",
+              "start": "serve -s dist -l tcp://0.0.0.0:8080",
               "dev": "vite --host 0.0.0.0",
               "build": "tsc -b && vite build",
               "lint": "eslint .",
@@ -39,6 +39,7 @@
               "react-select-async-paginate": "^0.7.11",
               "react-slick": "^0.30.3",
               "react-sticky-box": "^2.0.5",
+              "serve": "^14.2.4",
               "slick-carousel": "^1.8.1",
               "stripe": "^18.3.0",
               "swiper": "^11.2.10"

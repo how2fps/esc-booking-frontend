@@ -6,8 +6,10 @@
     # Set the working directory inside the container
     WORKDIR /usr/src/app
     # Copy package.json and package-lock.json to install dependencies
-    COPY . ./
+    COPY . .
     # Install dependencies
     RUN npm i
+    EXPOSE 8080
+    RUN npm run build
     CMD ["npm", "run", "start"]
 
