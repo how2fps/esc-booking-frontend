@@ -35,7 +35,7 @@ const BookingPage = () => {
   const [errors, setErrors] = useState<string[]>([]);
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/users/session', {
+    fetch('http://18.138.130.229:3000/api/users/session', {
       credentials: 'include',
     })
       .then((res) => {
@@ -97,7 +97,7 @@ const BookingPage = () => {
   
     if (validationErrors.length === 0) {
       try {
-        const response = await fetch('http://localhost:3000/api/bookings', {
+        const response = await fetch('http://18.138.130.229:3000/api/bookings', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',

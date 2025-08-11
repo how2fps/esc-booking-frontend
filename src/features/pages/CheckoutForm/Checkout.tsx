@@ -9,7 +9,12 @@ import {
 } from '@stripe/react-stripe-js';
 
 // Initialize Stripe outside of the component
-const stripePromise = loadStripe("pk_test_51RlnqCFyaklkAMXyrYjEB341JN4tJG4fVRI7XqqQ1I0vPj1EJSF4JmQiXcFENNFnPazI53KrTSwftVmpplyOCXP300U4RheZ2p");
+const apiKey:string = process.env.STRIPE as string;
+if (!apiKey) {
+    throw new Error(`Environment variable API KEY is not set`);
+  }
+
+const stripePromise = loadStripe(apiKey);
 
 const CheckoutForm = () => {
   // 2. Add state to hold the client secret
@@ -27,7 +32,7 @@ const CheckoutForm = () => {
     if (bookingId) {
       console.log(`Fetching payment details for booking ID: ${bookingId}`);
       
-      fetch("http://localhost:3000/api/stripe/create-checkout-session", {
+      fetch("http://18.138.130.229:3000/api/stripe/create-checkout-session", {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',

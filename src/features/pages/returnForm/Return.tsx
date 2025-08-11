@@ -69,7 +69,7 @@ const ReturnForm = () => {
     const urlParams = new URLSearchParams(queryString);
     const sessionId = urlParams.get('session_id');
 
-    fetch(`http://localhost:3000/api/stripe/session-status?session_id=${sessionId}`)
+    fetch(`http://18.138.130.229:3000/api/stripe/session-status?session_id=${sessionId}`)
       .then((res) => res.json())
       .then((data) => {
         setStatus(data.status);

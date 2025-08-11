@@ -151,7 +151,7 @@ const HotelListings = () => {
               const fetchHotelsByDestination = async () => {
                      setIsLoading(true);
                      try {
-                            const response = await fetch(`http://localhost:3000/api/hotels?destination_id=${destinationId}`, {
+                            const response = await fetch(`http://18.138.130.229:3000/api/hotels?destination_id=${destinationId}`, {
                                    method: "GET",
                                    headers: {
                                           "Content-Type": "application/json",
@@ -191,7 +191,7 @@ const HotelListings = () => {
                             const numberOfGuests = numberOfAdults && numberOfChildren ? +numberOfAdults + +numberOfChildren : 0;
                             const guestQueryString = getGuestsQueryString(numberOfGuests, Number(numberOfRooms));
                             while (isActive && retries < maxRetries) {
-                                   const res = await fetch(`http://localhost:3000/api/hotels/prices?destination_id=${destinationId}&checkin=${formattedCheckinDate}&checkout=${formattedCheckoutDate}&lang=en_US&currency=SGD&country_code=SG&guests=${guestQueryString}&partner_id=${1089}&landing_page=wl-acme-earn&product_type=earn`);
+                                   const res = await fetch(`http://18.138.130.229:3000/api/hotels/prices?destination_id=${destinationId}&checkin=${formattedCheckinDate}&checkout=${formattedCheckoutDate}&lang=en_US&currency=SGD&country_code=SG&guests=${guestQueryString}&partner_id=${1089}&landing_page=wl-acme-earn&product_type=earn`);
                                    const data = await res.json();
                                    if (data.completed && data.hotels) {
                                           const priceMap = new Map<string, HotelPrice>();

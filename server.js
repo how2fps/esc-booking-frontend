@@ -3,10 +3,16 @@ import express from 'express';
 import cors from 'cors';
 const app = express();
 app.use(cors());
-const stripe = new Stripe('sk_test_51RlnqCFyaklkAMXy3bGjZAbtqwV5YTo1XMzIOv6UBE4zyixDyJx7zM0L1zUDMuw3LSV5K4d14RmmMdVfZ0URPMbT00DeV4VJS3');
+
+const apiKey = process.env.STRIPE_KEY ;
+if (!apiKey) {
+    throw new Error(`Environment variable API KEY is not set`);
+  }
+
+const stripe = new Stripe(apiKey);
 app.use(express.static('public'));
 
-const YOUR_DOMAIN = 'http://127.0.0.1:5173';
+const YOUR_DOMAIN = 'http://54.255.23.219:8080?';
 
 app.post('/create-checkout-session', async (req, res) => {
   const session = await stripe.checkout.sessions.create({

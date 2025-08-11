@@ -47,9 +47,9 @@ const loadOptions = async (search: string, page: number) => {
                      hasMore: false,
               };
        }
-       const response = await fetch("http://localhost:3000/api/search/" + search);
+       const response = await fetch("http://18.138.130.229:3000/api/search/" + search);
        const data = await response.json();
-       console.log(data);
+       //console.log(data);
        
        const hasMore = Math.ceil(data.length / optionsPerPage) > page;
 
@@ -78,6 +78,9 @@ const loadPageOptions = async (
   };
 };
 const DestinationSearch = () => {
+       const today =new Date()
+       const min = new Date()
+       min.setDate(today.getDate()+3)
        const [openDate, setOpenDate] = useState(false);
        const [openGuest, setOpenGuest] = useState(false);
        const [location, setLocation] = useState<DestinationType | null>(null);
@@ -85,8 +88,8 @@ const DestinationSearch = () => {
 
        const [state, setState] = useState([
               {
-                     startDate: new Date(),
-                     endDate: addDays(new Date(), 7),
+                     startDate: new Date(min),
+                     endDate: addDays(new Date(min), 7),
                      key: "selection",
               },
        ]);
@@ -159,9 +162,7 @@ const DestinationSearch = () => {
                      }));
               }
        };
-       const today =new Date()
-       const min = new Date()
-       min.setDate(today.getDate()+3)
+
        return (
               <>
                      <div
@@ -193,7 +194,8 @@ const DestinationSearch = () => {
                                                                className="select-block lg:w-full md:w-[48%] w-full"
                                                                data-testid="async-select">
                                                                <AsyncPaginate
-                                                                      debounceTimeout={100}
+                                                                      debounceTimeout={300}
+                                                                      loadOptionsOnMenuOpen={false} 
                                                                       additional={{ page: 1 }}
                                                                       loadOptions={loadPageOptions}
                                                                       getOptionLabel={(i: DestinationType) => i.term}
@@ -231,6 +233,7 @@ const DestinationSearch = () => {
                                                                       onChange={(item) => setState([item.selection] as any)}
                                                                       staticRanges={[]}
                                                                       inputRanges={[]}
+                                                                  
                                                                       moveRangeOnFirstSelection={false}
                                                                       months={2}
                                                                       ranges={state}

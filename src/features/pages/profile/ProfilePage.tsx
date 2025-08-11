@@ -17,7 +17,7 @@ const ProfilePage: React.FC = () => {
 
   useEffect(() => {
     const fetchSession = async () => {
-      const res = await fetch('http://localhost:3000/api/users/session', { credentials: 'include' });
+      const res = await fetch('http://18.138.130.229:3000/api/users/session', { credentials: 'include' });
       const data = await res.json();
       if (data.success) {
         setUser({ name: data.data.name, email: data.data.email, phone_number: data.data.phone_number || '' });
@@ -54,7 +54,7 @@ const ProfilePage: React.FC = () => {
     setMessage(null);
     setError(null);
     try {
-      const res = await fetch('http://localhost:3000/api/users/profile', {
+      const res = await fetch('http://18.138.130.229:3000/api/users/profile', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -168,7 +168,7 @@ const ProfilePage: React.FC = () => {
                   <button
                     className="button-main w-full text-center mt-4"
                     onClick={async () => {
-                      await fetch('http://localhost:3000/api/users/logout', {
+                      await fetch('http://18.138.130.229:3000/api/users/logout', {
                         method: 'POST',
                         credentials: 'include',
                       });
@@ -203,7 +203,7 @@ export default ProfilePage;
 //   useEffect(() => {
 //     const fetchUser = async () => {
 //       // 1. Get session to find user ID
-//       const sessionRes = await fetch('http://localhost:3000/api/users/session', { credentials: 'include' });
+//       const sessionRes = await fetch('http://18.138.130.229:3000/api/users/session', { credentials: 'include' });
 //       const sessionData = await sessionRes.json();
 //       if (!sessionData.success || !sessionData.data?.id) {
 //         navigate('/login');
@@ -212,7 +212,7 @@ export default ProfilePage;
 //       const userId = sessionData.data.id;
 
 //       // 2. Get user details by ID
-//       const userRes = await fetch(`http://localhost:3000/api/users/${userId}`, { credentials: 'include' });
+//       const userRes = await fetch(`http://18.138.130.229:3000/api/users/${userId}`, { credentials: 'include' });
 //       const userData = await userRes.json();
 //       if (userData.success && userData.data && userData.data.length > 0) {
 //         setUser(userData.data[0]);
