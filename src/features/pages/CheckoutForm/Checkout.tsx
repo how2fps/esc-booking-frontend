@@ -9,9 +9,10 @@ import {
 } from '@stripe/react-stripe-js';
 
 // Initialize Stripe outside of the component
+console.log('STRIPE env var:', process.env.STRIPE);
 const apiKey:string = process.env.STRIPE as string;
 if (!apiKey) {
-    throw new Error(`Environment variable API KEY is not set`);
+    throw new Error(`Environment variable STRIPE is not set`);
   }
 
 const stripePromise = loadStripe(apiKey);
