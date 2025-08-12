@@ -23,7 +23,6 @@ const makeFetchSequence = (...responses: Resp[]) => {
 
 // Default stub for tests that only need the session call
 beforeEach(() => {
-  // @ts-expect-error override for tests
   global.fetch = async () => new Response(JSON.stringify(sessionOk), { status: 200 });
 });
 
@@ -67,7 +66,7 @@ describe("Profile Page", () => {
 
   it("updates name successfully and exits edit mode", async () => {
     // Session, then PUT success
-    // @ts-expect-error override for test
+   
     global.fetch = makeFetchSequence(
       { body: sessionOk, status: 200 },
       { body: { success: true }, status: 200 }
@@ -90,7 +89,7 @@ describe("Profile Page", () => {
 
   it("shows error and stays in edit mode if update fails", async () => {
     // Session, then PUT failure
-    // @ts-expect-error override for test
+  
     global.fetch = makeFetchSequence(
       { body: sessionOk, status: 200 },
       { body: { success: false, message: "Failed to update profile." }, status: 400 }
@@ -132,7 +131,7 @@ describe("Profile Page", () => {
 
   it("deletes successfully and navigates to /login", async () => {
     // Session, then DELETE success
-    // @ts-expect-error override for test
+
     global.fetch = makeFetchSequence(
       { body: sessionOk, status: 200 },
       { body: { success: true }, status: 200 }
@@ -161,7 +160,7 @@ describe("Profile Page", () => {
 
   it("shows server error when delete fails", async () => {
     // Session, then DELETE failure
-    // @ts-expect-error override for test
+
     global.fetch = makeFetchSequence(
       { body: sessionOk, status: 200 },
       { body: { success: false, message: "Failed to delete account." }, status: 400 }

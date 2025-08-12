@@ -349,10 +349,9 @@ const HotelListings = () => {
                                                                <HotelItem
                                                                       key={hotel.id}
                                                                       hotelData={hotel}
-                                                                      destination_id ={destinationId}
+                                                                      destination_id ={destinationId as string}
                                                                       dateRange={formattedDateString}
-                                                                      checkIn={checkIn}
-                                                                      checkOut={checkOut}
+                                                                   
                                                                />
                                                         ))
                                                  ) : (

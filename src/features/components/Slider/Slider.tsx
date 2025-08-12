@@ -286,7 +286,7 @@ const DestinationSearch = () => {
                                                                                     <div
                                                                                            className="plus w-8 h-8 flex items-center justify-center rounded-full border border-outline cursor-pointer duration-300 hover:bg-black hover:text-white"
                                                                                            onClick={() => increaseGuest("adult")}>
-                                                                                           <Icon.Plus weight="bold" />
+                                                                                           <Icon.Plus weight="bold"  data-testid ="adult-plus"/>
                                                                                     </div>
                                                                              </div>
                                                                       </div>
