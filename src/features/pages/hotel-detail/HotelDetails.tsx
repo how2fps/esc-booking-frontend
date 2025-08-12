@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useMemo,  useCallback } from 'react'
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { useParams, Link } from "react-router-dom";
 import { useSearchParams } from 'react-router-dom';
 import * as Icon from 'phosphor-react'
@@ -23,17 +23,47 @@ const HotelDetailContent = () => {
     const { id } = useParams();  
     const [searchParams] = useSearchParams();
     const destination_id = searchParams.get('destination_id');
-    const checkIn = searchParams.get('checkIn');
-    const checkOut = searchParams.get('checkOut');
+    
+    // Handle date parameters - check both parameter formats
+    const startDateParam = searchParams.get('startDate') || searchParams.get('checkin');
+    const endDateParam = searchParams.get('endDate') || searchParams.get('checkout');
+    
+    const formatDate = (dateString: string): string => {
+        // If already in YYYY-MM-DD format, return as is
+        if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+            return dateString;
+        }
+        
+        // Parse other date formats
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+    
+    const checkIn = startDateParam ? formatDate(startDateParam) : null;
+    const checkOut = endDateParam ? formatDate(endDateParam) : null;
     
     // Debug logging
     console.log('=== HOTEL DETAILS COMPONENT MOUNT ===');
     console.log('URL params:', { id });
     console.log('Search params:', { 
         destination_id, 
-        checkIn, 
-        checkOut,
+        startDate: searchParams.get('startDate'),
+        endDate: searchParams.get('endDate'),
+        checkin: searchParams.get('checkin'),
+        checkout: searchParams.get('checkout'),
+        resolvedStartDate: startDateParam,
+        resolvedEndDate: endDateParam,
+        formattedCheckIn: checkIn,
+        formattedCheckOut: checkOut,
         allParams: Object.fromEntries(searchParams.entries())
+    });
+    console.log('Parsed dates:', {
+        checkInDate: checkIn ? new Date(checkIn) : null,
+        checkOutDate: checkOut ? new Date(checkOut) : null,
+        areSame: checkIn && checkOut ? new Date(checkIn).getTime() === new Date(checkOut).getTime() : false
     });
     
     const [viewMoreDesc, setViewMoreDesc] = useState<boolean>(false)
@@ -49,27 +79,88 @@ const HotelDetailContent = () => {
         children: 0
     });
     
-    const [state, setState] = useState([
-        {
-            startDate: checkIn ? new Date(checkIn) : new Date(),
-            endDate: checkOut ? new Date(checkOut) : addDays(new Date(), 1),
-            key: 'selection'
+    // Ref to track active polling
+    const pollingActiveRef = useRef<boolean>(false);
+    
+    const [state, setState] = useState(() => {
+        const startDate = checkIn ? new Date(checkIn) : new Date();
+        let endDate;
+        
+        if (checkOut) {
+            const parsedEndDate = new Date(checkOut);
+            // Ensure checkout is at least 1 day after checkin
+            if (parsedEndDate <= startDate) {
+                endDate = addDays(startDate, 1);
+            } else {
+                endDate = parsedEndDate;
+            }
+        } else {
+            endDate = addDays(startDate, 1);
         }
-    ]);
+        
+        return [{
+            startDate,
+            endDate,
+            key: 'selection'
+        }];
+    });
 
     const currentCheckIn = useMemo(() => {
-        return state[0].startDate.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+        const date = state[0].startDate;
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     }, [state]);
 
     const currentCheckOut = useMemo(() => {
-        return state[0].endDate.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+        const date = state[0].endDate;
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     }, [state]);
 
     const currentGuests = useMemo(() => {
         return guest.adult + guest.children;
     }, [guest]);
 
-    const [mainImage, setMainImage] = useState<string | null>(null)
+    // Helper function to get alternative image URLs
+    const getImageFallbacks = useCallback((originalUrl: string, index: number) => {
+        if (!hotelDetails?.image_details?.prefix) return [];
+        
+        const prefix = hotelDetails.image_details.prefix;
+        const suffix = hotelDetails.image_details.suffix || '.jpg';
+        const imgixUrl = hotelDetails.imgix_url;
+        const cloudflareUrl = hotelDetails.cloudflare_image_url;
+        
+        const fallbacks: string[] = [];
+        
+        // Since we're now using 1-based indexing, the actual image index would be index + 1
+        const actualImageIndex = index + 1;
+        
+        // Try different indexing patterns around the actual index
+        const indexPatterns = [
+            actualImageIndex - 1,  // 0-based equivalent
+            actualImageIndex,      // 1-based (current)
+            actualImageIndex + 1,  // In case we're off by one
+        ].filter(i => i >= 0); // Remove negative indices
+        
+        // Generate different URL patterns
+        for (const i of indexPatterns) {
+            const candidateUrl = `${prefix}${i}${suffix}`;
+            if (candidateUrl !== originalUrl && !fallbacks.includes(candidateUrl)) {
+                fallbacks.push(candidateUrl);
+            }
+        }
+        
+        console.log(`Generated ${fallbacks.length} fallbacks for array index ${index} (image ${actualImageIndex}):`, fallbacks);
+        return fallbacks.slice(0, 2); // Limit to 2 fallbacks to prevent infinite loops
+    }, [hotelDetails?.image_details, hotelDetails?.imgix_url, hotelDetails?.cloudflare_image_url]);
+
+    const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
+    const [imageRetryAttempts, setImageRetryAttempts] = useState<Map<string, number>>(new Map());
+    const [mainImage, setMainImage] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchHotelDetails = async () => {
@@ -77,34 +168,55 @@ const HotelDetailContent = () => {
             console.log('=== HOTEL DETAILS FETCH ===');
             console.log('Hotel ID:', id);
             
-            try {
-                const response = await fetch(`http://localhost:3000/api/hotels/${id}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                    }
-                });
-                
-                console.log('Hotel API Response status:', response.status);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const hotelResult: Hotel = await response.json();
-                console.log('Hotel data received:', hotelResult);
-                setHotelDetails(hotelResult);
-            } catch (error: unknown) {
-                if (error instanceof Error) {
-                    console.error("Hotel fetch error details:", {
-                        name: error.name,
-                        message: error.message,
-                        stack: error.stack,
+            let retries = 0;
+            const maxRetries = 3; // Limit to 3 attempts
+            const delay = 1500; // 1.5 seconds between retries
+            
+            while (retries < maxRetries) {
+                try {
+                    console.log(`Hotel fetch attempt ${retries + 1}/${maxRetries}`);
+                    
+                    const response = await fetch(`http://localhost:3000/api/hotels/${id}`, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                        }
                     });
+                    
+                    console.log('Hotel API Response status:', response.status);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const hotelResult: Hotel = await response.json();
+                    console.log('Hotel data received:', hotelResult);
+                    setHotelDetails(hotelResult);
+                    setHotelLoading(false);
+                    return; // Success, exit the function
+                    
+                } catch (error: unknown) {
+                    console.error(`Hotel fetch attempt ${retries + 1} failed:`, error);
+                    retries++;
+                    
+                    if (retries >= maxRetries) {
+                        // Final attempt failed
+                        if (error instanceof Error) {
+                            console.error("Hotel fetch error details:", {
+                                name: error.name,
+                                message: error.message,
+                                stack: error.stack,
+                            });
+                        }
+                        console.error("Something went wrong while loading hotels. Please try again later.");
+                        setHotelLoading(false);
+                        break;
+                    } else {
+                        // Wait before retrying
+                        console.log(`Retrying hotel fetch in ${delay}ms...`);
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                    }
                 }
-                console.error("Something went wrong while loading hotels. Please try again later.");
-            } finally {
-                setHotelLoading(false);
             }
         };
         
@@ -126,49 +238,111 @@ const HotelDetailContent = () => {
                 return;
             }
 
+            // Validate dates
+            if (currentCheckIn === currentCheckOut) {
+                console.error('❌ Invalid dates: Check-in and check-out cannot be the same day');
+                console.error('Current dates:', { currentCheckIn, currentCheckOut });
+                return;
+            }
+
+            // Don't start new polling if already active or if we already have room data
+            if (pollingActiveRef.current || (roomDetails.length > 0 && !roomsLoading)) {
+                console.log('Polling already active or room data already loaded, skipping fetch');
+                return;
+            }
+
+            pollingActiveRef.current = true;
             setRoomsLoading(true);
 
-            try {
+            // Create abort controller for cleanup
+            const abortController = new AbortController();
+            let isActive = true;
+            
+            const pollRoomData = async () => {
+                let retries = 0;
+                const maxRetries = 3; // Limit to 3 attempts
+                const delay = 1500; // 1.5 seconds between retries
+
                 const apiUrl = `http://localhost:3000/api/hotels/${id}/prices?destination_id=${destination_id}&checkin=${currentCheckIn}&checkout=${currentCheckOut}&lang=en_US&currency=SGD&country_code=SG&guests=${currentGuests}&partner_id=1089&landing_page=wl-acme-earn&product_type=earn`;
                 console.log('Room API URL:', apiUrl);
-                
-                const response = await fetch(apiUrl, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                }
-            });
 
-            console.log('Room API Response status:', response.status);
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            const roomResult = await response.json();
-            console.log('Room data received:', roomResult);
-            
-            if (roomResult.rooms && Array.isArray(roomResult.rooms)) {
-                // Limit rooms for performance
-                setRoomDetails(roomResult.rooms.slice(0, 20));
-                console.log('Set room details:', roomResult.rooms.length, 'rooms');
-            } else {
-                console.warn('No rooms found in API response:', roomResult);
-                setRoomDetails([]);
-            }
-            } catch (error: unknown) {
-                if (error instanceof Error) {
-                        console.error("Room fetch error details:", {
-                                name: error.name,
-                                message: error.message,
-                                stack: error.stack,
+                while (isActive && retries < maxRetries && !abortController.signal.aborted) {
+                    try {
+                        console.log(`Room polling attempt ${retries + 1}/${maxRetries}`);
+                        
+                        const response = await fetch(apiUrl, {
+                            method: "GET",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            signal: abortController.signal
                         });
+
+                        console.log('Room API Response status:', response.status);
+
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        
+                        const roomResult = await response.json();
+                        console.log('Room polling response:', {
+                            completed: roomResult.completed,
+                            hasRooms: roomResult.rooms?.length > 0,
+                            totalRooms: roomResult.rooms?.length || 0
+                        });
+                        
+                        // Check if the API has completed processing and has rooms
+                        if (roomResult.completed && roomResult.rooms && Array.isArray(roomResult.rooms)) {
+                            console.log('✅ Room data completed! Processing...');
+                            // Limit rooms for performance
+                            setRoomDetails(roomResult.rooms.slice(0, 20));
+                            console.log('Set room details:', roomResult.rooms.length, 'rooms');
+                            setRoomsLoading(false);
+                            pollingActiveRef.current = false; // Reset polling flag
+                            isActive = false; // Stop the polling loop
+                            break; // Exit the while loop
+                        } else {
+                            console.log(`⏳ Room data not ready yet (attempt ${retries + 1}), retrying in ${delay}ms...`);
+                            console.log('Response status:', {
+                                completed: roomResult.completed,
+                                hasRoomsArray: Array.isArray(roomResult.rooms),
+                                roomsLength: roomResult.rooms?.length
+                            });
+                        }
+                        
+                    } catch (error: unknown) {
+                        if (error instanceof Error && error.name === 'AbortError') {
+                            console.log('Room polling aborted');
+                            break;
+                        }
+                        console.error(`Room polling attempt ${retries + 1} failed:`, error);
+                    }
+                    
+                    retries++;
+                    if (retries < maxRetries && isActive && !abortController.signal.aborted) {
+                        await new Promise((resolve) => {
+                            setTimeout(resolve, delay);
+                        });
+                    }
                 }
-                console.error("Something went wrong while loading rooms. Please try again later.");
-                setRoomDetails([]);
-            } finally {
-            setRoomsLoading(false); 
-            }
+                
+                // If we've exhausted all retries
+                if (retries >= maxRetries && isActive && !abortController.signal.aborted) {
+                    console.error('❌ Room data polling timed out after', maxRetries, 'attempts');
+                    setRoomDetails([]);
+                    setRoomsLoading(false);
+                    pollingActiveRef.current = false; // Reset polling flag
+                }
+            };
+
+            pollRoomData();
+            
+            // Cleanup function
+            return () => {
+                isActive = false;
+                pollingActiveRef.current = false; // Reset polling flag
+                abortController.abort(); // Abort any ongoing requests
+            };
         };
         
         // Only fetch if we have required parameters
@@ -179,29 +353,65 @@ const HotelDetailContent = () => {
         }
     }, [destination_id, currentCheckIn, currentCheckOut, id, currentGuests]);
 
-    // Image handling logic - optimized
+    // Cleanup effect to reset polling when component unmounts
+    useEffect(() => {
+        return () => {
+            pollingActiveRef.current = false;
+        };
+    }, []);
+
+    // Image handling logic - try both indexing patterns
     const image_array = useMemo(() => {
-        if (!hotelDetails?.image_details) return ['/assets/Placeholder_Cat.png'];
+        if (!hotelDetails?.image_details?.prefix) {
+            console.log('No image prefix available');
+            return [];
+        }
         
-        const prefix = hotelDetails?.image_details?.prefix || '';
-        const count = Math.min(hotelDetails?.image_details?.count || 0, 10); // Limit to 10 images
-        const suffix = hotelDetails?.image_details?.suffix || '.jpg';
+        const imageDetails = hotelDetails.image_details;
+        const prefix = imageDetails.prefix;
+        const count = Math.min(imageDetails.count || 0, 8); // Limit to 8 images to reduce failed attempts
+        const suffix = imageDetails.suffix || '.jpg';
         const images: string[] = [];
 
-        for (let i = 0; i < count; i++) {
-            images.push(`${prefix}${i}${suffix}`);
+        console.log('Generating image array:', { prefix, count, suffix });
+
+        // Try both 0-based and 1-based indexing, but start with what's more likely to work
+        // Based on your API showing default_image_index: 1, let's start with 1-based
+        for (let i = 1; i <= count; i++) {
+            const imageUrl = `${prefix}${i}${suffix}`;
+            images.push(imageUrl);
         }
     
-        return images.length > 0 ? images : ['/assets/Placeholder_Cat.png'];
-    }, [hotelDetails?.image_details]);
+        console.log('Generated images (1-based indexing):', images.slice(0, 3)); // Log first 3 for debugging
+        console.log('Available image URLs:', { 
+            imgixUrl: hotelDetails.imgix_url, 
+            cloudflareUrl: hotelDetails.cloudflare_image_url, 
+            prefix 
+        });
+        return images;
+    }, [hotelDetails?.image_details, hotelDetails?.imgix_url, hotelDetails?.cloudflare_image_url]);
 
-    // Set main image immediately without validation
+    // Set main image with fallback logic
     useEffect(() => {
-        if (image_array.length > 0 && image_array[0] !== '/assets/Placeholder_Cat.png') {
-            const defaultIndex = hotelDetails?.default_image_index || 0;
-            const safeIndex = Math.min(defaultIndex, image_array.length - 1);
-            setMainImage(image_array[safeIndex] || image_array[0]);
+        if (image_array.length > 0) {
+            // Use the default_image_index from API (1-based) directly since our array is now 1-based
+            const defaultIndex = hotelDetails?.default_image_index || 1;
+            
+            // Since our array now uses 1-based indexing and API default_image_index is 1-based,
+            // we can use direct mapping
+            const arrayIndex = Math.max(0, Math.min(defaultIndex - 1, image_array.length - 1));
+            const selectedImage = image_array[arrayIndex];
+            
+            console.log('Setting main image:', { 
+                defaultIndex, 
+                arrayIndex, 
+                selectedImage,
+                totalImages: image_array.length 
+            });
+            
+            setMainImage(selectedImage);
         } else {
+            console.log('No images available, using placeholder');
             setMainImage('/assets/Placeholder_Cat.jpg');
         }
     }, [image_array, hotelDetails?.default_image_index]);
@@ -303,38 +513,103 @@ const HotelDetailContent = () => {
                         className="aspect-[2/3] w-full h-[500px] max-w-full mx-auto overflow-hidden rounded-xl shadow-lg bg-gray-100 flex items-center justify-center"
                         style={{ maxWidth: '100%' }}
                     >
-                        <img
-                            src={mainImage || "/assets/Placeholder_Cat.jpg"}
-                            alt="Main Hotel View"
-                            className="w-full h-full object-cover rounded-xl"
-                            style={{ width: '100%', height: '100%' }}
-                            onError={(e) => {
-                                e.currentTarget.src = "/assets/Placeholder_Cat.jpg";
-                            }}
-                        />
+                        {mainImage ? (
+                            <img
+                                src={mainImage}
+                                alt="Main Hotel View"
+                                className="w-full h-full object-cover rounded-xl"
+                                style={{ width: '100%', height: '100%' }}
+                                onError={(e) => {
+                                    console.log('Main image failed to load:', mainImage);
+                                    const imageIndex = image_array.indexOf(mainImage);
+                                    const currentAttempts = imageRetryAttempts.get(mainImage) || 0;
+                                    const fallbacks = getImageFallbacks(mainImage, imageIndex);
+                                    
+                                    console.log(`Main image fallbacks available:`, fallbacks);
+                                    
+                                    // Safety check: limit total attempts
+                                    if (currentAttempts < fallbacks.length && currentAttempts < 3) {
+                                        // Try next fallback URL
+                                        const nextUrl = fallbacks[currentAttempts];
+                                        console.log(`Trying main image fallback ${currentAttempts + 1}:`, nextUrl);
+                                        e.currentTarget.src = nextUrl;
+                                        setImageRetryAttempts(prev => new Map(prev).set(mainImage, currentAttempts + 1));
+                                    } else {
+                                        // All fallbacks failed or max attempts reached, use placeholder
+                                        console.log('All main image fallbacks failed or max attempts reached for:', mainImage);
+                                        e.currentTarget.src = "/assets/Placeholder_Cat.jpg";
+                                        // Reset retry attempts
+                                        setImageRetryAttempts(prev => {
+                                            const newMap = new Map(prev);
+                                            newMap.delete(mainImage);
+                                            return newMap;
+                                        });
+                                    }
+                                }}
+                                onLoad={() => {
+                                    console.log('Main image loaded successfully:', mainImage);
+                                }}
+                            />
+                        ) : (
+                            <div className="flex flex-col items-center justify-center text-gray-500">
+                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-300 mb-4"></div>
+                                <span>Loading image...</span>
+                            </div>
+                        )}
                     </div>
                 </div>
 
                 {/* Thumbnail Grid */}
                 <div className="w-full mt-6">
-                    <div className="flex gap-3.5 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-                        {image_array.length > 0 && image_array[0] !== '/assets/Placeholder_Cat.png' ? (
-                            image_array.map((imageUrl: string, index: number) => (
-                                <div key={index} className="aspect-[16/11] min-w-[120px] w-[120px] flex-shrink-0">
-                                    <img
-                                        src={imageUrl}
-                                        alt={`Hotel Thumbnail ${index + 1}`}
-                                        className="w-full h-full rounded-xl shadow-md object-cover cursor-pointer transition-transform hover:scale-105"
-                                        onClick={() => setMainImage(imageUrl)}
-                                        onError={(e) => {
-                                            e.currentTarget.src = "/assets/Placeholder_Cat.jpg";
-                                        }}
-                                    />
-                                </div>
-                            ))
+                    <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                        {image_array.length > 0 && hotelDetails?.image_details?.prefix ? (
+                            image_array.map((imageUrl: string, index: number) => {
+                                const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+                                    const currentAttempts = imageRetryAttempts.get(imageUrl) || 0;
+                                    const fallbacks = getImageFallbacks(imageUrl, index);
+                                    
+                                    console.log(`Thumbnail image failed (attempt ${currentAttempts + 1}):`, imageUrl);
+                                    console.log(`Available fallbacks:`, fallbacks);
+                                    
+                                    // Safety check: limit total attempts to prevent infinite loops
+                                    if (currentAttempts < fallbacks.length && currentAttempts < 3) {
+                                        // Try next fallback URL
+                                        const nextUrl = fallbacks[currentAttempts];
+                                        console.log(`Trying fallback ${currentAttempts + 1}:`, nextUrl);
+                                        e.currentTarget.src = nextUrl;
+                                        setImageRetryAttempts(prev => new Map(prev).set(imageUrl, currentAttempts + 1));
+                                    } else {
+                                        // All fallbacks failed or max attempts reached, use placeholder
+                                        console.log('All fallbacks failed or max attempts reached for:', imageUrl);
+                                        e.currentTarget.src = "/assets/Placeholder_Cat.jpg";
+                                        setFailedImages(prev => new Set(prev).add(imageUrl));
+                                        // Reset retry attempts for this image
+                                        setImageRetryAttempts(prev => {
+                                            const newMap = new Map(prev);
+                                            newMap.delete(imageUrl);
+                                            return newMap;
+                                        });
+                                    }
+                                };
+
+                                return (
+                                    <div key={`thumb-${index}`} className="flex-shrink-0">
+                                        <div className="w-[120px] h-[80px] bg-gray-100 rounded-lg overflow-hidden">
+                                            <img
+                                                src={imageUrl}
+                                                alt={`Hotel Thumbnail ${index + 1}`}
+                                                className="w-full h-full object-cover cursor-pointer transition-transform hover:scale-105"
+                                                onClick={() => setMainImage(imageUrl)}
+                                                onError={handleImageError}
+                                                loading="lazy"
+                                            />
+                                        </div>
+                                    </div>
+                                );
+                            })
                         ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-xl p-4">
-                                <span className="text-gray-500">No images available</span>
+                            <div className="w-full h-20 flex items-center justify-center bg-gray-100 rounded-lg p-4">
+                                <span className="text-gray-500 text-sm">No images available</span>
                             </div>
                         )}
                     </div>
@@ -455,10 +730,10 @@ const HotelDetailContent = () => {
                                         <span>Loading rooms for selected dates...</span>
                                     </div>
                                 ) : roomDetails.length > 0 ? (
-                                    <div className="overflow-x-auto pb-4 mt-4">
-                                        <div className="flex gap-4" style={{ width: 'max-content' }}>
+                                    <div className="mt-4">
+                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                             {roomDetails.map((room, index) => (
-                                                <div key={room.key || index} className="room-card bg-white border border-gray-200 rounded-lg p-4 min-w-[300px] flex-shrink-0">
+                                                <div key={room.key || index} className="room-card bg-white border border-gray-200 rounded-lg p-4">
                                                     <div className="room-image mb-4">
                                                         <img
                                                             src={room.images?.find(img => img.hero_image)?.high_resolution_url || '/assets/Placeholder_Cat.jpg'}
@@ -470,7 +745,7 @@ const HotelDetailContent = () => {
                                                         />
                                                     </div>
                                                     <div className="room-details">
-                                                        <h3 className="text-lg font-semibold mb-2">
+                                                        <h3 className="text-lg font-semibold mb-4">
                                                             {room.roomNormalizedDescription}
                                                         </h3>
                                                         <div className="pricing-section">

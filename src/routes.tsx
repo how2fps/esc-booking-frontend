@@ -10,9 +10,6 @@ import Listings from "./features/pages/hotel-listings/HotelListingsPage";
 import Login from "./features/pages/login/LoginForm";
 import ProfilePage from "./features/pages/profile/ProfilePage";
 import SignupForm from "./features/pages/signup-form/SignupForm";
-import ProfilePage from "./features/pages/profile/ProfilePage";
-// import RoomDetails from "./features/pages/hotel-detail/RoomDetails";
-
 import ReturnForm from "./features/pages/returnForm/Return";
 
 const AppRoutes: React.FC = () => {

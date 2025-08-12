@@ -2,11 +2,23 @@
 
 import { BarbellIcon, ForkKnifeIcon, GarageIcon, MartiniIcon, StarHalfIcon, StarIcon, SwimmingPoolIcon, WashingMachineIcon } from "@phosphor-icons/react";
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import PlaceholderCat from "../../../assets/Placeholder_Cat.png";
 import type { Hotel } from "../../type/HotelType";
+
+// Format date helper function (same as in HotelListingsPage)
+function formatDate(dateString: string): string {
+       if (!dateString) {
+              const today = new Date();
+              const year = today.getFullYear();
+              const month = String(today.getMonth() + 1).padStart(2, '0');
+              const day = String(today.getDate()).padStart(2, '0');
+              return `${year}-${month}-${day}`;
+       }
+       return dateString;
+}
 
 const iconlist = {
        dryCleaning: <WashingMachineIcon />,
@@ -18,8 +30,13 @@ const iconlist = {
        inHouseBar: <MartiniIcon />,
 };
 
-const HotelItem: React.FC<{ hotelData: Hotel; destination_id: string; checkIn: string; checkOut: string; }> = ({ hotelData, destination_id, checkIn, checkOut }) => {
+const HotelItem: React.FC<{ hotelData: Hotel; dateRange: string; destination_id: string; }> = ({ hotelData, dateRange, destination_id }) => {
        const router = useNavigate();
+       const [searchParams] = useSearchParams();
+       
+       // Extract and format dates from URL parameters (same as HotelListingsPage)
+       const checkIn = formatDate(searchParams.get("startDate") as string);
+       const checkOut = formatDate(searchParams.get("endDate") as string);
        const prefix = hotelData.image_details?.prefix || "";
        const suffix = hotelData.image_details?.suffix || "";
        const imageCount = Math.min(hotelData.image_details?.count || 1);
@@ -69,10 +86,7 @@ const HotelItem: React.FC<{ hotelData: Hotel; destination_id: string; checkIn: s
        return (
               <div
                      role="listitem"
-                     className="hotel-item hover-scale animate-fadeIn opacity-0 animate-duration-300 animate-fill-forwards"
-                     onClick={() => {
-                            handleClickItem(hotelData.id);
-                     }}>
+                     className="hotel-item hover-scale animate-fadeIn opacity-0 animate-duration-300 animate-fill-forwards">
                      <div className="thumb-img relative">
                             {imageArray.length > 0 && !allImagesFailed ? (
                                    <Swiper
@@ -81,7 +95,15 @@ const HotelItem: React.FC<{ hotelData: Hotel; destination_id: string; checkIn: s
                                           }}
                                           loop={imageArray.length > 1}
                                           modules={[Pagination]}
-                                          className="mySwiper rounded-xl">
+                                          className="mySwiper rounded-xl"
+                                          slidesPerView={1}
+                                          spaceBetween={0}
+                                          allowTouchMove={true}
+                                          touchRatio={1}
+                                          touchAngle={45}
+                                          simulateTouch={true}
+                                          preventClicks={false}
+                                          preventClicksPropagation={true}>
                                           {imageArray.map((img, index) => (
                                                  <SwiperSlide
                                                         key={index}
@@ -122,7 +144,7 @@ const HotelItem: React.FC<{ hotelData: Hotel; destination_id: string; checkIn: s
                                    </div>
                             )}
                      </div>
-                     <div className="infor mt-4">
+                     <div className="infor mt-4" onClick={() => handleClickItem(hotelData.id)} style={{ cursor: 'pointer' }}>
                             <div className="flex items-center justify-between flex-wrap gap-2">
                                    <div className="flex items-center gap-1">
                                           {Object.entries(hotelData.amenities).map(([key, value]) =>

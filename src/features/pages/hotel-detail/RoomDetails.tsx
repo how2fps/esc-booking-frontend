@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useMemo,  useCallback } from 'react'
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useSearchParams } from 'react-router-dom';
 import * as Icon from 'phosphor-react'
@@ -40,6 +40,7 @@ const RoomDetailContent = () => {
     console.log('Current URL:', window.location.href);
     
     const [viewMoreDesc, setViewMoreDesc] = useState<boolean>(false)
+    const [viewMoreAmenities, setViewMoreAmenities] = useState<boolean>(false)
     const [hotelDetails, setHotelDetails] = useState<Hotel | null>(null);
     const [roomDetail, setRoomDetail] = useState<Room | null>(null);
     const [hotelLoading, setHotelLoading] = useState<boolean>(true);
@@ -48,6 +49,8 @@ const RoomDetailContent = () => {
     const [openGuest, setOpenGuest] = useState(false);
     const [selectedCurrency, setSelectedCurrency] = useState<'SGD' | 'USD'>('SGD');
     const [roomQuantity, setRoomQuantity] = useState<number>(1);
+    const [retryTrigger, setRetryTrigger] = useState<number>(0);
+    const [roomName, setRoomName] = useState<string>(''); // Store room name for error messages
 
     const [guest, setGuest] = useState<GuestType>({
         adult: 2,
@@ -74,7 +77,81 @@ const RoomDetailContent = () => {
         return guest.adult + guest.children;
     }, [guest]);
 
+    // Calculate number of nights
+    const numberOfNights = useMemo(() => {
+        const checkInDate = new Date(state[0].startDate);
+        const checkOutDate = new Date(state[0].endDate);
+        const timeDifference = checkOutDate.getTime() - checkInDate.getTime();
+        const nights = Math.ceil(timeDifference / (1000 * 3600 * 24));
+        return Math.max(1, nights); // Ensure at least 1 night
+    }, [state]);
+
+    // Price calculations using API values directly
+    const priceCalculations = useMemo(() => {
+        if (!roomDetail) return null;
+
+        // Get values directly from API response
+        const baseRateSGD = roomDetail.base_rate_in_currency || 0;
+        const baseRateUSD = roomDetail.base_rate || 0;
+        const taxesAndFeesSGD = roomDetail.included_taxes_and_fees_total_in_currency || 0;
+        const taxesAndFeesUSD = roomDetail.included_taxes_and_fees_total || 0;
+        const additionalFeesSGD = roomDetail.excluded_taxes_and_fees_total_in_currency || 0;
+        const additionalFeesUSD = roomDetail.excluded_taxes_and_fees_total || 0;
+
+        // Calculate per room per night prices (API already provides per-night rates)
+        const perRoomPerNightSGD = baseRateSGD + taxesAndFeesSGD + additionalFeesSGD;
+        const perRoomPerNightUSD = baseRateUSD + taxesAndFeesUSD + additionalFeesUSD;
+
+        return {
+            baseRateSGD,
+            baseRateUSD,
+            taxesAndFeesSGD,
+            taxesAndFeesUSD,
+            additionalFeesSGD,
+            additionalFeesUSD,
+            perRoomPerNightSGD,
+            perRoomPerNightUSD,
+            totalSGD: perRoomPerNightSGD * roomQuantity * numberOfNights,
+            totalUSD: perRoomPerNightUSD * roomQuantity * numberOfNights
+        };
+    }, [roomDetail, roomQuantity, numberOfNights]);
+
     const [mainImage, setMainImage] = useState<string | null>(null)
+
+    // Extract room name from room key for better error messages
+    useEffect(() => {
+        if (roomKey) {
+            try {
+                // Try to decode the room key and extract room name
+                const decodedKey = decodeURIComponent(roomKey);
+                
+                // Many room keys contain room name information
+                // Look for patterns like room names in the key
+                const roomNameMatch = decodedKey.match(/room[_-]?name[_-]?([^&|_-]+)/i) ||
+                                    decodedKey.match(/([A-Za-z\s]+(?:room|suite|king|queen|double|single|deluxe|standard|premium))/i) ||
+                                    decodedKey.match(/^([A-Za-z\s]+)/);
+                
+                if (roomNameMatch && roomNameMatch[1]) {
+                    const extractedName = roomNameMatch[1]
+                        .replace(/[_-]/g, ' ')
+                        .replace(/\s+/g, ' ')
+                        .trim();
+                    setRoomName(extractedName);
+                } else {
+                    // Fallback: use a cleaned version of the room key
+                    const cleanedKey = decodedKey
+                        .replace(/[^A-Za-z\s]/g, ' ')
+                        .replace(/\s+/g, ' ')
+                        .trim()
+                        .substring(0, 50); // Limit length
+                    setRoomName(cleanedKey || 'Unknown Room');
+                }
+            } catch (error) {
+                console.error('Error extracting room name from key:', error);
+                setRoomName('Unknown Room');
+            }
+        }
+    }, [roomKey]);
 
     useEffect(() => {
         const fetchHotelDetails = async () => {
@@ -112,156 +189,96 @@ const RoomDetailContent = () => {
 
     useEffect(() => {
         const fetchRoomDetails = async () => {
-            try {
-                setRoomLoading(true);
-                console.log('=== ROOM DETAILS FETCH DEBUG ===');
-                console.log('URL roomKey:', roomKey);
-                console.log('Hotel ID:', id);
-                console.log('Destination ID:', destination_id);
-                
-                if (!id || !roomKey || !destination_id) {
-                    console.warn('Missing required parameters:', { id, roomKey, destination_id });
-                    setRoomLoading(false);
-                    return;
-                }
+            // Reset states
+            setRoomLoading(true);
+            setRoomDetail(null);
+            
+            // Validate required parameters
+            if (!id || !roomKey || !destination_id) {
+                console.warn('Missing required parameters:', { id, roomKey, destination_id });
+                setRoomLoading(false);
+                return;
+            }
 
-                // Polling logic similar to HotelListings
-                let timeoutId: ReturnType<typeof setTimeout>;
-                let isActive = true;
-                
-                const pollRoomData = async () => {
-                    let retries = 0;
-                    const maxRetries = 40; // 40 retries * 2 seconds = 80 seconds max
-                    const delay = 2000; // 2 seconds between retries
+            console.log('=== ROOM DETAILS FETCH ===');
+            console.log('Parameters:', { id, roomKey, destination_id, currentCheckIn, currentCheckOut, currentGuests });
 
-                    const apiUrl = `http://localhost:3000/api/hotels/${id}/prices?destination_id=${destination_id}&checkin=${currentCheckIn}&checkout=${currentCheckOut}&lang=en_US&currency=SGD&country_code=SG&guests=${currentGuests}&partner_id=1089&landing_page=wl-acme-earn&product_type=earn`;
-                    console.log('Room API URL:', apiUrl);
+            const maxAttempts = 3;
+            const delayBetweenAttempts = 1500; // 1.5 seconds
+            
+            const apiUrl = `http://localhost:3000/api/hotels/${id}/prices?destination_id=${destination_id}&checkin=${currentCheckIn}&checkout=${currentCheckOut}&lang=en_US&currency=SGD&country_code=SG&guests=${currentGuests}&partner_id=1089&landing_page=wl-acme-earn&product_type=earn`;
 
-                    while (isActive && retries < maxRetries) {
-                        try {
-                            console.log(`Polling attempt ${retries + 1}/${maxRetries}`);
-                            
-                            const response = await fetch(apiUrl, {
-                                method: "GET",
-                                headers: {
-                                    "Content-Type": "application/json",
-                                }
-                            });
+            for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+                try {
+                    console.log(`🔄 Room data attempt ${attempt}/${maxAttempts}`);
+                    
+                    const response = await fetch(apiUrl, {
+                        method: "GET",
+                        headers: { "Content-Type": "application/json" }
+                    });
 
-                            console.log('Room API Response status:', response.status);
-
-                            if (!response.ok) {
-                                throw new Error(`HTTP error! status: ${response.status}`);
-                            }
-                            
-                            const roomResult = await response.json();
-                            console.log('Room polling response:', {
-                                completed: roomResult.completed,
-                                hasRooms: roomResult.rooms?.length > 0,
-                                totalRooms: roomResult.rooms?.length || 0
-                            });
-                            
-                            // Check if the API has completed processing and has rooms
-                            if (roomResult.completed && roomResult.rooms && Array.isArray(roomResult.rooms)) {
-                                console.log('✅ Room data completed! Processing...');
-                                
-                                // Log all available room keys for debugging
-                                const availableKeys = roomResult.rooms.map((room: Room) => room.key);
-                                console.log('Available room keys:', availableKeys);
-                                console.log('Looking for roomKey:', roomKey);
-                                
-                                // Find the specific room
-                                const specificRoom = roomResult.rooms.find((room: Room) => room.key === roomKey);
-                                
-                                if (specificRoom) {
-                                    console.log('✅ ROOM FOUND!');
-                                    console.log('Room details:', {
-                                        key: specificRoom.key,
-                                        description: specificRoom.roomNormalizedDescription,
-                                        price: specificRoom.converted_price,
-                                        availability: specificRoom.rooms_available
-                                    });
-                                    setRoomDetail(specificRoom);
-                                    setRoomLoading(false);
-                                    isActive = false; // Stop the polling loop
-                                    break; // Exit the while loop
-                                }
-                                
-                                console.log('❌ ROOM NOT FOUND in completed data');
-                                console.log('Exact comparison results:');
-                                roomResult.rooms.forEach((room: Room, index: number) => {
-                                    console.log(`Room ${index + 1}:`, {
-                                        key: room.key,
-                                        matches: room.key === roomKey,
-                                        keyLength: room.key?.length,
-                                        targetLength: roomKey?.length,
-                                        description: room.roomNormalizedDescription
-                                    });
-                                });
-                                
-                                // Try URL decoding as fallback
-                                const decodedRoomKey = decodeURIComponent(roomKey);
-                                console.log('Trying with decoded key:', decodedRoomKey);
-                                
-                                const decodedMatch = roomResult.rooms.find((room: Room) => room.key === decodedRoomKey);
-                                if (decodedMatch) {
-                                    console.log('✅ Found with decoded key');
-                                    setRoomDetail(decodedMatch);
-                                    setRoomLoading(false);
-                                    isActive = false; // Stop the polling loop
-                                    break; // Exit the while loop
-                                }
-                                
-                                console.log('❌ No match even with decoded key');
-                                setRoomDetail(null);
-                                setRoomLoading(false);
-                                isActive = false; // Stop the polling loop
-                                break; // Exit the while loop
-                            } else {
-                                console.log(`⏳ Room data not ready yet (attempt ${retries + 1}), retrying in ${delay}ms...`);
-                                console.log('Response status:', {
-                                    completed: roomResult.completed,
-                                    hasRoomsArray: Array.isArray(roomResult.rooms),
-                                    roomsLength: roomResult.rooms?.length
-                                });
-                            }
-                            
-                        } catch (error: unknown) {
-                            console.error(`Polling attempt ${retries + 1} failed:`, error);
-                        }
-                        
-                        retries++;
-                        if (retries < maxRetries && isActive) {
-                            await new Promise((resolve) => {
-                                timeoutId = setTimeout(resolve, delay);
-                            });
-                        }
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
                     }
                     
-                    // If we've exhausted all retries
-                    if (retries >= maxRetries && isActive) {
-                        console.error('❌ Room data polling timed out after', maxRetries, 'attempts');
-                        setRoomDetail(null);
-                        setRoomLoading(false);
+                    const roomResult = await response.json();
+                    
+                    // Check if the API has completed processing and has rooms
+                    if (roomResult.completed && roomResult.rooms && Array.isArray(roomResult.rooms)) {
+                        console.log(`✅ Room data completed on attempt ${attempt}`);
+                        
+                        // Find the specific room using both original and decoded keys
+                        let specificRoom = roomResult.rooms.find((room: Room) => room.key === roomKey);
+                        
+                        if (!specificRoom) {
+                            const decodedRoomKey = decodeURIComponent(roomKey);
+                            specificRoom = roomResult.rooms.find((room: Room) => room.key === decodedRoomKey);
+                        }
+                        
+                        if (specificRoom) {
+                            console.log('✅ Room found:', specificRoom.roomNormalizedDescription);
+                            setRoomDetail(specificRoom);
+                            // Update room name with the actual room name from API
+                            if (specificRoom.roomNormalizedDescription) {
+                                setRoomName(specificRoom.roomNormalizedDescription);
+                            }
+                            setRoomLoading(false);
+                            return; // Success - exit function
+                        } else {
+                            console.log('❌ Room not found in completed data');
+                            // Try to get room name from any room in the response for better error message
+                            const firstRoom = roomResult.rooms[0];
+                            if (firstRoom?.roomNormalizedDescription && !roomName) {
+                                // Use the first room's type as a reference if we haven't set a name yet
+                                setRoomName(`${firstRoom.roomNormalizedDescription} (or similar)`);
+                            }
+                            // If data is complete but room not found, no point in retrying
+                            setRoomDetail(null);
+                            setRoomLoading(false);
+                            return;
+                        }
+                    } else {
+                        console.log(`⏳ Attempt ${attempt}: Data not ready yet...`);
                     }
-                };
-
-                pollRoomData();
+                    
+                } catch (error: unknown) {
+                    console.error(`❌ Attempt ${attempt} failed:`, error);
+                }
                 
-                // Cleanup function
-                return () => {
-                    isActive = false;
-                    clearTimeout(timeoutId);
-                };
-            } catch (error: unknown) {
-                console.error("Room fetch setup error:", error);
-                setRoomDetail(null);
-                setRoomLoading(false);
+                // Wait before next attempt (except after last attempt)
+                if (attempt < maxAttempts) {
+                    await new Promise(resolve => setTimeout(resolve, delayBetweenAttempts));
+                }
             }
+            
+            // All attempts failed
+            console.error(`❌ Room data unsuccessful after ${maxAttempts} attempts`);
+            setRoomDetail(null);
+            setRoomLoading(false);
         };
 
         fetchRoomDetails();
-    }, [destination_id, currentCheckIn, currentCheckOut, id, currentGuests, roomKey]);
+    }, [destination_id, currentCheckIn, currentCheckOut, id, currentGuests, roomKey, retryTrigger]);
 
     // Image handling logic - optimized
     const image_array = useMemo(() => {
@@ -381,14 +398,19 @@ const RoomDetailContent = () => {
     if (!roomDetail) {
         return (
             <div className="container mt-10 text-center">
-                <div className="text-gray-600 text-lg mb-4">Room not found</div>
-                <div className="text-sm text-gray-500 mb-2">Room key: {roomKey}</div>
+                <div className="text-gray-600 text-lg mb-4">
+                    {roomName ? `"${roomName}" is not available` : 'Room not found'}
+                </div>
+                <div className="text-sm text-gray-500 mb-2">
+                    {roomName ? `Room: ${roomName}` : `Room key: ${roomKey}`}
+                </div>
                 <div className="text-sm text-gray-500 mb-4">
-                    We couldn't find a room matching this key. This might happen if:
+                    We couldn't find this room. This might happen if:
                 </div>
                 <ul className="text-sm text-gray-500 mb-6 list-disc list-inside">
-                    <li>The room is no longer available</li>
-                    <li>The room key has changed</li>
+                    <li>The room is no longer available for your selected dates</li>
+                    <li>The room has been booked by another guest</li>
+                    <li>The pricing has changed since your search</li>
                     <li>There was an error processing the request</li>
                 </ul>
                 <div className="space-y-3">
@@ -396,11 +418,11 @@ const RoomDetailContent = () => {
                         to={`/hotels/${id}?destination_id=${destination_id}&checkin=${checkIn}&checkout=${checkOut}&guests=${currentGuests}`} 
                         className="inline-block bg-primary text-white px-6 py-2 rounded hover:bg-primary-dark transition-colors"
                     >
-                        View All Rooms at This Hotel
+                        View All Available Rooms
                     </Link>
                     <div>
                         <button 
-                            onClick={() => window.location.reload()} 
+                            onClick={() => setRetryTrigger(prev => prev + 1)} 
                             className="text-primary underline hover:no-underline"
                         >
                             Try Again
@@ -476,18 +498,11 @@ const RoomDetailContent = () => {
                                 </div>
                             </div>
 
-                            {/* Hotel Name as Subtitle */}
-                            {roomDetail?.roomNormalizedDescription && (
-                                <div className="text-lg text-gray-600 mt-1">
-                                    at {hotelDetails?.name}
-                                </div>
-                            )}
-
                             {/* Location */}
                             <div className="flex items-center gap-4 flex-wrap gap-y-1 mt-2">
                                 <div className="flex items-center gap-1.5">
                                     <Icon.MapPin className='text-variant1' />
-                                    <span className='text-variant1 capitalize'>{hotelDetails?.address}</span>
+                                    <span className='text-variant1 capitalize'>{hotelDetails?.name}, {hotelDetails?.address}</span>
                                 </div>
                                 {hotelDetails?.latitude && hotelDetails?.longitude && (
                                     <a 
@@ -501,7 +516,7 @@ const RoomDetailContent = () => {
                                 )}
                             </div>
 
-                            {/* Rating */}
+                            {/* Refundable */}
                             <div className="flex items-center gap-2 mt-3">
                                 <div className="flex items-center gap-1">
                                     <div className="text-lg font-semibold">{hotelDetails?.rating?.toFixed(1) || 'N/A'}</div>
@@ -509,7 +524,11 @@ const RoomDetailContent = () => {
                                 </div>
                                 {roomDetail?.free_cancellation !== undefined && (
                                     <div className={`flex items-center gap-1 ${roomDetail.free_cancellation ? 'text-green-600' : 'text-red-600'}`}>
-                                        <Icon.CheckCircle className={`text-lg ${roomDetail.free_cancellation ? 'text-green-600' : 'text-red-600'}`} weight='fill' />
+                                        {roomDetail.free_cancellation ? (
+                                            <Icon.CheckCircle className="text-lg text-green-600" weight='fill' />
+                                        ) : (
+                                            <Icon.XCircle className="text-lg text-red-600" weight='fill' />
+                                        )}
                                         <span className="font-medium">
                                             {roomDetail.free_cancellation ? 'Free Cancellation' : 'Non-refundable'}
                                         </span>
@@ -519,10 +538,10 @@ const RoomDetailContent = () => {
 
                             {/* Description */}
                             <div className="desc lg:mt-10 mt-6 lg:pt-10 pt-6 border-t border-outline">
-                                <div className="heading5">Room Description</div>
+                                <div className="heading5 text-left">Room Description</div>
                                 {roomDetail?.long_description ? (
                                     <>
-                                        <div className="body2 text-variant1 mt-3 text-justify">
+                                        <div className="body2 text-variant1 mt-3 text-left">
                                             <div dangerouslySetInnerHTML={{ 
                                                 __html: viewMoreDesc 
                                                     ? roomDetail.long_description 
@@ -541,27 +560,39 @@ const RoomDetailContent = () => {
                                         )}
                                     </>
                                 ) : roomDetail?.description ? (
-                                    <div className="body2 text-variant1 mt-3 text-justify">
+                                    <div className="body2 text-variant1 mt-3 text-left">
                                         {roomDetail.description}
                                     </div>
                                 ) : (
-                                    <div className="body2 text-variant1 mt-3 text-justify">No description available</div>
+                                    <div className="body2 text-variant1 mt-3 text-left">No description available</div>
                                 )}
                             </div>
 
                             {/* Room Amenities */}
                             <div className="feature lg:mt-10 mt-6 lg:pt-10 pt-6 border-t border-outline">
-                                <div className="heading5">Room Amenities</div>
+                                <div className="heading5 text-left">Room Amenities</div>
                                 <div className="list w-full mt-4">
                                     {roomDetail?.amenities && roomDetail?.amenities.length > 0 ? (
-                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                                            {roomDetail.amenities.map((amenity: string, index: number) => (
-                                                <div key={index} className="item flex items-center gap-2">
-                                                    <Icon.Check className="text-primary text-lg flex-shrink-0" weight="bold" />
-                                                    <span className="text-sm">{amenity}</span>
-                                                </div>
-                                            ))}
-                                        </div>
+                                        <>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                                                {(viewMoreAmenities ? roomDetail.amenities : roomDetail.amenities.slice(0, 9)).map((amenity: string, index: number) => (
+                                                    <div key={index} className="item flex items-start gap-2">
+                                                        <Icon.Check className="text-primary text-lg flex-shrink-0 mt-0.5" weight="bold" />
+                                                        <span className="body2 text-variant1 text-left">{amenity}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            {roomDetail.amenities.length > 9 && (
+                                                <span
+                                                    className="text-button-sm underline inline-block duration-300 cursor-pointer mt-3 hover:text-primary"
+                                                    role="button"
+                                                    aria-label={viewMoreAmenities ? 'Show less amenities' : 'View More amenities'}
+                                                    onClick={() => setViewMoreAmenities(!viewMoreAmenities)}
+                                                >
+                                                    {viewMoreAmenities ? 'Show less' : `View More (${roomDetail.amenities.length - 9} more)`}
+                                                </span>
+                                            )}
+                                        </>
                                     ) : (
                                         <div className="text-variant1">No amenities information available</div>
                                     )}
@@ -571,16 +602,16 @@ const RoomDetailContent = () => {
                             {/* Additional Room Information */}
                             {roomDetail?.roomAdditionalInfo?.displayFields && (
                                 <div className="additional-info lg:mt-10 mt-6 lg:pt-10 pt-6 border-t border-outline">
-                                    <div className="heading5">Additional Information</div>
+                                    <div className="heading5 text-left">Additional Information</div>
                                     
-                                    {/* Special Check-in Instructions - Moved to top */}
+                                    {/* Special Check-in Instructions */}
                                     {roomDetail.roomAdditionalInfo.displayFields.special_check_in_instructions && (
                                         <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg mt-4">
                                             <h5 className="font-medium text-green-800 mb-2 flex items-center">
                                                 <Icon.Info className="mr-2" />
                                                 Special Check-in Instructions
                                             </h5>
-                                            <div className="text-green-700">
+                                            <div className="text-green-700 text-justify">
                                                 {roomDetail.roomAdditionalInfo.displayFields.special_check_in_instructions}
                                             </div>
                                         </div>
@@ -593,7 +624,7 @@ const RoomDetailContent = () => {
                                                 <Icon.Coffee className="mr-2" />
                                                 Breakfast Information
                                             </h5>
-                                            <div className="text-orange-700 capitalize">
+                                            <div className="text-orange-700 capitalize text-justify">
                                                 {roomDetail.roomAdditionalInfo.breakfastInfo.replace(/_/g, ' ')}
                                             </div>
                                         </div>
@@ -608,7 +639,7 @@ const RoomDetailContent = () => {
                                                     Check-in Instructions
                                                 </h5>
                                                 <div 
-                                                    className="text-gray-700" 
+                                                    className="text-gray-700 text-justify" 
                                                     dangerouslySetInnerHTML={{ 
                                                         __html: roomDetail.roomAdditionalInfo.displayFields.check_in_instructions 
                                                     }} 
@@ -623,7 +654,7 @@ const RoomDetailContent = () => {
                                                     Optional Fees
                                                 </h5>
                                                 <div 
-                                                    className="text-purple-700" 
+                                                    className="text-purple-700 text-justify" 
                                                     dangerouslySetInnerHTML={{ 
                                                         __html: roomDetail.roomAdditionalInfo.displayFields.fees_optional 
                                                     }} 
@@ -638,7 +669,7 @@ const RoomDetailContent = () => {
                                                     Know Before You Go
                                                 </h5>
                                                 <div 
-                                                    className="text-indigo-700" 
+                                                    className="text-indigo-700 text-justify" 
                                                     dangerouslySetInnerHTML={{ 
                                                         __html: roomDetail.roomAdditionalInfo.displayFields.know_before_you_go 
                                                     }} 
@@ -652,7 +683,7 @@ const RoomDetailContent = () => {
                             {/* Map */}
                             {hotelDetails?.latitude && hotelDetails?.longitude && (
                                 <div className="map lg:mt-10 mt-6 lg:pt-10 pt-6 border-t border-outline">
-                                    <div className="heading5">Map</div>
+                                    <div className="heading5 text-left">Map</div>
                                     <div className="bg-img relative mt-3">
                                         <iframe
                                             className='w-full h-[360px]'
@@ -667,20 +698,6 @@ const RoomDetailContent = () => {
                         {/* Sidebar */}
                         <div className="sidebar xl:w-1/3 lg:w-[40%] lg:pl-[45px] w-full">
                             <StickyBox offsetTop={100} offsetBottom={20}>
-                                {/* Information */}
-                                {roomDetail && (
-                                    <div className="room-info mb-4">
-                                        <h3 className="text-lg font-semibold mb-3">Room Information</h3>
-                                        <div className="space-y-2">
-                                            <div className="flex items-center justify-between">
-                                                <span className="text-gray-600">Availability:</span>
-                                                <span className="font-medium text-green-600">
-                                                    {roomDetail.rooms_available} rooms left
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
 
                                 {/* Points & Bonuses */}
                                 {roomDetail && (roomDetail.points > 0 || roomDetail.bonuses > 0) && (
@@ -708,9 +725,26 @@ const RoomDetailContent = () => {
                                 )}
 
                                 {/* Reservation Details */}
-                                <div className="reservation bg-surface p-6 rounded-md">
-                                    <div className="heading4 text-center">Reservation</div>
-                                    <div className="date-sidebar-detail bg-white border border-outline mt-5">
+                                <div className="reservation bg-surface p-6 rounded-md border border-outline mt-8">
+                                    <div className="heading4">Reservation</div>
+                                    
+                                    {/* Date Selection */}
+                                    <div className="date-sidebar-detail bg-white border border-outline rounded-lg">
+                                        {/* Room Information */}
+                                        {roomDetail && (
+                                            <div className="guest px-5 py-4 relative border-b border-outline">
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center gap-1">
+                                                        <Icon.Info className='text-xl' />
+                                                        <div className="text-button">Availability:</div>
+                                                    </div>
+                                                    <div className="body2 text-green-600 font-medium">
+                                                        {roomDetail.rooms_available} rooms left
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+
                                         <div className="relative">
                                             <div className="grid grid-cols-2 border-b border-outline sidebar-date-trigger">
                                                 <div className="left pl-5 py-4 border-r border-outline cursor-pointer" onClick={handleOpenDate}>
@@ -721,11 +755,11 @@ const RoomDetailContent = () => {
                                                     <div className="body2 mt-1">{state[0].startDate.toLocaleDateString()}</div>
                                                 </div>
                                                 <div className="left pr-5 py-4 cursor-pointer" onClick={handleOpenDate}>
-                                                    <div className="flex items-center justify-end gap-1">
+                                                    <div className="flex items-center gap-1">
                                                         <Icon.CalendarBlank className='text-xl' />
                                                         <div className="text-button">Check Out</div>
                                                     </div>
-                                                    <div className="body2 mt-1 text-end">{state[0].endDate.toLocaleDateString()}</div>
+                                                    <div className="body2 mt-1">{state[0].endDate.toLocaleDateString()}</div>
                                                 </div>
                                             </div>
                                             {/* Date Picker dropdown */}
@@ -837,213 +871,191 @@ const RoomDetailContent = () => {
                                                         onClick={() => setOpenGuest(false)}>
                                                         Done
                                                     </div>
+
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                {/* Room Quantity Selector */}
-                                {roomDetail && (
-                                    <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                                        <div className="text-sm font-medium text-gray-800 mb-3">Number of Rooms</div>
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-gray-600">Rooms</span>
-                                            <div className="flex items-center gap-3">
-                                                <button
-                                                    className={`w-8 h-8 flex items-center justify-center rounded-full border border-outline duration-300 ${
-                                                        roomQuantity === 1 
-                                                            ? "opacity-[0.4] cursor-default" 
-                                                            : "cursor-pointer hover:bg-black hover:text-white"
-                                                    }`}
-                                                    onClick={() => roomQuantity > 1 && setRoomQuantity(roomQuantity - 1)}
-                                                    disabled={roomQuantity === 1}
-                                                >
-                                                    <Icon.Minus weight="bold" />
-                                                </button>
-                                                <span className="font-medium text-lg w-8 text-center">{roomQuantity}</span>
-                                                <button
-                                                    className={`w-8 h-8 flex items-center justify-center rounded-full border border-outline cursor-pointer duration-300 hover:bg-black hover:text-white ${
-                                                        roomQuantity >= (roomDetail.rooms_available || 1)
-                                                            ? "opacity-[0.4] cursor-default"
-                                                            : ""
-                                                    }`}
-                                                    onClick={() => roomQuantity < (roomDetail.rooms_available || 1) && setRoomQuantity(roomQuantity + 1)}
-                                                    disabled={roomQuantity >= (roomDetail.rooms_available || 1)}
-                                                >
-                                                    <Icon.Plus weight="bold" />
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div className="text-xs text-gray-500 mt-2">
-                                            Available: {roomDetail.rooms_available} rooms
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Room Pricing and Booking */}
-                                {roomDetail && (
-                                    <div className="reservation bg-surface p-6 rounded-md md:mt-10 mt-6">
-                                        <div className="heading6">Room Details & Pricing</div>
-                                        <div className="room-card bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
-                                            <div className="pricing-info mb-4">
-                                                <h3 className="text-lg font-semibold mb-3">Pricing</h3>
-                                                <div className="text-2xl font-bold text-blue-600 mb-2">
-                                                    SGD {roomDetail.base_rate?.toLocaleString()}
-                                                </div>
-                                                <div className="text-sm text-gray-500 mb-3">per room per night</div>
-
-                                                {roomDetail.included_taxes_and_fees_total && (
-                                                    <div className="text-sm text-gray-600">
-                                                        Taxes & Fees: SGD {roomDetail.included_taxes_and_fees_total?.toLocaleString()}
-                                                    </div>
-                                                )}
-                                            </div>
-                                            
-                                            <div className="flex flex-col gap-3">
-                                                <Link 
-                                                    to={`/hotels/${id}?destination_id=${destination_id}&checkin=${currentCheckIn}&checkout=${currentCheckOut}`}
-                                                    className="w-full bg-gray-200 text-gray-800 py-3 px-4 rounded text-center hover:bg-gray-300 transition-colors"
-                                                >
-                                                    Back to Hotel
-                                                </Link>
-                                                
-                                                <button 
-                                                    className="w-full bg-blue-600 text-white py-3 px-4 rounded hover:bg-blue-700 transition-colors"
-                                                    disabled={roomDetail.rooms_available === 0}
-                                                >
-                                                    {roomDetail.rooms_available === 0 ? 'Sold Out' : 'Proceed to Booking'}
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Booking Summary */}
-                                {roomDetail && (
-                                    <div className="reservation bg-surface p-6 rounded-md md:mt-10 mt-6">
-                                        <div className="flex items-center justify-between mb-4">
-                                            <div className="heading6">Booking Summary</div>
-                                            {/* Currency Toggle */}
-                                            <div className="flex items-center bg-white rounded-lg p-1 border border-outline">
-                                                <button
-                                                    className={`px-3 py-1 text-sm rounded transition-colors ${
-                                                        selectedCurrency === 'SGD' 
-                                                            ? 'bg-primary text-white' 
-                                                            : 'text-gray-600 hover:text-primary'
-                                                    }`}
-                                                    onClick={() => setSelectedCurrency('SGD')}
-                                                >
-                                                    SGD
-                                                </button>
-                                                <button
-                                                    className={`px-3 py-1 text-sm rounded transition-colors ${
-                                                        selectedCurrency === 'USD' 
-                                                            ? 'bg-primary text-white' 
-                                                            : 'text-gray-600 hover:text-primary'
-                                                    }`}
-                                                    onClick={() => setSelectedCurrency('USD')}
-                                                >
-                                                    USD
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        {/* Price Breakdown */}
-                                        <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                                            <div className="text-sm font-medium text-gray-800 mb-3">Price Breakdown</div>
-                                            <div className="space-y-2 text-sm">
+                                        {/* Room Quantity Selector */}
+                                        {roomDetail && (
+                                            <div className="guest px-5 py-4 relative border-t border-outline">
                                                 <div className="flex items-center justify-between">
-                                                    <span className="text-gray-600">Base Rate (per room)</span>
-                                                    <span className="font-medium">
-                                                        {selectedCurrency === 'SGD' 
-                                                            ? `SGD ${roomDetail.base_rate_in_currency?.toLocaleString()}` 
-                                                            : `USD ${roomDetail.base_rate?.toLocaleString()}`
-                                                        }
-                                                    </span>
-                                                </div>
-                                                <div className="flex items-center justify-between">
-                                                    <span className="text-gray-600">Taxes & Fees (per room)</span>
-                                                    <span className="font-medium">
-                                                        {selectedCurrency === 'SGD' 
-                                                            ? `SGD ${roomDetail.included_taxes_and_fees_total_in_currency?.toLocaleString()}` 
-                                                            : `USD ${roomDetail.included_taxes_and_fees_total?.toLocaleString()}`
-                                                        }
-                                                    </span>
-                                                </div>
-                                                {roomDetail.excluded_taxes_and_fees_total > 0 && (
-                                                    <div className="flex items-center justify-between text-red-600">
-                                                        <span>Additional Fees (per room)</span>
-                                                        <span className="font-medium">
-                                                            {selectedCurrency === 'SGD' 
-                                                                ? `SGD ${roomDetail.excluded_taxes_and_fees_total_in_currency?.toLocaleString()}` 
-                                                                : `USD ${roomDetail.excluded_taxes_and_fees_total?.toLocaleString()}`
-                                                            }
-                                                        </span>
+                                                    <div className="flex items-center gap-1">
+                                                        <Icon.Buildings className='text-xl' />
+                                                        <div className="text-button">Rooms:</div>
                                                     </div>
-                                                )}
-                                                <div className="border-t border-gray-300 pt-2 mt-2">
-                                                    <div className="flex items-center justify-between font-medium">
-                                                        <span>Subtotal per room</span>
-                                                        <span>
-                                                            {selectedCurrency === 'SGD' 
-                                                                ? `SGD ${roomDetail.converted_price?.toLocaleString()}` 
-                                                                : `USD ${roomDetail.price?.toLocaleString()}`
-                                                            }
-                                                        </span>
+                                                    <div className="flex items-center gap-3">
+                                                        <div
+                                                            className={`minus w-8 h-8 flex items-center justify-center rounded-full border border-outline duration-300 ${roomQuantity === 1 ? "opacity-[0.4] cursor-default" : "cursor-pointer hover:bg-black hover:text-white"}`}
+                                                            onClick={() => roomQuantity > 1 && setRoomQuantity(roomQuantity - 1)}
+                                                            role="button"
+                                                            aria-label="Decrease room quantity"
+                                                        >
+                                                            <Icon.Minus weight="bold" />
+                                                        </div>
+                                                        <div className="text-title min-w-[24px] text-center">{roomQuantity}</div>
+                                                        <div
+                                                            className={`plus w-8 h-8 flex items-center justify-center rounded-full border border-outline duration-300 ${roomQuantity >= (roomDetail.rooms_available || 1) ? "opacity-[0.4] cursor-default" : "cursor-pointer hover:bg-black hover:text-white"}`}
+                                                            onClick={() => roomQuantity < (roomDetail.rooms_available || 1) && setRoomQuantity(roomQuantity + 1)}
+                                                            role="button"
+                                                            aria-label="Increase room quantity"
+                                                        >
+                                                            <Icon.Plus weight="bold" />
+                                                        </div>
                                                     </div>
-                                                    <div className="border-t border-gray-300 pt-2 mt-2">
-                                                        <div className="flex items-center justify-between font-semibold text-lg">
-                                                            <span>Total</span>
-                                                            <span className="text-primary">
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Booking Summary */}
+                                    {roomDetail && (
+                                        <div className="mt-6 bg-white p-6 rounded-md border border-outline">
+                                            <div className="flex items-center justify-between mb-4">
+                                                <div className="heading6 text-left">Booking Summary</div>
+                                                {/* Currency Toggle */}
+                                                <div className="flex items-center bg-white rounded-lg p-1 border border-outline shadow-sm">
+                                                    <button
+                                                        className={`px-4 py-2 text-sm rounded-md transition-all duration-200 ease-in-out ${
+                                                            selectedCurrency === 'SGD' 
+                                                                ? 'bg-primary text-white shadow-sm transform scale-105' 
+                                                                : 'text-gray-600 hover:text-primary hover:bg-gray-50'
+                                                        }`}
+                                                        onClick={() => setSelectedCurrency('SGD')}
+                                                    >
+                                                        SGD
+                                                    </button>
+                                                    <button
+                                                        className={`px-4 py-2 text-sm rounded-md transition-all duration-200 ease-in-out ${
+                                                            selectedCurrency === 'USD' 
+                                                                ? 'bg-primary text-white shadow-sm transform scale-105' 
+                                                                : 'text-gray-600 hover:text-primary hover:bg-gray-50'
+                                                        }`}
+                                                        onClick={() => setSelectedCurrency('USD')}
+                                                    >
+                                                        USD
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            {/* Price Breakdown */}
+                                            <div className="p-4 bg-gray-50 rounded-lg transition-all duration-300 ease-in-out">
+                                                <div className="text-sm font-medium text-gray-800 mb-3">Price Breakdown</div>
+                                                {priceCalculations && (
+                                                    <div className="space-y-2 text-sm">
+                                                        <div className="flex items-center justify-between transition-all duration-200">
+                                                            <span className="text-gray-600 text-left">Base Rate</span>
+                                                            <span className="font-medium">
                                                                 {selectedCurrency === 'SGD' 
-                                                                    ? `SGD ${((roomDetail.converted_price || 0) * roomQuantity).toLocaleString()}` 
-                                                                    : `USD ${((roomDetail.price || 0) * roomQuantity).toLocaleString()}`
+                                                                    ? `SGD ${priceCalculations.baseRateSGD.toFixed(2)}` 
+                                                                    : `USD ${priceCalculations.baseRateUSD.toFixed(2)}`
                                                                 }
                                                             </span>
                                                         </div>
-                                                        <div className="text-xs text-gray-500 text-right">
-                                                            {roomQuantity === 1 ? 'per night' : `for ${roomQuantity} rooms per night`}
+                                                        <div className="flex items-center justify-between transition-all duration-200">
+                                                            <span className="text-gray-600 text-left">Taxes & Fees</span>
+                                                            <span className="font-medium">
+                                                                {selectedCurrency === 'SGD' 
+                                                                    ? `SGD ${priceCalculations.taxesAndFeesSGD.toFixed(2)}` 
+                                                                    : `USD ${priceCalculations.taxesAndFeesUSD.toFixed(2)}`
+                                                                }
+                                                            </span>
+                                                        </div>
+                                                        {((selectedCurrency === 'SGD' && priceCalculations.additionalFeesSGD > 0) || 
+                                                          (selectedCurrency === 'USD' && priceCalculations.additionalFeesUSD > 0)) && (
+                                                            <div className="flex items-center justify-between text-red-600 transition-all duration-200">
+                                                                <span>Additional Fees (per room/night)</span>
+                                                                <span className="font-medium">
+                                                                    {selectedCurrency === 'SGD' 
+                                                                        ? `SGD ${priceCalculations.additionalFeesSGD.toFixed(2)}` 
+                                                                        : `USD ${priceCalculations.additionalFeesUSD.toFixed(2)}`
+                                                                    }
+                                                                </span>
+                                                            </div>
+                                                        )}
+                                                        
+                                                        <div className="border-t border-gray-300 pt-2 mt-2">
+                                                            <div className="flex items-center justify-between font-medium transition-all duration-200">
+                                                                <span>Subtotal per room/night</span>
+                                                                <span>
+                                                                    {selectedCurrency === 'SGD' 
+                                                                        ? `SGD ${priceCalculations.perRoomPerNightSGD.toFixed(2)}` 
+                                                                        : `USD ${priceCalculations.perRoomPerNightUSD.toFixed(2)}`
+                                                                    }
+                                                                </span>
+                                                            </div>
+                                                            
+                                                            <div className="mt-3 space-y-1">
+                                                                <div className="flex items-center justify-between text-sm text-gray-600">
+                                                                    <span>Number of rooms:</span>
+                                                                    <span>{roomQuantity}</span>
+                                                                </div>
+                                                                <div className="flex items-center justify-between text-sm text-gray-600">
+                                                                    <span>Number of nights:</span>
+                                                                    <span>{numberOfNights}</span>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <div className="border-t border-gray-300 pt-3 mt-3">
+                                                                <div className="flex items-center justify-between font-semibold text-lg transition-all duration-200">
+                                                                    <span>Total</span>
+                                                                    <span className="text-primary">
+                                                                        {selectedCurrency === 'SGD' 
+                                                                            ? `SGD ${priceCalculations.totalSGD.toFixed(2)}` 
+                                                                            : `USD ${priceCalculations.totalUSD.toFixed(2)}`
+                                                                        }
+                                                                    </span>
+                                                                </div>
+                                                                <div className="text-xs text-gray-500 text-right mt-1">
+                                                                    {roomQuantity === 1 
+                                                                        ? `for ${numberOfNights} night${numberOfNights > 1 ? 's' : ''}` 
+                                                                        : `for ${roomQuantity} rooms × ${numberOfNights} night${numberOfNights > 1 ? 's' : ''}`
+                                                                    }
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                )}
+                                            </div>
+
+                                            {/* Booking Button */}
+                                            <div
+                                                className="button-main w-full text-center mt-5 cursor-pointer"
+                                                onClick={() => {
+                                                    if (roomDetail.rooms_available === 0 || roomQuantity > roomDetail.rooms_available) {
+                                                        return; // Don't navigate if room is not available
+                                                    }
+                                                    navigate('/booking', {
+                                                        state: {
+                                                            hotelName: hotelDetails?.name,
+                                                            hotelImage: mainImage,
+                                                            roomType: roomDetail?.roomNormalizedDescription || "Room",
+                                                            price: priceCalculations 
+                                                                ? (selectedCurrency === 'SGD' 
+                                                                    ? priceCalculations.totalSGD.toFixed(2)
+                                                                    : priceCalculations.totalUSD.toFixed(2))
+                                                                : '0.00',
+                                                            currency: selectedCurrency,
+                                                            startDate: state[0].startDate.toISOString(),
+                                                            endDate: state[0].endDate.toISOString(),
+                                                            numberOfRooms: roomQuantity,
+                                                            numberOfNights: numberOfNights,
+                                                            adults: guest.adult,
+                                                            children: guest.children,
+                                                        },
+                                                    })
+                                                }}
+                                            >
+                                                {roomDetail.rooms_available === 0 
+                                                    ? 'Sold Out' 
+                                                    : roomQuantity > roomDetail.rooms_available
+                                                        ? 'Not enough rooms available'
+                                                        : `Book ${roomQuantity} Room${roomQuantity > 1 ? 's' : ''} Now`
+                                                }
                                             </div>
                                         </div>
-
-                                        {/* Booking Button */}
-                                        <div
-                                            className="button-main w-full text-center mt-5 cursor-pointer"
-                                            onClick={() => {
-                                                if (roomDetail.rooms_available === 0 || roomQuantity > roomDetail.rooms_available) {
-                                                    return; // Don't navigate if room is not available
-                                                }
-                                                navigate('/booking', {
-                                                    state: {
-                                                        hotelName: hotelDetails?.name,
-                                                        hotelImage: mainImage,
-                                                        roomType: roomDetail?.roomNormalizedDescription || "Room",
-                                                        price: selectedCurrency === 'SGD' 
-                                                            ? ((roomDetail.converted_price || 0) * roomQuantity).toFixed(2)
-                                                            : ((roomDetail.price || 0) * roomQuantity).toFixed(2),
-                                                        currency: selectedCurrency,
-                                                        startDate: state[0].startDate.toISOString(),
-                                                        endDate: state[0].endDate.toISOString(),
-                                                        numberOfRooms: roomQuantity,
-                                                        adults: guest.adult,
-                                                        children: guest.children,
-                                                    },
-                                                })
-                                            }}
-                                        >
-                                            {roomDetail.rooms_available === 0 
-                                                ? 'Sold Out' 
-                                                : roomQuantity > roomDetail.rooms_available
-                                                    ? 'Not enough rooms available'
-                                                    : `Book ${roomQuantity} Room${roomQuantity > 1 ? 's' : ''} Now`
-                                            }
-                                        </div>
-                                    </div>
-                                )}
-
+                                    )}
+                                
                                 {/* Why Book With Us */}
                                 <div className="reservation bg-surface p-6 rounded-md md:mt-10 mt-6">
                                     <div className="heading6">Why Book With Us?</div>
