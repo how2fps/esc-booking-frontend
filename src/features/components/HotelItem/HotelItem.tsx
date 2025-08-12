@@ -13,8 +13,8 @@ function formatDate(dateString: string): string {
        if (!dateString) {
               const today = new Date();
               const year = today.getFullYear();
-              const month = String(today.getMonth() + 1).padStart(2, '0');
-              const day = String(today.getDate()).padStart(2, '0');
+              const month = String(today.getMonth() + 1).padStart(2, "0");
+              const day = String(today.getDate()).padStart(2, "0");
               return `${year}-${month}-${day}`;
        }
        return dateString;
@@ -30,10 +30,10 @@ const iconlist = {
        inHouseBar: <MartiniIcon />,
 };
 
-const HotelItem: React.FC<{ hotelData: Hotel; dateRange: string; destination_id: string; }> = ({ hotelData, dateRange, destination_id }) => {
+const HotelItem: React.FC<{ hotelData: Hotel; dateRange: string; destination_id: string }> = ({ hotelData, dateRange, destination_id }) => {
        const router = useNavigate();
        const [searchParams] = useSearchParams();
-       
+
        // Extract and format dates from URL parameters (same as HotelListingsPage)
        const checkIn = formatDate(searchParams.get("startDate") as string);
        const checkOut = formatDate(searchParams.get("endDate") as string);
@@ -85,6 +85,7 @@ const HotelItem: React.FC<{ hotelData: Hotel; dateRange: string; destination_id:
 
        return (
               <div
+                     onClick={() => handleClickItem(hotelData.id)}
                      role="listitem"
                      className="hotel-item hover-scale animate-fadeIn opacity-0 animate-duration-300 animate-fill-forwards">
                      <div className="thumb-img relative">
@@ -144,7 +145,10 @@ const HotelItem: React.FC<{ hotelData: Hotel; dateRange: string; destination_id:
                                    </div>
                             )}
                      </div>
-                     <div className="infor mt-4" onClick={() => handleClickItem(hotelData.id)} style={{ cursor: 'pointer' }}>
+                     <div
+                            className="infor mt-4"
+                            onClick={() => handleClickItem(hotelData.id)}
+                            style={{ cursor: "pointer" }}>
                             <div className="flex items-center justify-between flex-wrap gap-2">
                                    <div className="flex items-center gap-1">
                                           {Object.entries(hotelData.amenities).map(([key, value]) =>
