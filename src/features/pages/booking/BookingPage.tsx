@@ -7,6 +7,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 const BookingPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const selectedCurrency = location.state?.currency || 'USD'; // Assuming a default currency, can be dynamic if needed
   const state = location.state || {};
 
   const [loading, setLoading] = useState(true);
@@ -116,6 +117,7 @@ const BookingPage = () => {
             numAdults: adults,
             numChildren: children,
             price,
+            currency: selectedCurrency,
             firstName,
             lastName,
             phoneNumber,
@@ -176,7 +178,7 @@ const BookingPage = () => {
                 ['End', endDate],
                 ['Adults', adults],
                 ['Children', children],
-                ['Price', `$${price}`],
+                ['Price', `${selectedCurrency === 'SGD' ? 'S$' : '$'}${price}`],
               ].map(([label, value], i) => (
                 <div key={i}>
                   <dt className="font-semibold text-gray-700">{label}</dt>

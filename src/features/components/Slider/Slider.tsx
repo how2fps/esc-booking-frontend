@@ -16,8 +16,9 @@ interface DestinationType {
        lat: number;
        lng: number;
        type: string;
-       state?: string;
-}
+       state?: string;}
+
+
 
 interface GuestType {
        adult: number;
@@ -191,9 +192,11 @@ const DestinationSearch = () => {
                                           <div className="form-search md:mt-10 mt-6 w-full">
                                                  <form className="bg-white rounded-lg p-5 flex max-lg:flex-wrap items-center justify-between gap-5 relative">
                                                         <div
-                                                               className="select-block lg:w-full md:w-[48%] w-full"
-                                                               data-testid="async-select">
+                                                               
+                                                               className="select-block lg:w-full md:w-[48%] w-full"    data-testid="async-select"
+                                                              >
                                                                <AsyncPaginate
+                                                                       
                                                                       debounceTimeout={300}
                                                                       loadOptionsOnMenuOpen={false} 
                                                                       additional={{ page: 1 }}
@@ -230,6 +233,7 @@ const DestinationSearch = () => {
                                                                </div>
                                                                <DateRangePicker
                                                                       className={`form-date-picker box-shadow md:border-t border-outline  ${openDate ? "open" : ""}`}
+                                                                      data-testid = "picker"
                                                                       onChange={(item) => setState([item.selection] as any)}
                                                                       staticRanges={[]}
                                                                       inputRanges={[]}
@@ -266,7 +270,7 @@ const DestinationSearch = () => {
                                                                                            onClick={() => decreaseGuest("adult")}>
                                                                                            <Icon.Minus weight="bold" />
                                                                                     </div>
-                                                                                    <div className="text-title">{guest.adult}</div>
+                                                                                    <div className="text-title" data-testid="adult">{guest.adult}</div>
                                                                                     <div
                                                                                            className="plus w-8 h-8 flex items-center justify-center rounded-full border border-outline cursor-pointer duration-300 hover:bg-black hover:text-white"
                                                                                            onClick={() => increaseGuest("adult")}>
@@ -285,7 +289,7 @@ const DestinationSearch = () => {
                                                                                            onClick={() => decreaseGuest("children")}>
                                                                                            <Icon.Minus weight="bold" />
                                                                                     </div>
-                                                                                    <div className="text-title">{guest.children}</div>
+                                                                                    <div className="text-title" data-testid="children">{guest.children}</div>
                                                                                     <div
                                                                                            className="plus w-8 h-8 flex items-center justify-center rounded-full border border-outline cursor-pointer duration-300 hover:bg-black hover:text-white"
                                                                                            onClick={() => increaseGuest("children")}>
@@ -312,11 +316,11 @@ const DestinationSearch = () => {
                                                                                     onClick={() => decreaseGuest("room")}>
                                                                                     <Icon.Minus weight="bold" />
                                                                              </div>
-                                                                             <div className="text-title">{guest.room}</div>
+                                                                             <div className="text-title" data-testid = "room-count">{guest.room}</div>
                                                                              <div
                                                                                     className="plus w-8 h-8 flex items-center justify-center rounded-full border border-outline cursor-pointer duration-300 hover:bg-black hover:text-white"
                                                                                     onClick={() => increaseGuest("room")}>
-                                                                                    <Icon.Plus weight="bold" />
+                                                                                    <Icon.Plus weight="bold"  data-testid = "plus"/>
                                                                              </div>
                                                                       </div>
                                                                </div>
