@@ -151,7 +151,7 @@ const ProfilePage: React.FC = () => {
             setPasswordSaving(true);
         
             try {
-            const res = await fetch('http://http://18.138.130.229:3000:3000/api/users/change-password', {
+            const res = await fetch('http://http://18.138.130.229:3000/api/users/change-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',

@@ -238,4 +238,3 @@ describe("DestinationSearch - DateRangePicker", () => {
   });
 });
 
-});
