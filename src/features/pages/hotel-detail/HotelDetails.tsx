@@ -141,38 +141,33 @@ const HotelDetailContent = () => {
 
     const currentGuests = useMemo(() => guest.adult + guest.children, [guest]);
 
-    // Helper function to get alternative image URLs
+    // Guest handlers
+    const increaseGuest = (type: keyof GuestType) => {
+        setGuest((prevGuest) => ({
+            ...prevGuest,
+            [type]: prevGuest[type] + 1
+        }));
+    };
 
-    // const _getImageFallbacks = useCallback((originalUrl: string, index: number) => {
-    //     if (!hotelDetails?.image_details?.prefix) return [];
-        
-    //     const prefix = hotelDetails.image_details.prefix;
-    //     const suffix = hotelDetails.image_details.suffix || '.jpg';
- 
-        
-    //     const fallbacks: string[] = [];
-        
-    //     // Since we're now using 1-based indexing, the actual image index would be index + 1
-    //     const actualImageIndex = index + 1;
-        
-    //     // Try different indexing patterns around the actual index
-    //     const indexPatterns = [
-    //         actualImageIndex - 1,  // 0-based equivalent
-    //         actualImageIndex,      // 1-based (current)
-    //         actualImageIndex + 1,  // In case we're off by one
-    //     ].filter(i => i >= 0); // Remove negative indices
-        
-    //     // Generate different URL patterns
-    //     for (const i of indexPatterns) {
-    //         const candidateUrl = `${prefix}${i}${suffix}`;
-    //         if (candidateUrl !== originalUrl && !fallbacks.includes(candidateUrl)) {
-    //             fallbacks.push(candidateUrl);
-    //         }
-    //     }
-        
-    //     console.log(`Generated ${fallbacks.length} fallbacks for array index ${index} (image ${actualImageIndex}):`, fallbacks);
-    //     return fallbacks.slice(0, 2); // Limit to 2 fallbacks to prevent infinite loops
-    // }, [hotelDetails?.image_details, hotelDetails?.imgix_url, hotelDetails?.cloudflare_image_url]);
+    const decreaseGuest = (type: keyof GuestType) => {
+        if (guest[type] > 0) {
+            setGuest((prevGuest) => ({
+                ...prevGuest,
+                [type]: prevGuest[type] - 1
+            }));
+        }
+    };
+
+    // Popup handlers
+    const handleOpenDate = () => {
+        setOpenDate(!openDate);
+        setOpenGuest(false);
+    };
+    
+    const handleOpenGuest = () => {
+        setOpenGuest(!openGuest);
+        setOpenDate(false);
+    };
 
     const [mainImage, setMainImage] = useState<string | null>(null);
 
@@ -192,7 +187,7 @@ const HotelDetailContent = () => {
                     
                     const response = await fetch(`https://api.ascendahotelbackend.com/api/hotels/${id}`, {
                         method: "GET",
-                        credentials: 'include',
+                        credentials:'include',
                         headers: {
                             "Content-Type": "application/json",
                         }
@@ -283,7 +278,7 @@ const HotelDetailContent = () => {
                         
                         const response = await fetch(apiUrl, {
                             method: "GET",
-                            credentials :'include',
+                            credentials:"include",
                             headers: {
                                 "Content-Type": "application/json",
                             },

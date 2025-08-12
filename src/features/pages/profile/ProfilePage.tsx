@@ -50,7 +50,7 @@ const ProfilePage: React.FC = () => {
        // Reusable fetch session function
        const fetchSession = async () => {
               try {
-                     const res = await fetch('http://api.ascendahotelbackend.com/api/users/session', { credentials: 'include' })
+                     const res = await fetch('https://api.ascendahotelbackend.com/api/users/session', { credentials: 'include' })
                      const data = await res.json()
                       console.log(data)
                      if (data.success) {

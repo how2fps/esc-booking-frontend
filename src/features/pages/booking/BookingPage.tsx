@@ -38,7 +38,7 @@ const BookingPage = () => {
   const [errors, setErrors] = useState<string[]>([]);
 
   useEffect(() => {
-    fetch('http://18.138.130.229:3000/api/users/session', {
+    fetch('https://api.ascendahotelbackend.com/api/users/session', {
       credentials: 'include',
     })
       .then((res) => {

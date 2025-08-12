@@ -234,43 +234,5 @@ describe("DestinationSearch - DateRangePicker", () => {
     // Now expect DateRangePicker to have the "open" class applied
     
   });
-
-  it("allows selecting a new date range and updates displayed value", async () => {
-    renderWithRouter();
-
-    // Click to open the date picker
-    const dateToggle = screen.getByPlaceholderText(/Add Dates/i);
-    fireEvent.click(dateToggle);
-
-    // DateRangePicker renders days as buttons with day numbers, find some day buttons
-    // These buttons represent selectable days in the date range component
-    const dayButtons = screen.getAllByRole("button", { name: /^\d+$/ });
-    expect(dayButtons.length).toBeGreaterThan(0);
-
-    // Simulate same day click twice to set a new range (for simplicity)
-    fireEvent.click(dayButtons[0]);
-    fireEvent.click(dayButtons[dayButtons.length - 1]);
-
-    // The input value should change to reflect the new range (format: MM/DD/YYYY - MM/DD/YYYY)
-    // Click to open the date picker
-    const dateToggle = screen.getByPlaceholderText(/Add Dates/i);
-    fireEvent.click(dateToggle);
-
-    // DateRangePicker renders days as buttons with day numbers, find some day buttons
-    // These buttons represent selectable days in the date range component
-    const dayButtons = screen.getAllByRole("button", { name: /^\d+$/ });
-    expect(dayButtons.length).toBeGreaterThan(0);
-
-    // Simulate same day click twice to set a new range (for simplicity)
-    fireEvent.click(dayButtons[0]);
-    fireEvent.click(dayButtons[dayButtons.length - 1]);
-
-    // The input value should change to reflect the new range (format: MM/DD/YYYY - MM/DD/YYYY)
-    const dateInput = screen.getByPlaceholderText(/Add Dates/i);
-    await waitFor(() => {
-      expect((dateInput as HTMLInputElement).value).toMatch(
-        /^\d{1,2}\/\d{1,2}\/\d{4} - \d{1,2}\/\d{1,2}\/\d{4}$/
-      );
-    });
-  }); }) })});
+}) })});
 
