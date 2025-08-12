@@ -1,14 +1,15 @@
 import { addDays } from "date-fns";
 import * as Icon from "phosphor-react";
+import type { GroupBase, OptionsOrGroups, SingleValue, ActionMeta } from 'react-select';
+
 import { useCallback, useEffect, useState } from "react";
 import { DateRangePicker } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { Link } from "react-router-dom";
-import AsyncSelect from "react-select/async";
-import Destination from "../data/destinations.json";
-import MicroSpellingCorrecter from "micro-spelling-correcter";
-import { AsyncPaginate } from 'react-select-async-paginate';
+import { AsyncPaginate } from "react-select-async-paginate";
+
+
 interface DestinationType {
        term: string;
        uid: string;
@@ -24,20 +25,6 @@ interface GuestType {
        room: number;
 }
 
-const options: DestinationType[] = (Array.isArray(Destination) ? Destination : Object.values(Destination)).map((d: any) => ({
-       ...d,
-       state: typeof d.state === "string" ? d.state : "",
-}));
-
-//const mappedOptions = options.map((option) => ({ value: option.uid, label: option.term }));
-
-
-const tokenizedOptions = options.map(option =>(option.term || '').match(/\w+/g) || []);
-
-const Common_typos = new Set(tokenizedOptions.flat().filter(word => word.length > 3));
-
-
-const correcter = new MicroSpellingCorrecter( Common_typos, 2 );
 
 
 
@@ -50,66 +37,59 @@ const noOptionsMessage = (input: { inputValue: string }) => {
        return "No options";
 };
 
-
 const optionsPerPage = 10;
 
+
 const loadOptions = async (search: string, page: number) => {
-  if (!search || search.length < 3) {
-    return {
-      options: [],
-      hasMore: false
-    };
-  }
-  const corrected = correcter.correct?.(search) || search;
-
-  const filteredOptions = options.filter((i) => i.term && (i.term.toLowerCase().includes(search.toLowerCase()) || i.term.toLowerCase().includes(corrected.toLowerCase())));
-  
-  const hasMore = Math.ceil(filteredOptions.length / optionsPerPage) > page;
-
-  const slicedOptions = filteredOptions.slice(   
-    (page - 1) * optionsPerPage,
-    page * optionsPerPage
-  );
-
-  return {
-    options: slicedOptions,
-    hasMore
-  };
-};
-
-
-
-const defaultAdditional = {
-  page: 1
-};
-
-const loadPageOptions = async (q: string, additional = defaultAdditional) => {
-  const { page } = { page: 1 }
+       if (!search || search.length < 3) {
+              return {
+                     options: [],
+                     hasMore: false,
+              };
+       }
+       const response = await fetch("http://localhost:3000/api/search/" + search);
+       const data = await response.json();
+       //console.log(data);
        
+       const hasMore = Math.ceil(data.length / optionsPerPage) > page;
+
+       const slicedOptions = data.slice((page - 1) * optionsPerPage, page * optionsPerPage);
+
+       return {
+              options: slicedOptions,
+              hasMore,
+       };
+};
+
+const defaultAdditional = { page: 1 };
+
+const loadPageOptions = async (
+  q: string,
+  _loadedOptions: OptionsOrGroups<DestinationType, GroupBase<DestinationType>>,
+  additional = defaultAdditional
+) => {
+  const { page = 1 } = additional;
   const { options, hasMore } = await loadOptions(q, page);
- 
+  console.log("Fetching page:", page, "query:", q, "Option:", options);
   return {
     options,
-    hasMore
+    hasMore,
+    additional: { page: page + 1 },
   };
 };
-
 const DestinationSearch = () => {
+       const today =new Date()
+       const min = new Date()
+       min.setDate(today.getDate()+3)
        const [openDate, setOpenDate] = useState(false);
        const [openGuest, setOpenGuest] = useState(false);
-       const [location, setLocation] = useState({
-              term: "",
-              uid: "",
-              lat: 0,
-              lng: 0,
-              type: "",
-              state: "",
-       });
+       const [location, setLocation] = useState<DestinationType | null>(null);
+
 
        const [state, setState] = useState([
               {
-                     startDate: new Date(),
-                     endDate: addDays(new Date(), 7),
+                     startDate: new Date(min),
+                     endDate: addDays(new Date(min), 7),
                      key: "selection",
               },
        ]);
@@ -149,7 +129,17 @@ const DestinationSearch = () => {
               },
               [openGuest]
        );
-
+       const handleLocationChange = (
+              newValue: SingleValue<DestinationType>,
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              _actionMeta: ActionMeta<DestinationType>
+              ) => {
+              if (newValue === null) {
+              // Handle null case, e.g., reset state or ignore
+              return;
+              }
+              setLocation(newValue);
+              };
        useEffect(() => {
               return () => {
                      document.removeEventListener("click", handleClickOutsideDatePopup);
@@ -175,7 +165,9 @@ const DestinationSearch = () => {
 
        return (
               <>
-                     <div className="slider-block style-one relative h-[620px]">
+                     <div
+                            className="slider-block style-one relative h-[620px]"
+                            data-testid="slider">
                             <div className="bg-img absolute top-0 left-0 w-full h-full">
                                    <img
                                           src={"/images/slider/hotel-lobby-2024-12-05-23-25-27-utc.jpg"}
@@ -198,21 +190,23 @@ const DestinationSearch = () => {
 
                                           <div className="form-search md:mt-10 mt-6 w-full">
                                                  <form className="bg-white rounded-lg p-5 flex max-lg:flex-wrap items-center justify-between gap-5 relative">
-                                                        <div className="select-block lg:w-full md:w-[48%] w-full">
+                                                        <div
+                                                               className="select-block lg:w-full md:w-[48%] w-full"
+                                                               data-testid="async-select">
                                                                <AsyncPaginate
-                                                                      debounceTimeout={100} 
-                                                                      data-testid="async-select"
+                                                                      debounceTimeout={300}
+                                                                      loadOptionsOnMenuOpen={false} 
                                                                       additional={{ page: 1 }}
                                                                       loadOptions={loadPageOptions}
                                                                       getOptionLabel={(i: DestinationType) => i.term}
                                                                      getOptionValue={(i: DestinationType) => i.uid}
                                                                       noOptionsMessage={noOptionsMessage}
-                                                                      onChange={setLocation}  
-                                                                                                                                           
+                                                                      onChange={handleLocationChange}
                                                                       styles={{
                                                                              control: (provided) => ({
                                                                                     ...provided,
                                                                                     width: 300,
+                                                                                    height: 54,
                                                                              }),
                                                                              menu: (provided) => ({
                                                                                     ...provided,
@@ -220,7 +214,6 @@ const DestinationSearch = () => {
                                                                              }),
                                                                       }}
                                                                />
-                                                               <p data-testid="uid">Selected: {location ? location.uid : "None"}</p>
                                                         </div>
                                                         <div className="relative lg:w-full md:w-[48%] w-full">
                                                                <div
@@ -228,7 +221,7 @@ const DestinationSearch = () => {
                                                                       onClick={handleOpenDate}>
                                                                       <Icon.CalendarBlank className="icon text-xl left-5" />
                                                                       <input
-                                                                             className="body2 w-full pl-12 pr-5 py-4 border border-outline rounded-lg text-sm"
+                                                                             className="body2 w-full pl-12 pr-5 py-3 border border-outline rounded-lg bg-white text-black"
                                                                              type="text"
                                                                              placeholder="Add Dates"
                                                                              value={`${state[0].startDate.toLocaleDateString()} - ${state[0].endDate.toLocaleDateString()}`}
@@ -240,10 +233,12 @@ const DestinationSearch = () => {
                                                                       onChange={(item) => setState([item.selection] as any)}
                                                                       staticRanges={[]}
                                                                       inputRanges={[]}
+                                                                  
                                                                       moveRangeOnFirstSelection={false}
                                                                       months={2}
                                                                       ranges={state}
                                                                       direction="horizontal"
+                                                                      minDate={min}
                                                                />
                                                         </div>
                                                         <div className="relative lg:w-full md:w-[48%] w-full">
@@ -252,7 +247,7 @@ const DestinationSearch = () => {
                                                                       onClick={handleOpenGuest}>
                                                                       <Icon.Users className="icon text-xl left-5" />
                                                                       <input
-                                                                             className="body2 w-full pl-12 pr-5 py-3 border border-outline rounded-lg"
+                                                                             className="body2 w-full pl-12 pr-5 py-3 border border-outline rounded-lg bg-white text-black"
                                                                              type="text"
                                                                              placeholder="Add Guest"
                                                                              value={`${guest.adult > 0 ? (guest.adult === 1 ? guest.adult + " adult" : guest.adult + " adults") : ""}${guest.children > 0 ? (guest.children === 1 ? ", " + guest.children + " children" : ", " + guest.children + " childrens") : ""}`}
@@ -328,7 +323,7 @@ const DestinationSearch = () => {
                                                         </div>
                                                         <div className="button-block flex-shrink-0 max-lg:w-[48%] max-md:w-full">
                                                                <div className="button-main max-lg:w-full">
-                                                                      <Link to={`/hotels/topmap-grid?location=${location ? location.uid : "None"}&startDate=${state[0].startDate.toLocaleDateString()}&endDate=${state[0].endDate.toLocaleDateString()}&adult=${guest.adult}&children=${guest.children}&room=${guest.room}`}>Search</Link>
+                                                                      <Link to={`/hotels?location=${location ? location.uid : "None"}&startDate=${state[0].startDate.toLocaleDateString()}&endDate=${state[0].endDate.toLocaleDateString()}&adult=${guest.adult}&children=${guest.children}&room=${guest.room}`}>Search</Link>
                                                                </div>
                                                         </div>
                                                  </form>
