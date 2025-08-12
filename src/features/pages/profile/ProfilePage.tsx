@@ -24,7 +24,7 @@ const ProfilePage: React.FC = () => {
        // Reusable fetch session function
        const fetchSession = async () => {
               try {
-                     const res = await fetch('http://localhost:3000/api/users/session', { credentials: 'include' })
+                     const res = await fetch('http://18.138.130.229:3000/api/users/session', { credentials: 'include' })
                      const data = await res.json()
                      if (data.success) {
                             setUser({ name: data.data.name, email: data.data.email, phone_number: data.data.phone_number || '' })
@@ -69,7 +69,7 @@ const ProfilePage: React.FC = () => {
               setMessage(null)
               setError(null)
               try {
-                     const res = await fetch('http://localhost:3000/api/users/profile', {
+                     const res = await fetch('http://18.138.130.229:3000/api/users/profile', {
                             method: 'PUT',
                             headers: { 'Content-Type': 'application/json' },
                             credentials: 'include',
@@ -92,7 +92,7 @@ const ProfilePage: React.FC = () => {
 
        const handleLogout = async () => {
               try {
-                     await fetch('http://localhost:3000/api/users/logout', {
+                     await fetch('http://18.138.130.229:3000/api/users/logout', {
                             method: 'POST',
                             credentials: 'include',
                      })
@@ -117,7 +117,7 @@ const ProfilePage: React.FC = () => {
 
               setDeleting(true)
               try {
-                     const res = await fetch('http://localhost:3000/api/users/delete', {
+                     const res = await fetch('http://18.138.130.229:3000/api/users/delete', {
                             method: 'DELETE',
                             headers: { 'Content-Type': 'application/json' },
                             credentials: 'include',

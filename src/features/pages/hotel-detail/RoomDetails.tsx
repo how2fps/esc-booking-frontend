@@ -162,7 +162,7 @@ const RoomDetailContent = () => {
         const fetchHotelDetails = async () => {
             setHotelLoading(true);
             try {
-                const response = await fetch(`http://localhost:3000/api/hotels/${id}`, {
+                const response = await fetch(`http://18.138.130.229:3000/api/hotels/${id}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -211,7 +211,7 @@ const RoomDetailContent = () => {
             const maxAttempts = 3;
             const delayBetweenAttempts = 1500; // 1.5 seconds
             
-            const apiUrl = `http://localhost:3000/api/hotels/${id}/prices?destination_id=${destination_id}&checkin=${currentCheckIn}&checkout=${currentCheckOut}&lang=en_US&currency=SGD&country_code=SG&guests=${currentGuests}&partner_id=1089&landing_page=wl-acme-earn&product_type=earn`;
+            const apiUrl = `http://18.138.130.229:3000/api/hotels/${id}/prices?destination_id=${destination_id}&checkin=${currentCheckIn}&checkout=${currentCheckOut}&lang=en_US&currency=SGD&country_code=SG&guests=${currentGuests}&partner_id=1089&landing_page=wl-acme-earn&product_type=earn`;
 
             for (let attempt = 1; attempt <= maxAttempts; attempt++) {
                 try {

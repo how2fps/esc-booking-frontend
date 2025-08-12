@@ -35,7 +35,7 @@ const SignupForm = () => {
               if (isValid) {
                      setSubmitting(true);
                      try {
-                            const response = await fetch("http://localhost:3000/api/users/signup", {
+                            const response = await fetch("http://18.138.130.229:3000/api/users/signup", {
                                    method: "POST",
                                    headers: {
                                           "Content-Type": "application/json",
