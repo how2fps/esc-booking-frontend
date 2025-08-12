@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import ProfilePage from "../src/features/pages/profile/ProfilePage";
 import { BrowserRouter } from "react-router-dom";
@@ -49,7 +53,7 @@ describe("Profile Page – basic render", () => {
   });
 });
 
-describe("Profile Page – update flow", () => {
+describe("Profile Page – update flow (name)", () => {
   it("updates name successfully and exits edit mode", async () => {
     // 1) session
     (global.fetch as jest.Mock).mockResolvedValueOnce(
@@ -96,6 +100,63 @@ describe("Profile Page – update flow", () => {
     expect(screen.getByRole("button", { name: /^save$/i })).toBeInTheDocument();
   });
 });
+
+describe("Profile Page – update flow (phone number)", () => {
+    it("updates phone number successfully and exits edit mode", async () => {
+      // 1) mock session fetch
+      (global.fetch as jest.Mock).mockResolvedValueOnce(
+        new Response(JSON.stringify(sessionOk), { status: 200 })
+      );
+      renderWithRouter();
+      expect(await screen.findByText(/profile/i)).toBeInTheDocument();
+  
+      // enter edit mode
+      fireEvent.click(screen.getByRole("button", { name: /edit/i }));
+  
+      // change phone number input to a valid number
+      const phoneInput = screen.getByLabelText(/phone number/i) as HTMLInputElement;
+      fireEvent.change(phoneInput, { target: { value: "+65 9123 4567" } });
+  
+      // 2) mock successful PUT
+      (global.fetch as jest.Mock).mockResolvedValueOnce(
+        new Response(JSON.stringify({ success: true }), { status: 200 })
+      );
+  
+      // click save
+      fireEvent.click(screen.getByRole("button", { name: /^save$/i }));
+  
+      // wait for success message & updated phone to appear, and edit mode exit
+      expect(await screen.findByText(/profile updated successfully/i)).toBeInTheDocument();
+      expect(screen.getByText("+65 9123 4567")).toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: /^save$/i })).not.toBeInTheDocument();
+    });
+  
+    it("shows validation error for invalid phone number and prevents save", async () => {
+      // 1) mock session fetch
+      (global.fetch as jest.Mock).mockResolvedValueOnce(
+        new Response(JSON.stringify(sessionOk), { status: 200 })
+      );
+      renderWithRouter();
+      expect(await screen.findByText(/profile/i)).toBeInTheDocument();
+  
+      // enter edit mode
+      fireEvent.click(screen.getByRole("button", { name: /edit/i }));
+  
+      // change phone number to invalid input (e.g., contains letters)
+      const phoneInput = screen.getByLabelText(/phone number/i) as HTMLInputElement;
+      fireEvent.change(phoneInput, { target: { value: "123ABC" } });
+  
+      // try clicking save
+      fireEvent.click(screen.getByRole("button", { name: /^save$/i }));
+  
+      // check validation error message shown
+      expect(await screen.findByText(/phone number contains invalid characters/i)).toBeInTheDocument();
+  
+      // save button still present (edit mode not exited)
+      expect(screen.getByRole("button", { name: /^save$/i })).toBeInTheDocument();
+    });
+  });
+  
 
 describe("Profile Page – delete flow", () => {
   it("validates empty and mismatched passwords", async () => {
