@@ -9,6 +9,7 @@ import "rc-slider/assets/index.css";
 import { useSearchParams } from "react-router-dom";
 import HotelItem from "../../components/HotelItem/HotelItem";
 import HandlePagination from "../../components/Other/HandlePagination";
+import MinimizedDestinationSearch from "../../components/Slider/MinimizedSlider";
 import type { Hotel, HotelFilter, HotelMarker, HotelPrice } from "../../type/HotelType";
 import { AmenityFilter } from "./AmenityFilter";
 import { ClusteredHotelMarkers as ClusteredHotelMarkersBase } from "./ClusteredHotelMarkers";
@@ -265,6 +266,7 @@ const HotelListings = () => {
 
        return (
               <div className="bg-white text-black max-lg:mt-10 max-md:mt-40 py-8 px-12">
+                     <MinimizedDestinationSearch />
                      {isModalOpen && (
                             <div className="fixed top-20 inset-x-0 z-50 flex justify-center pointer-events-none">
                                    <div className="relative bg-white border border-red-300 rounded-lg shadow-lg p-4 w-full max-w-md animate-fadeIn pointer-events-auto text-center">
