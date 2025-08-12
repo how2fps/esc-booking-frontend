@@ -1,31 +1,14 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const HeaderOne = () => {
        const pathname = usePathname();
 
-       const [user, setUser] = useState<{ name: string } | null>(null);
-
-       // Fetch session
-       useEffect(() => {
-              const fetchSession = async () => {
-                     try {
-                            const res = await fetch("http://localhost:3000/api/users/session", {
-                                   credentials: "include",
-                            });
-                            const data = await res.json();
-                            if (data.success) {
-                                   setUser({ name: data.data.name });
-                            }
-                     } catch (err) {
-                            console.error("Session fetch failed:", err);
-                     }
-              };
-              fetchSession();
-       }, []);
+       const { user: authUser } = useAuth();
+       console.log("Logged in user:", authUser);
 
        return (
               <div
@@ -62,19 +45,21 @@ const HeaderOne = () => {
                                    </ul>
                             </div>
 
-				<div className="right flex items-center gap-3">
-					{user ? (
-						<Link to="/profile" className="text-button max-sm:hidden">Hello, {user.name}</Link>
-					) : (
-						<>
-							<Link to="/login" className="text-button max-sm:hidden">Log In</Link>
-							<Link to="/signup" className="text-button max-sm:hidden">Sign Up</Link>
-						</>
-					)}
-				</div>
-			</div>
-		</div>
-	);
+                            <div className="right flex items-center gap-3">
+                                   {authUser ? (
+                                          <Link to="/profile" className="text-button max-sm:hidden">
+                                                 Hello, {authUser.name}
+                                          </Link>
+                                   ) : (
+                                          <>
+                                                 <Link to="/login" className="text-button max-sm:hidden">Log In</Link>
+                                                 <Link to="/signup" className="text-button max-sm:hidden">Sign Up</Link>
+                                          </>
+                                   )}
+                            </div>
+                     </div>
+              </div>
+       );
 };
 
 export default HeaderOne;

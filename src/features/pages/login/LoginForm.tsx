@@ -3,9 +3,11 @@
 import * as Icon from "phosphor-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../../features/components/context/AuthContext";
 
 const Login = () => {
        const navigate = useNavigate();
+       const { setUser } = useAuth();
        const [email, setEmail] = useState("");
        const [password, setPassword] = useState("");
        const [error, setError] = useState<string | null>(null);
@@ -16,11 +18,14 @@ const Login = () => {
                      const response = await fetch("http://localhost:3000/api/users/login", {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
-                            credentials: "include", // ✅ important for session cookies
+                            credentials: "include",
                             body: JSON.stringify({ email, password }),
                      });
                      const data = await response.json();
+                     console.log("Login response:", data);
                      if (response.ok && data.success) {
+                            console.log("Setting user:", data.data);
+                            setUser(data.data); 
                             navigate("/dashboard");
                      } else {
                             setError(data.message || "Login failed");

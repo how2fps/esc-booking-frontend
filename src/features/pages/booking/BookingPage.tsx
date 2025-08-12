@@ -8,6 +8,8 @@ const BookingPage = () => {
   const location = useLocation();
   const state = location.state || {};
 
+  const [loading, setLoading] = useState(true);
+
   // Non-editable booking details (from state)
   const [hotelImage] = useState(state.hotelImage || '');
   const [selectedHotel] = useState(state.hotelName || '');
@@ -23,7 +25,7 @@ const BookingPage = () => {
   const [adults] = useState(state.adults || 0);
   const [children] = useState(state.children || 0);
   
-
+  const [userId, setUserId] = useState<number | null>(null);
 
   // Editable user info
   const [firstName, setFirstName] = useState('');
@@ -43,16 +45,19 @@ const BookingPage = () => {
       })
       .then((data) => {
         const user = data.data;
+        setUserId(user.id);
         const [first, ...rest] = (user.name || '').split(' ');
         setFirstName(first || '');
         setLastName(rest.join(' ') || '');
         setPhoneNumber(user.phone_number?.toString() || '');
         setEmail(user.email || '');
+        setLoading(false);
       })
-      .catch((err) => {
-        console.log('Not logged in or error fetching session:', err);
+      .catch((_err) => {
+        console.log('Not logged in, redirecting...');
+        navigate('/login', { replace: true });
       });
-  }, []);
+  }, [navigate]);
 
   const calculateNights = () => {
     const start = new Date(startDate);
@@ -66,7 +71,7 @@ const BookingPage = () => {
   
     const validationErrors: string[] = [];
     const nameRegex = /^[A-Za-z]+$/;
-    const phoneRegex = /^\+?[0-9]{7,15}$/;  // Allows optional +, and 7 to 15 digits
+    const phoneRegex = /^(?:\+)?(?=(?:.*\d){7,15}$)[\d\s\-()]+$/;
   
     if (!firstName) {
       validationErrors.push('First name is required');
@@ -101,6 +106,7 @@ const BookingPage = () => {
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
           body: JSON.stringify({
+            user_id: userId,
             hotelName: selectedHotel,
             roomType,
             numberOfNights: calculateNights(),
@@ -131,7 +137,13 @@ const BookingPage = () => {
     }
   };
   
-  
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        Checking login status...
+      </div>
+    );
+  }
 
   return (
     <div className="booking-page lg:py-20 md:py-14 py-10 bg-white">
