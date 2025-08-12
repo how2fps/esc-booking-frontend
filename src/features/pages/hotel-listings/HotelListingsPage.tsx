@@ -2,17 +2,17 @@
 
 import { memo, useEffect, useMemo, useState } from "react";
 
+import { SpinnerIcon } from "@phosphor-icons/react";
+import { APIProvider, Map as GoogleMap } from "@vis.gl/react-google-maps";
 import * as Icon from "phosphor-react";
 import "rc-slider/assets/index.css";
 import { useSearchParams } from "react-router-dom";
 import HotelItem from "../../components/HotelItem/HotelItem";
 import HandlePagination from "../../components/Other/HandlePagination";
-import { SpinnerIcon } from "@phosphor-icons/react";
-import { APIProvider, Map as GoogleMap } from "@vis.gl/react-google-maps";
 import type { Hotel, HotelFilter, HotelMarker, HotelPrice } from "../../type/HotelType";
 import { AmenityFilter } from "./AmenityFilter";
 import { ClusteredHotelMarkers as ClusteredHotelMarkersBase } from "./ClusteredHotelMarkers";
-import { HotelRatingSlider } from "./HotelRatingSlider" ;
+import { HotelRatingSlider } from "./HotelRatingSlider";
 import { HotelSearch } from "./HotelSearch";
 import { ItemsPerPageSelector } from "./ItemsPerPageSelector";
 import { PriceRangeSlider } from "./PriceRangeSlider";
@@ -349,10 +349,8 @@ const HotelListings = () => {
                                                                <HotelItem
                                                                       key={hotel.id}
                                                                       hotelData={hotel}
-                                                                      destination_id ={destinationId}
+                                                                      destination_id={destinationId ?? ""}
                                                                       dateRange={formattedDateString}
-                                                                      checkIn={checkIn}
-                                                                      checkOut={checkOut}
                                                                />
                                                         ))
                                                  ) : (
