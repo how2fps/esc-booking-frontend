@@ -52,6 +52,7 @@ const ProfilePage: React.FC = () => {
               try {
                      const res = await fetch('http://18.138.130.229:3000/api/users/session', { credentials: 'include' })
                      const data = await res.json()
+                      console.log(data)
                      if (data.success) {
                             setUser({ name: data.data.name, email: data.data.email, phone_number: data.data.phone_number || '' })
                             setForm({ name: data.data.name, email: data.data.email, phone_number: data.data.phone_number || '' })
@@ -64,6 +65,7 @@ const ProfilePage: React.FC = () => {
               } catch (err) {
                      console.error('Failed to fetch session:', err)
                      setUser(null)
+                     console.log(err)
                      setLoading(false)
                      navigate('/login')
               }
