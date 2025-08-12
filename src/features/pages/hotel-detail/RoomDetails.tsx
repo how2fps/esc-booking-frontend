@@ -197,8 +197,9 @@ const RoomDetailContent = () => {
         const fetchHotelDetails = async () => {
             setHotelLoading(true);
             try {
-                const response = await fetch(`http://18.138.130.229:3000/api/hotels/${id}`, {
+                const response = await fetch(`https://api.ascendahotelbackend.com/api/hotels/${id}`, {
                 method: "GET",
+                credentials:"include",
                 headers: {
                     "Content-Type": "application/json",
                 }
@@ -263,6 +264,7 @@ const RoomDetailContent = () => {
                     
                     const response = await fetch(apiUrl, {
                         method: "GET",
+                        credentials:"include",
                         headers: { "Content-Type": "application/json" }
                     });
 

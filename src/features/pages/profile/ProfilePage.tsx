@@ -50,7 +50,7 @@ const ProfilePage: React.FC = () => {
        // Reusable fetch session function
        const fetchSession = async () => {
               try {
-                     const res = await fetch('http://18.138.130.229:3000/api/users/session', { credentials: 'include' })
+                     const res = await fetch('http://api.ascendahotelbackend.com/api/users/session', { credentials: 'include' })
                      const data = await res.json()
                       console.log(data)
                      if (data.success) {
@@ -113,7 +113,7 @@ const ProfilePage: React.FC = () => {
               setError(null)
               try {
                    
-                     const res = await fetch('http://18.138.130.229:3000/api/users/profile', {
+                     const res = await fetch('http://api.ascendahotelbackend.com/api/users/profile', {
                             method: 'PUT',
                             headers: { 'Content-Type': 'application/json' },
                             credentials: 'include',
@@ -151,7 +151,7 @@ const ProfilePage: React.FC = () => {
             setPasswordSaving(true);
         
             try {
-            const res = await fetch('http://http://18.138.130.229:3000/api/users/change-password', {
+            const res = await fetch('http://api.ascendahotelbackend.com/api/users/change-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -182,7 +182,7 @@ const ProfilePage: React.FC = () => {
 
        const handleLogout = async () => {
               try {
-                     await fetch('http://18.138.130.229:3000/api/users/logout', {
+                     await fetch('http://api.ascendahotelbackend.com/api/users/logout', {
                             method: 'POST',
                             credentials: 'include',
                      })
@@ -207,7 +207,7 @@ const ProfilePage: React.FC = () => {
 
               setDeleting(true)
               try {
-                     const res = await fetch('http://18.138.130.229:3000/api/users/delete', {
+                     const res = await fetch('http://api.ascendahotelbackend.com/api/users/delete', {
                             method: 'DELETE',
                             headers: { 'Content-Type': 'application/json' },
                             credentials: 'include',

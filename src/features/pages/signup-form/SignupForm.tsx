@@ -35,8 +35,9 @@ const SignupForm = () => {
               if (isValid) {
                      setSubmitting(true);
                      try {
-                            const response = await fetch("http://18.138.130.229:3000/api/users/signup", {
+                            const response = await fetch("https://api.ascendahotelbackend.com/api/users/signup", {
                                    method: "POST",
+                                   credentials: 'include',
                                    headers: {
                                           "Content-Type": "application/json",
                                    },

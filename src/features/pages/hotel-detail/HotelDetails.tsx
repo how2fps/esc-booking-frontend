@@ -190,8 +190,9 @@ const HotelDetailContent = () => {
                 try {
                     console.log(`Hotel fetch attempt ${retries + 1}/${maxRetries}`);
                     
-                    const response = await fetch(`http://18.138.130.229:3000/api/hotels/${id}`, {
+                    const response = await fetch(`https://api.ascendahotelbackend.com/api/hotels/${id}`, {
                         method: "GET",
+                        credentials: 'include',
                         headers: {
                             "Content-Type": "application/json",
                         }
@@ -273,7 +274,7 @@ const HotelDetailContent = () => {
                 const maxRetries = 3; 
                 const delay = 1000; 
 
-                const apiUrl = `http://18.138.130.229:3000/api/hotels/${id}/prices?destination_id=${destination_id}&checkin=${currentCheckIn}&checkout=${currentCheckOut}&lang=en_US&currency=SGD&country_code=SG&guests=${currentGuests}&partner_id=1089&landing_page=wl-acme-earn&product_type=earn`;
+                const apiUrl = `https://api.ascendahotelbackend.com/api/hotels/${id}/prices?destination_id=${destination_id}&checkin=${currentCheckIn}&checkout=${currentCheckOut}&lang=en_US&currency=SGD&country_code=SG&guests=${currentGuests}&partner_id=1089&landing_page=wl-acme-earn&product_type=earn`;
                 console.log('Room API URL:', apiUrl);
 
                 while (isActive && retries < maxRetries && !abortController.signal.aborted) {
@@ -282,6 +283,7 @@ const HotelDetailContent = () => {
                         
                         const response = await fetch(apiUrl, {
                             method: "GET",
+                            credentials :'include',
                             headers: {
                                 "Content-Type": "application/json",
                             },

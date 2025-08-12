@@ -48,7 +48,10 @@ const loadOptions = async (search: string, page: number) => {
                      hasMore: false,
               };
        }
-       const response = await fetch("http://18.138.130.229:3000/api/search/" + search);
+       const response = await fetch("https://api.ascendahotelbackend.com/api/search/" + search, {
+              method: 'GET',
+              credentials: 'include' // Include credentials for this request
+       });
        const data = await response.json();
        //console.log(data);
        
@@ -257,7 +260,7 @@ const DestinationSearch = () => {
                                                                       direction="horizontal"
                                                                       minDate={min}
                                                                /></div>
-                                                               /></div>
+                                                            
                                                         </div>
                                                         <div className="relative lg:w-full md:w-[48%] w-full">
                                                                <div

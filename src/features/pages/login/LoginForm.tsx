@@ -15,7 +15,7 @@ const Login = () => {
        const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
               e.preventDefault();
               try {
-                     const response = await fetch("http://18.138.130.229:3000/api/users/login", {
+                     const response = await await fetch("https://api.ascendahotelbackend.com/api/users/login", {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
                             credentials: "include",

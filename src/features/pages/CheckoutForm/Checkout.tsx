@@ -33,8 +33,9 @@ const CheckoutForm = () => {
     if (bookingId) {
       console.log(`Fetching payment details for booking ID: ${bookingId}`);
       
-      fetch("http://18.138.130.229:3000/api/stripe/create-checkout-session", {
+      await fetch("https://api.ascendahotelbackend.com/api/stripe/create-checkout-session", {
         method: "POST",
+        credentials: 'include' ,
         headers: {
           'Content-Type': 'application/json',
         },
