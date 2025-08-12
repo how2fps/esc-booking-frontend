@@ -230,10 +230,11 @@ const DestinationSearch = () => {
                                                                              value={`${state[0].startDate.toLocaleDateString()} - ${state[0].endDate.toLocaleDateString()}`}
                                                                              readOnly
                                                                       />
-                                                               </div>
+                                                               </div >
+                                                               <div data-testid = "picker">
                                                                <DateRangePicker
                                                                       className={`form-date-picker box-shadow md:border-t border-outline  ${openDate ? "open" : ""}`}
-                                                                      data-testid = "picker"
+                                                                      
                                                                       onChange={(item) => setState([item.selection] as any)}
                                                                       staticRanges={[]}
                                                                       inputRanges={[]}
@@ -243,7 +244,7 @@ const DestinationSearch = () => {
                                                                       ranges={state}
                                                                       direction="horizontal"
                                                                       minDate={min}
-                                                               />
+                                                               /></div>
                                                         </div>
                                                         <div className="relative lg:w-full md:w-[48%] w-full">
                                                                <div
