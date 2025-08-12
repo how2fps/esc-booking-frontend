@@ -18,6 +18,10 @@ import { ItemsPerPageSelector } from "./ItemsPerPageSelector";
 import { PriceRangeSlider } from "./PriceRangeSlider";
 import { SortSelector } from "./SortSelector";
 import { StarRatingPicker } from "./StarRatingPicker";
+const apiKey = process.env.GOOGLE_MAPS_API_KEY ;
+if (!apiKey) {
+    throw new Error(`Environment variable GOOGLE_MAPS_API_KEY is not set`);
+  }
 
 const ClusteredHotelMarkers = memo(ClusteredHotelMarkersBase);
 const formatDate = (dateString: string): string => {
@@ -296,7 +300,7 @@ const HotelListings = () => {
                                                         />
                                                  </div>
                                           ) : (
-                                                 <APIProvider apiKey={"AIzaSyAb7h-Azds2hKTEeVfuGzcDy4uXSigGYzI"}>
+                                                 <APIProvider apiKey={apiKey}>
                                                         <div className="w-full h-[400px] rounded-xl overflow-hidden shadow">
                                                                <GoogleMap
                                                                       mapId={"23a74d563be6cbd9931b8972"}
@@ -349,10 +353,9 @@ const HotelListings = () => {
                                                                <HotelItem
                                                                       key={hotel.id}
                                                                       hotelData={hotel}
-                                                                      destination_id ={destinationId}
+                                                                      destination_id ={destinationId as string}
                                                                       dateRange={formattedDateString}
-                                                                      checkIn={checkIn}
-                                                                      checkOut={checkOut}
+                                                                    
                                                                />
                                                         ))
                                                  ) : (

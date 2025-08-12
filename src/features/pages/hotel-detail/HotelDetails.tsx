@@ -132,8 +132,7 @@ const HotelDetailContent = () => {
         
         const prefix = hotelDetails.image_details.prefix;
         const suffix = hotelDetails.image_details.suffix || '.jpg';
-        const imgixUrl = hotelDetails.imgix_url;
-        const cloudflareUrl = hotelDetails.cloudflare_image_url;
+ 
         
         const fallbacks: string[] = [];
         
@@ -158,8 +157,8 @@ const HotelDetailContent = () => {
         console.log(`Generated ${fallbacks.length} fallbacks for array index ${index} (image ${actualImageIndex}):`, fallbacks);
         return fallbacks.slice(0, 2); // Limit to 2 fallbacks to prevent infinite loops
     }, [hotelDetails?.image_details, hotelDetails?.imgix_url, hotelDetails?.cloudflare_image_url]);
-
-    const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [_failedImages, setFailedImages] = useState<Set<string>>(new Set());
     const [imageRetryAttempts, setImageRetryAttempts] = useState<Map<string, number>>(new Map());
     const [mainImage, setMainImage] = useState<string | null>(null);
 

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useSearchParams } from 'react-router-dom';
 import * as Icon from 'phosphor-react'
@@ -18,11 +18,6 @@ interface GuestType {
     adult: number;
     children: number;
 }
-type DateRange = {
-  startDate?: Date;
-  endDate?: Date;
-  key: string;
-};
 
 const RoomDetailContent = () => {
     const { id } = useParams();  
