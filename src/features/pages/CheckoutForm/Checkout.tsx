@@ -9,7 +9,7 @@ import {
 } from '@stripe/react-stripe-js';
 
 // Initialize Stripe outside of the component
-const stripePromise = loadStripe("pk_test_51RlnqCFyaklkAMXyrYjEB341JN4tJG4fVRI7XqqQ1I0vPj1EJSF4JmQiXcFENNFnPazI53KrTSwftVmpplyOCXP300U4RheZ2p");
+const stripePromise = loadStripe("pk_test_51RlnqVCRemnaR0EMcYPAKo8USAa7Qhyx8drdhnG2XG4KOp8PrGqOu9D61azLwFxfiaAyOWLcCRIY93W8Z1DXsqAF00z6jI9LR0");
 
 const CheckoutForm = () => {
   // 2. Add state to hold the client secret
