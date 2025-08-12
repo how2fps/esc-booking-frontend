@@ -110,7 +110,7 @@ const ProfilePage: React.FC = () => {
               setMessage(null)
               setError(null)
               try {
-                    const res = await fetch('http://http://18.138.130.229:3000:3000/api/users/profile', {
+                   
                      const res = await fetch('http://18.138.130.229:3000/api/users/profile', {
                             method: 'PUT',
                             headers: { 'Content-Type': 'application/json' },
