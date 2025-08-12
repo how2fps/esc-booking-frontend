@@ -369,7 +369,7 @@ const HotelDetailContent = () => {
         
         const imageDetails = hotelDetails.image_details;
         const prefix = imageDetails.prefix;
-        const count = Math.min(imageDetails.count || 0, 8); // Limit to 8 images to reduce failed attempts
+        const count = Math.min(imageDetails.count || 0, 11); // Limit to 11 images for better gallery experience
         const suffix = imageDetails.suffix || '.jpg';
         const images: string[] = [];
 
@@ -394,27 +394,15 @@ const HotelDetailContent = () => {
     // Set main image with fallback logic
     useEffect(() => {
         if (image_array.length > 0) {
-            // Use the default_image_index from API (1-based) directly since our array is now 1-based
-            const defaultIndex = hotelDetails?.default_image_index || 1;
-            
-            // Since our array now uses 1-based indexing and API default_image_index is 1-based,
-            // we can use direct mapping
-            const arrayIndex = Math.max(0, Math.min(defaultIndex - 1, image_array.length - 1));
-            const selectedImage = image_array[arrayIndex];
-            
-            console.log('Setting main image:', { 
-                defaultIndex, 
-                arrayIndex, 
-                selectedImage,
-                totalImages: image_array.length 
-            });
-            
+            // Use the first image from the array as the main image
+            const selectedImage = image_array[0];
+            console.log('Setting main image:', selectedImage);
             setMainImage(selectedImage);
         } else {
             console.log('No images available, using placeholder');
-            setMainImage('/assets/Placeholder_Cat.jpg');
+            setMainImage('/src/assets/Placeholder_Cat.png');
         }
-    }, [image_array, hotelDetails?.default_image_index]);
+    }, [image_array]);
 
     const handleOpenDate = () => {
         setOpenDate(!openDate);
@@ -513,83 +501,30 @@ const HotelDetailContent = () => {
                         className="aspect-[2/3] w-full h-[500px] max-w-full mx-auto overflow-hidden rounded-xl shadow-lg bg-gray-100 flex items-center justify-center"
                         style={{ maxWidth: '100%' }}
                     >
-                        {mainImage ? (
-                            <img
-                                src={mainImage}
-                                alt="Main Hotel View"
-                                className="w-full h-full object-cover rounded-xl"
-                                style={{ width: '100%', height: '100%' }}
-                                onError={(e) => {
-                                    console.log('Main image failed to load:', mainImage);
-                                    const imageIndex = image_array.indexOf(mainImage);
-                                    const currentAttempts = imageRetryAttempts.get(mainImage) || 0;
-                                    const fallbacks = getImageFallbacks(mainImage, imageIndex);
-                                    
-                                    console.log(`Main image fallbacks available:`, fallbacks);
-                                    
-                                    // Safety check: limit total attempts
-                                    if (currentAttempts < fallbacks.length && currentAttempts < 3) {
-                                        // Try next fallback URL
-                                        const nextUrl = fallbacks[currentAttempts];
-                                        console.log(`Trying main image fallback ${currentAttempts + 1}:`, nextUrl);
-                                        e.currentTarget.src = nextUrl;
-                                        setImageRetryAttempts(prev => new Map(prev).set(mainImage, currentAttempts + 1));
-                                    } else {
-                                        // All fallbacks failed or max attempts reached, use placeholder
-                                        console.log('All main image fallbacks failed or max attempts reached for:', mainImage);
-                                        e.currentTarget.src = "/assets/Placeholder_Cat.jpg";
-                                        // Reset retry attempts
-                                        setImageRetryAttempts(prev => {
-                                            const newMap = new Map(prev);
-                                            newMap.delete(mainImage);
-                                            return newMap;
-                                        });
-                                    }
-                                }}
-                                onLoad={() => {
-                                    console.log('Main image loaded successfully:', mainImage);
-                                }}
-                            />
-                        ) : (
-                            <div className="flex flex-col items-center justify-center text-gray-500">
-                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-300 mb-4"></div>
-                                <span>Loading image...</span>
-                            </div>
-                        )}
+                        <img
+                            src={mainImage || "/src/assets/Placeholder_Cat.png"}
+                            alt="Main Hotel View"
+                            className="w-full h-full object-cover rounded-xl"
+                            style={{ width: '100%', height: '100%' }}
+                            onError={(e) => {
+                                console.log('Main image failed to load:', mainImage);
+                                e.currentTarget.src = "/src/assets/Placeholder_Cat.png";
+                            }}
+                            onLoad={() => {
+                                console.log('Main image loaded successfully:', mainImage || 'placeholder');
+                            }}
+                        />
                     </div>
                 </div>
 
                 {/* Thumbnail Grid */}
                 <div className="w-full mt-6">
                     <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-                        {image_array.length > 0 && hotelDetails?.image_details?.prefix ? (
+                        {image_array.length > 0 ? (
                             image_array.map((imageUrl: string, index: number) => {
                                 const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-                                    const currentAttempts = imageRetryAttempts.get(imageUrl) || 0;
-                                    const fallbacks = getImageFallbacks(imageUrl, index);
-                                    
-                                    console.log(`Thumbnail image failed (attempt ${currentAttempts + 1}):`, imageUrl);
-                                    console.log(`Available fallbacks:`, fallbacks);
-                                    
-                                    // Safety check: limit total attempts to prevent infinite loops
-                                    if (currentAttempts < fallbacks.length && currentAttempts < 3) {
-                                        // Try next fallback URL
-                                        const nextUrl = fallbacks[currentAttempts];
-                                        console.log(`Trying fallback ${currentAttempts + 1}:`, nextUrl);
-                                        e.currentTarget.src = nextUrl;
-                                        setImageRetryAttempts(prev => new Map(prev).set(imageUrl, currentAttempts + 1));
-                                    } else {
-                                        // All fallbacks failed or max attempts reached, use placeholder
-                                        console.log('All fallbacks failed or max attempts reached for:', imageUrl);
-                                        e.currentTarget.src = "/assets/Placeholder_Cat.jpg";
-                                        setFailedImages(prev => new Set(prev).add(imageUrl));
-                                        // Reset retry attempts for this image
-                                        setImageRetryAttempts(prev => {
-                                            const newMap = new Map(prev);
-                                            newMap.delete(imageUrl);
-                                            return newMap;
-                                        });
-                                    }
+                                    console.log(`Thumbnail image failed:`, imageUrl);
+                                    e.currentTarget.src = "/src/assets/Placeholder_Cat.png";
                                 };
 
                                 return (
@@ -608,8 +543,15 @@ const HotelDetailContent = () => {
                                 );
                             })
                         ) : (
-                            <div className="w-full h-20 flex items-center justify-center bg-gray-100 rounded-lg p-4">
-                                <span className="text-gray-500 text-sm">No images available</span>
+                            // Show placeholder cat thumbnail when no images are available
+                            <div className="flex-shrink-0">
+                                <div className="w-[120px] h-[80px] bg-gray-100 rounded-lg overflow-hidden">
+                                    <img
+                                        src="/src/assets/Placeholder_Cat.png"
+                                        alt="No images available"
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
                             </div>
                         )}
                     </div>
@@ -731,16 +673,16 @@ const HotelDetailContent = () => {
                                     </div>
                                 ) : roomDetails.length > 0 ? (
                                     <div className="mt-4">
-                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                        <div className="grid do -cols-1 lg:grid-cols-2 gap-4">
                                             {roomDetails.map((room, index) => (
                                                 <div key={room.key || index} className="room-card bg-white border border-gray-200 rounded-lg p-4">
                                                     <div className="room-image mb-4">
                                                         <img
-                                                            src={room.images?.find(img => img.hero_image)?.high_resolution_url || '/assets/Placeholder_Cat.jpg'}
+                                                            src={room.images?.find(img => img.hero_image)?.high_resolution_url || '/src/assets/Placeholder_Cat.png'}
                                                             alt={room.roomNormalizedDescription}
                                                             className="w-full h-48 object-cover rounded-lg"
                                                             onError={(e) => {
-                                                                e.currentTarget.src = "/assets/default-room.jpg";
+                                                                e.currentTarget.src = "/src/assets/Placeholder_Cat.png";
                                                             }}
                                                         />
                                                     </div>
@@ -811,14 +753,14 @@ const HotelDetailContent = () => {
                                                         <Icon.CalendarBlank className='text-xl' />
                                                         <div className="text-button">Check In</div>
                                                     </div>
-                                                    <div className="body2 mt-1">{state[0].startDate.toLocaleDateString()}</div>
+                                                    <div className="body2 mt-1">{state[0].startDate.toLocaleDateString('en-GB')}</div>
                                                 </div>
                                                 <div className="left pr-5 py-4 cursor-pointer" onClick={handleOpenDate}>
                                                     <div className="flex items-center justify-end gap-1">
                                                         <Icon.CalendarBlank className='text-xl' />
                                                         <div className="text-button">Check Out</div>
                                                     </div>
-                                                    <div className="body2 mt-1 text-end">{state[0].endDate.toLocaleDateString()}</div>
+                                                    <div className="body2 mt-1 text-end">{state[0].endDate.toLocaleDateString('en-GB')}</div>
                                                 </div>
                                             </div>
                                             {/* Date Picker dropdown */}
@@ -840,7 +782,7 @@ const HotelDetailContent = () => {
                                                         months={2}
                                                         ranges={state}
                                                         direction="horizontal"
-                                                        minDate={new Date()}
+                                                        minDate={addDays(new Date(), 3)}
                                                         showMonthAndYearPickers={true}
                                                         showDateDisplay={true}
                                                     />

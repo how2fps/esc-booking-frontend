@@ -284,10 +284,10 @@ const RoomDetailContent = () => {
     const image_array = useMemo(() => {
         try {
             if (roomDetail?.images && Array.isArray(roomDetail.images) && roomDetail.images.length > 0) {
-                // Limit to max 10 images for performance and filter out invalid images
+                // Limit to max 13 images for better gallery experience and filter out invalid images
                 return roomDetail.images
                     .filter(img => img && img.high_resolution_url)
-                    .slice(0, 10)
+                    .slice(0, 13)
                     .map(img => img.high_resolution_url);
             }
             return ['/assets/Placeholder_Cat.png'];
@@ -752,14 +752,14 @@ const RoomDetailContent = () => {
                                                         <Icon.CalendarBlank className='text-xl' />
                                                         <div className="text-button">Check In</div>
                                                     </div>
-                                                    <div className="body2 mt-1">{state[0].startDate.toLocaleDateString()}</div>
+                                                    <div className="body2 mt-1">{state[0].startDate.toLocaleDateString('en-GB')}</div>
                                                 </div>
                                                 <div className="left pr-5 py-4 cursor-pointer" onClick={handleOpenDate}>
                                                     <div className="flex items-center gap-1">
                                                         <Icon.CalendarBlank className='text-xl' />
                                                         <div className="text-button">Check Out</div>
                                                     </div>
-                                                    <div className="body2 mt-1">{state[0].endDate.toLocaleDateString()}</div>
+                                                    <div className="body2 mt-1">{state[0].endDate.toLocaleDateString('en-GB')}</div>
                                                 </div>
                                             </div>
                                             {/* Date Picker dropdown */}
@@ -781,7 +781,7 @@ const RoomDetailContent = () => {
                                                         months={2}
                                                         ranges={state}
                                                         direction="horizontal"
-                                                        minDate={new Date()}
+                                                        minDate={addDays(new Date(), 3)}
                                                         showMonthAndYearPickers={true}
                                                         showDateDisplay={true}
                                                     />
