@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 
 const ReturnForm = () => {
   const [status, setStatus] = useState<string | null>(null);
@@ -23,7 +23,7 @@ const ReturnForm = () => {
 
     // Start polling the status every 2 seconds
     const intervalId = setInterval(() => {
-      fetch(`http://localhost:3000/api/stripe/session-status?session_id=${sessionId}`)
+      fetch(`http://18.138.130.229:3000/api/stripe/session-status?session_id=${sessionId}`)
         .then((res) => res.json())
         .then((data) => {
           // Only update state if the status has changed
@@ -37,7 +37,7 @@ const ReturnForm = () => {
             clearInterval(intervalId);
 
             // Call your backend to update the database
-            fetch('http://localhost:3000/api/bookings/confirm-payment', {
+            fetch('http://18.138.130.229:3000/api/bookings/confirm-payment', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ bookingId: bookingId, stripeSessionId: sessionId })
