@@ -62,6 +62,12 @@ const loadOptions = async (search: string, page: number) => {
        };
 };
 
+const heroImages = [
+  "/images/home/mountainhero.jpg",
+  "/images/home/riverhero.jpg",
+  "/images/home/sandhero.jpg",
+];
+
 const defaultAdditional = { page: 1 };
 
 const loadPageOptions = async (
@@ -94,6 +100,14 @@ const DestinationSearch = () => {
                      key: "selection",
               },
        ]);
+
+       const [slideIdx, setSlideIdx] = useState<number>(0);
+
+       useEffect(() => {
+              heroImages.forEach((src) => { const img = new Image(); img.src = src; });
+              const t = setInterval(() => setSlideIdx((p) => (p + 1) % heroImages.length), 6000);
+              return () => clearInterval(t);
+       }, []);
 
        const [guest, setGuest] = useState<GuestType>({
               adult: 0,
@@ -166,27 +180,24 @@ const DestinationSearch = () => {
 
        return (
               <>
-                     <div
-                            className="slider-block style-one relative h-[620px]"
-                            data-testid="slider">
-                            <div className="bg-img absolute top-0 left-0 w-full h-full">
-                                   <img
-                                          src={"/images/slider/hotel-lobby-2024-12-05-23-25-27-utc.jpg"}
-                                          width={5000}
-                                          height={3000}
-                                          alt="slider"
-                                          className="w-full h-full object-cover"
-                                          style={{
-                                                 filter: "brightness(0.5)",
-                                                 WebkitFilter: "brightness(0.5)",
-                                                 position: "relative",
-                                          }}
-                                   />
+                     <div className="slider-block style-one relative h-[calc(100vh-160px)] overflow-hidden bg-black" data-testid="slider">
+                            <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
+                                   {heroImages.map((src, i) => (
+                                          <img
+                                          key={src}
+                                          src={src}
+                                          alt={`Slide ${i + 1}`}
+                                          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
+                                                 i === slideIdx ? "opacity-100" : "opacity-0"
+                                          }`}
+                                          style={{ filter: "brightness(0.5)" }}
+                                          />
+                                   ))}
                             </div>
-                            <div className="container py-[176px]">
-                                   <div className="content w-full relative">
+                            <div className="container h-full relative z-20">
+                                   <div className="content w-full h-full relative flex flex-col items-center justify-center">
                                           <div className="heading flex-col items-center justify-center">
-                                                 <div className="heading2 text-white text-center">Pick your next journey</div>
+                                                 <div className="text-white font-extrabold text-4xl md:text-5xl drop-shadow-lg">Unlock Unique Stays at Exclusive Prices</div>
                                           </div>
 
                                           <div className="form-search md:mt-10 mt-6 w-full">
@@ -235,6 +246,7 @@ const DestinationSearch = () => {
                                                                <DateRangePicker
                                                                       className={`form-date-picker box-shadow md:border-t border-outline  ${openDate ? "open" : ""}`}
                                                                       
+                                                                      
                                                                       onChange={(item) => setState([item.selection] as any)}
                                                                       staticRanges={[]}
                                                                       inputRanges={[]}
@@ -244,6 +256,7 @@ const DestinationSearch = () => {
                                                                       ranges={state}
                                                                       direction="horizontal"
                                                                       minDate={min}
+                                                               /></div>
                                                                /></div>
                                                         </div>
                                                         <div className="relative lg:w-full md:w-[48%] w-full">
