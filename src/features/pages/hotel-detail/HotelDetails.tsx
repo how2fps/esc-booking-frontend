@@ -127,39 +127,38 @@ const HotelDetailContent = () => {
     }, [guest]);
 
     // Helper function to get alternative image URLs
-    const getImageFallbacks = useCallback((originalUrl: string, index: number) => {
-        if (!hotelDetails?.image_details?.prefix) return [];
+
+    // const _getImageFallbacks = useCallback((originalUrl: string, index: number) => {
+    //     if (!hotelDetails?.image_details?.prefix) return [];
         
-        const prefix = hotelDetails.image_details.prefix;
-        const suffix = hotelDetails.image_details.suffix || '.jpg';
+    //     const prefix = hotelDetails.image_details.prefix;
+    //     const suffix = hotelDetails.image_details.suffix || '.jpg';
  
         
-        const fallbacks: string[] = [];
+    //     const fallbacks: string[] = [];
         
-        // Since we're now using 1-based indexing, the actual image index would be index + 1
-        const actualImageIndex = index + 1;
+    //     // Since we're now using 1-based indexing, the actual image index would be index + 1
+    //     const actualImageIndex = index + 1;
         
-        // Try different indexing patterns around the actual index
-        const indexPatterns = [
-            actualImageIndex - 1,  // 0-based equivalent
-            actualImageIndex,      // 1-based (current)
-            actualImageIndex + 1,  // In case we're off by one
-        ].filter(i => i >= 0); // Remove negative indices
+    //     // Try different indexing patterns around the actual index
+    //     const indexPatterns = [
+    //         actualImageIndex - 1,  // 0-based equivalent
+    //         actualImageIndex,      // 1-based (current)
+    //         actualImageIndex + 1,  // In case we're off by one
+    //     ].filter(i => i >= 0); // Remove negative indices
         
-        // Generate different URL patterns
-        for (const i of indexPatterns) {
-            const candidateUrl = `${prefix}${i}${suffix}`;
-            if (candidateUrl !== originalUrl && !fallbacks.includes(candidateUrl)) {
-                fallbacks.push(candidateUrl);
-            }
-        }
+    //     // Generate different URL patterns
+    //     for (const i of indexPatterns) {
+    //         const candidateUrl = `${prefix}${i}${suffix}`;
+    //         if (candidateUrl !== originalUrl && !fallbacks.includes(candidateUrl)) {
+    //             fallbacks.push(candidateUrl);
+    //         }
+    //     }
         
-        console.log(`Generated ${fallbacks.length} fallbacks for array index ${index} (image ${actualImageIndex}):`, fallbacks);
-        return fallbacks.slice(0, 2); // Limit to 2 fallbacks to prevent infinite loops
-    }, [hotelDetails?.image_details, hotelDetails?.imgix_url, hotelDetails?.cloudflare_image_url]);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [_failedImages, setFailedImages] = useState<Set<string>>(new Set());
-    const [imageRetryAttempts, setImageRetryAttempts] = useState<Map<string, number>>(new Map());
+    //     console.log(`Generated ${fallbacks.length} fallbacks for array index ${index} (image ${actualImageIndex}):`, fallbacks);
+    //     return fallbacks.slice(0, 2); // Limit to 2 fallbacks to prevent infinite loops
+    // }, [hotelDetails?.image_details, hotelDetails?.imgix_url, hotelDetails?.cloudflare_image_url]);
+
     const [mainImage, setMainImage] = useState<string | null>(null);
 
     useEffect(() => {
