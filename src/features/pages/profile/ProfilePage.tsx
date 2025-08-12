@@ -24,7 +24,7 @@ const ProfilePage: React.FC = () => {
        // Reusable fetch session function
        const fetchSession = async () => {
               try {
-                     const res = await fetch('http://localhost:3000/api/users/session', { credentials: 'include' })
+                     const res = await fetch('http://18.138.130.229:3000/api/users/session', { credentials: 'include' })
                      const data = await res.json()
                      if (data.success) {
                             setUser({ name: data.data.name, email: data.data.email, phone_number: data.data.phone_number || '' })
