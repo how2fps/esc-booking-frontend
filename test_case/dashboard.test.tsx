@@ -95,43 +95,69 @@ describe("DestinationSearch Component", () => {
   expect(await screen.findByText(/No options/i)).toBeInTheDocument();
 });
 
-  it("increments and decrements guest values",async () => {
+  it("increments and decrements guest values", async () => {
     renderWithRouter();
 
-    const guestInput = screen.getByPlaceholderText('Add Guest');
+    const guestInput = screen.getByPlaceholderText("Add Guest");
     expect(guestInput).toBeInTheDocument();
 
     // Open guest menu
     fireEvent.click(guestInput);
 
-    // Adults plus button
-     const adultsSection = screen.getByText('Adults').closest('.item');
-    const plusButton = adultsSection.querySelector('.plus');
+    // ==== Adults section ====
+    const adultsLabel = screen.getByText("Adults");
+    const adultsSection = adultsLabel.closest(".item");
+    expect(adultsSection).not.toBeNull(); // fail test if missing
+    if (!adultsSection) return; // TS narrowing
+
+    const plusButton = adultsSection.querySelector(".plus");
+    expect(plusButton).not.toBeNull();
+    if (!plusButton) return;
+
     fireEvent.click(plusButton);
     fireEvent.click(plusButton);
+
     await waitFor(() => {
-      expect(guestInput.value).toContain('2 adults');
+      expect((guestInput as HTMLInputElement).value).toContain("2 adults");
     });
-    
-    // Find and click "Adults" minus button
-    const minusButton = adultsSection.querySelector('.minus');
+
+    // Adults minus button
+    const minusButton = adultsSection.querySelector(".minus");
+    expect(minusButton).not.toBeNull();
+    if (!minusButton) return;
+
     fireEvent.click(minusButton);
 
     await waitFor(() => {
-      expect(guestInput.value).toBe('1 adult');
+      expect((guestInput as HTMLInputElement).value).toBe("1 adult");
     });
-    const childSection = screen.getByText('Children').closest('.item');
-    const CplusButton = childSection.querySelector('.plus');
-    fireEvent.click(CplusButton);
+
+    // ==== Children section ====
+    const childLabel = screen.getByText("Children");
+    const childSection = childLabel.closest(".item");
+    expect(childSection).not.toBeNull();
+    if (!childSection) return;
+
+    const cPlusButton = childSection.querySelector(".plus");
+    expect(cPlusButton).not.toBeNull();
+    if (!cPlusButton) return;
+
+    fireEvent.click(cPlusButton);
+
     await waitFor(() => {
-      expect(guestInput.value).toContain('1 adult, 1 children');
+      expect((guestInput as HTMLInputElement).value).toContain("1 adult, 1 children");
     });
   });
+});
+
 
    it("increments room count",async () => {
     renderWithRouter();
 
     const roomselection = screen.getByText('Rooms').closest('.item');
+    if (!roomselection) {
+      throw new Error("Room selection element not found");
+    }
     const CplusButton = roomselection.querySelector('.plus');
     if (CplusButton) fireEvent.click(CplusButton);
     expect(screen.getByTestId("room-count")).toHaveTextContent("1");
@@ -205,7 +231,7 @@ describe("DestinationSearch - DateRangePicker", () => {
     // The input value should change to reflect the new range (format: MM/DD/YYYY - MM/DD/YYYY)
     const dateInput = screen.getByPlaceholderText(/Add Dates/i);
     await waitFor(() => {
-      expect(dateInput.value).toMatch(
+      expect((dateInput as HTMLInputElement).value).toMatch(
         /^\d{1,2}\/\d{1,2}\/\d{4} - \d{1,2}\/\d{1,2}\/\d{4}$/
       );
     });
