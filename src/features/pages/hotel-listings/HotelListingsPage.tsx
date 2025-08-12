@@ -331,7 +331,7 @@ const HotelListings = () => {
                                                  setItemsPerPage={setItemsPerPage}
                                           />
 
-                                          <SortSelector setSortOption={setSortOption} />
+                                          <SortSelector setSortOption={setSortOption} data-testid="sort"/>
                                    </div>
                                    {isLoading ? (
                                           <div
