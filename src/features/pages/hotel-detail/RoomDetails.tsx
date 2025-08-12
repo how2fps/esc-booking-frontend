@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useSearchParams } from 'react-router-dom';
 import * as Icon from 'phosphor-react'
@@ -18,11 +18,6 @@ interface GuestType {
     adult: number;
     children: number;
 }
-type DateRange = {
-  startDate?: Date;
-  endDate?: Date;
-  key: string;
-};
 
 const RoomDetailContent = () => {
     const { id } = useParams();  
@@ -30,10 +25,9 @@ const RoomDetailContent = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const destination_id = searchParams.get('destination_id');
-    const checkIn = searchParams.get('checkin'); // Note: your URL uses 'checkin' not 'checkIn'
-    const checkOut = searchParams.get('checkout'); // Note: your URL uses 'checkout' not 'checkOut'
+    const checkIn = searchParams.get('checkin'); 
+    const checkOut = searchParams.get('checkout'); 
     
-    // Debug logging
     console.log('=== ROOM DETAILS PAGE PARAMS ===');
     console.log('URL params:', { id, roomKey });
     console.log('Search params:', { 
@@ -42,7 +36,14 @@ const RoomDetailContent = () => {
         checkOut,
         allParams: Object.fromEntries(searchParams.entries())
     });
+
     console.log('Current URL:', window.location.href);
+    console.log('Date validation:', {
+        checkInDate: checkIn ? new Date(checkIn) : null,
+        checkOutDate: checkOut ? new Date(checkOut) : null,
+        checkInValid: checkIn ? !isNaN(new Date(checkIn).getTime()) : false,
+        checkOutValid: checkOut ? !isNaN(new Date(checkOut).getTime()) : false
+    });
     
     const [viewMoreDesc, setViewMoreDesc] = useState<boolean>(false)
     const [viewMoreAmenities, setViewMoreAmenities] = useState<boolean>(false)
@@ -62,48 +63,87 @@ const RoomDetailContent = () => {
         children: 0
     });
         
-    const [state, setState] = useState([
-        {
-            startDate: checkIn ? new Date(checkIn) : new Date(),
-            endDate: checkOut ? new Date(checkOut) : addDays(new Date(), 1),
-            key: 'selection'
+    const [state, setState] = useState(() => {
+        let startDate = new Date();
+        let endDate = addDays(new Date(), 1);
+        
+        if (checkIn) {
+            const parsedStartDate = new Date(checkIn);
+            if (!isNaN(parsedStartDate.getTime())) {
+                startDate = parsedStartDate;
+            } else {
+                console.warn('Invalid check-in date in RoomDetails:', checkIn);
+            }
         }
-    ]);
+        
+        if (checkOut) {
+            const parsedEndDate = new Date(checkOut);
+            if (!isNaN(parsedEndDate.getTime())) {
+                if (parsedEndDate <= startDate) {
+                    endDate = addDays(startDate, 1);
+                } else {
+                    endDate = parsedEndDate;
+                }
+            } else {
+                console.warn('Invalid check-out date in RoomDetails:', checkOut);
+                endDate = addDays(startDate, 1);
+            }
+        } else {
+            endDate = addDays(startDate, 1);
+        }
+        
+        return [{
+            startDate,
+            endDate,
+            key: 'selection'
+        }];
+    });
 
     const currentCheckIn = useMemo(() => {
-        return state[0].startDate.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+        const date = state[0].startDate;
+        if (!date || isNaN(date.getTime())) {
+            console.warn('Invalid start date in RoomDetails currentCheckIn');
+            return new Date().toISOString().split('T')[0];
+        }
+        return date.toISOString().split('T')[0]; 
     }, [state]);
 
     const currentCheckOut = useMemo(() => {
-        return state[0].endDate.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+        const date = state[0].endDate;
+        if (!date || isNaN(date.getTime())) {
+            console.warn('Invalid end date in RoomDetails currentCheckOut');
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            return tomorrow.toISOString().split('T')[0];
+        }
+        return date.toISOString().split('T')[0]; 
     }, [state]);
 
-    const currentGuests = useMemo(() => {
-        return guest.adult + guest.children;
-    }, [guest]);
+    const currentGuests = useMemo(() => guest.adult + guest.children, [guest]);
 
-    // Calculate number of nights
     const numberOfNights = useMemo(() => {
         const checkInDate = new Date(state[0].startDate);
         const checkOutDate = new Date(state[0].endDate);
+        
+        if (isNaN(checkInDate.getTime()) || isNaN(checkOutDate.getTime())) {
+            console.warn('Invalid dates in numberOfNights calculation');
+            return 1;
+        }
+        
         const timeDifference = checkOutDate.getTime() - checkInDate.getTime();
         const nights = Math.ceil(timeDifference / (1000 * 3600 * 24));
-        return Math.max(1, nights); // Ensure at least 1 night
+        return Math.max(1, nights); 
     }, [state]);
 
-    // Price calculations using API values directly
     const priceCalculations = useMemo(() => {
         if (!roomDetail) return null;
 
-        // Get values directly from API response
         const baseRateSGD = roomDetail.base_rate_in_currency || 0;
         const baseRateUSD = roomDetail.base_rate || 0;
         const taxesAndFeesSGD = roomDetail.included_taxes_and_fees_total_in_currency || 0;
         const taxesAndFeesUSD = roomDetail.included_taxes_and_fees_total || 0;
         const additionalFeesSGD = roomDetail.excluded_taxes_and_fees_total_in_currency || 0;
         const additionalFeesUSD = roomDetail.excluded_taxes_and_fees_total || 0;
-
-        // Calculate per room per night prices (API already provides per-night rates)
         const perRoomPerNightSGD = baseRateSGD + taxesAndFeesSGD + additionalFeesSGD;
         const perRoomPerNightUSD = baseRateUSD + taxesAndFeesUSD + additionalFeesUSD;
 
@@ -123,15 +163,11 @@ const RoomDetailContent = () => {
 
     const [mainImage, setMainImage] = useState<string | null>(null)
 
-    // Extract room name from room key for better error messages
     useEffect(() => {
         if (roomKey) {
             try {
-                // Try to decode the room key and extract room name
                 const decodedKey = decodeURIComponent(roomKey);
                 
-                // Many room keys contain room name information
-                // Look for patterns like room names in the key
                 const roomNameMatch = decodedKey.match(/room[_-]?name[_-]?([^&|_-]+)/i) ||
                                     decodedKey.match(/([A-Za-z\s]+(?:room|suite|king|queen|double|single|deluxe|standard|premium))/i) ||
                                     decodedKey.match(/^([A-Za-z\s]+)/);
@@ -143,12 +179,11 @@ const RoomDetailContent = () => {
                         .trim();
                     setRoomName(extractedName);
                 } else {
-                    // Fallback: use a cleaned version of the room key
                     const cleanedKey = decodedKey
                         .replace(/[^A-Za-z\s]/g, ' ')
                         .replace(/\s+/g, ' ')
                         .trim()
-                        .substring(0, 50); // Limit length
+                        .substring(0, 50); 
                     setRoomName(cleanedKey || 'Unknown Room');
                 }
             } catch (error) {
@@ -191,14 +226,23 @@ const RoomDetailContent = () => {
         fetchHotelDetails();
     }, [id]);
     
+    const findAlternativeRoom = (rooms: Room[]) => {
+        if (rooms.length > 0) {
+            const similarRoom = rooms.find(room => 
+                roomName && room.roomNormalizedDescription?.toLowerCase().includes(roomName.toLowerCase())
+            );
+            if (similarRoom) return similarRoom;
+            
+            return rooms.find(room => room.rooms_available > 0) || rooms[0];
+        }
+        return null;
+    };
 
     useEffect(() => {
         const fetchRoomDetails = async () => {
-            // Reset states
             setRoomLoading(true);
             setRoomDetail(null);
             
-            // Validate required parameters
             if (!id || !roomKey || !destination_id) {
                 console.warn('Missing required parameters:', { id, roomKey, destination_id });
                 setRoomLoading(false);
@@ -208,8 +252,8 @@ const RoomDetailContent = () => {
             console.log('=== ROOM DETAILS FETCH ===');
             console.log('Parameters:', { id, roomKey, destination_id, currentCheckIn, currentCheckOut, currentGuests });
 
-            const maxAttempts = 3;
-            const delayBetweenAttempts = 1500; // 1.5 seconds
+            const maxAttempts = 5; 
+            const delayBetweenAttempts = 1000; 
             
             const apiUrl = `http://localhost:3000/api/hotels/${id}/prices?destination_id=${destination_id}&checkin=${currentCheckIn}&checkout=${currentCheckOut}&lang=en_US&currency=SGD&country_code=SG&guests=${currentGuests}&partner_id=1089&landing_page=wl-acme-earn&product_type=earn`;
 
@@ -228,40 +272,51 @@ const RoomDetailContent = () => {
                     
                     const roomResult = await response.json();
                     
-                    // Check if the API has completed processing and has rooms
-                    if (roomResult.completed && roomResult.rooms && Array.isArray(roomResult.rooms)) {
+                    if (roomResult.completed && roomResult.rooms && Array.isArray(roomResult.rooms) && roomResult.rooms.length > 0) {
                         console.log(`✅ Room data completed on attempt ${attempt}`);
                         
-                        // Find the specific room using both original and decoded keys
                         let specificRoom = roomResult.rooms.find((room: Room) => room.key === roomKey);
-                        
+
                         if (!specificRoom) {
                             const decodedRoomKey = decodeURIComponent(roomKey);
                             specificRoom = roomResult.rooms.find((room: Room) => room.key === decodedRoomKey);
+                        }
+
+                        if (!specificRoom) {
+                            const encodedRoomKey = encodeURIComponent(roomKey);
+                            specificRoom = roomResult.rooms.find((room: Room) => room.key === encodedRoomKey);
+                        }
+
+                        if (!specificRoom) {
+                            specificRoom = roomResult.rooms.find((room: Room) => 
+                                room.key.includes(roomKey) || roomKey.includes(room.key)
+                            );
+                        }
+
+                        if (!specificRoom) {
+                            console.warn('⚠️ Exact room not found, using alternative room finder');
+                            specificRoom = findAlternativeRoom(roomResult.rooms);
                         }
                         
                         if (specificRoom) {
                             console.log('✅ Room found:', specificRoom.roomNormalizedDescription);
                             setRoomDetail(specificRoom);
-                            // Update room name with the actual room name from API
                             if (specificRoom.roomNormalizedDescription) {
                                 setRoomName(specificRoom.roomNormalizedDescription);
                             }
                             setRoomLoading(false);
-                            return; // Success - exit function
+                            return; 
                         } else {
-                            console.log('❌ Room not found in completed data');
-                            // Try to get room name from any room in the response for better error message
-                            const firstRoom = roomResult.rooms[0];
-                            if (firstRoom?.roomNormalizedDescription && !roomName) {
-                                // Use the first room's type as a reference if we haven't set a name yet
-                                setRoomName(`${firstRoom.roomNormalizedDescription} (or similar)`);
-                            }
-                            // If data is complete but room not found, no point in retrying
+                            console.log('❌ No suitable room found');
                             setRoomDetail(null);
                             setRoomLoading(false);
                             return;
                         }
+                    } else if (roomResult.completed && (!roomResult.rooms || roomResult.rooms.length === 0)) {
+                        console.log('❌ No rooms available for selected dates');
+                        setRoomDetail(null);
+                        setRoomLoading(false);
+                        return;
                     } else {
                         console.log(`⏳ Attempt ${attempt}: Data not ready yet...`);
                     }
@@ -270,13 +325,11 @@ const RoomDetailContent = () => {
                     console.error(`❌ Attempt ${attempt} failed:`, error);
                 }
                 
-                // Wait before next attempt (except after last attempt)
                 if (attempt < maxAttempts) {
                     await new Promise(resolve => setTimeout(resolve, delayBetweenAttempts));
                 }
             }
             
-            // All attempts failed
             console.error(`❌ Room data unsuccessful after ${maxAttempts} attempts`);
             setRoomDetail(null);
             setRoomLoading(false);
@@ -285,11 +338,9 @@ const RoomDetailContent = () => {
         fetchRoomDetails();
     }, [destination_id, currentCheckIn, currentCheckOut, id, currentGuests, roomKey, retryTrigger]);
 
-    // Image handling logic - optimized
     const image_array = useMemo(() => {
         try {
             if (roomDetail?.images && Array.isArray(roomDetail.images) && roomDetail.images.length > 0) {
-                // Limit to max 13 images for better gallery experience and filter out invalid images
                 return roomDetail.images
                     .filter(img => img && img.high_resolution_url)
                     .slice(0, 13)
@@ -302,7 +353,6 @@ const RoomDetailContent = () => {
         }
     }, [roomDetail?.images]);
 
-    // Set main image immediately without pre-validation
     useEffect(() => {
         try {
             if (roomDetail?.images && Array.isArray(roomDetail.images) && roomDetail.images.length > 0) {
@@ -326,32 +376,23 @@ const RoomDetailContent = () => {
     const handleOpenDate = () => {
         setOpenDate(!openDate);
         setOpenGuest(false);
-        }
+    };
     
     const handleOpenGuest = () => {
         setOpenGuest(!openGuest);
         setOpenDate(false);
-    }
+    };
 
-    // Check if the click event occurs outside the popup.
     const handleClickOutsideDatePopup = useCallback((event: Event) => {
         const targetElement = event.target as Element;
-        if (
-            openDate &&
-            !targetElement.closest('.sidebar-date-trigger') &&
-            !targetElement.closest('.sidebar-date-dropdown')
-        ) {
+        if (openDate && !targetElement.closest('.sidebar-date-trigger') && !targetElement.closest('.sidebar-date-dropdown')) {
             setOpenDate(false);
         }
     }, [openDate]);
 
     const handleClickOutsideGuestPopup = useCallback((event: Event) => {
         const targetElement = event.target as Element;
-        if (
-            openGuest &&
-            !targetElement.closest('.sub-menu-guest') &&
-            !targetElement.closest('.select-block')
-        ) {
+        if (openGuest && !targetElement.closest('.sub-menu-guest') && !targetElement.closest('.select-block')) {
             setOpenGuest(false);
         }
     }, [openGuest]);
@@ -363,9 +404,8 @@ const RoomDetailContent = () => {
             document.removeEventListener('click', handleClickOutsideDatePopup);
             document.removeEventListener('click', handleClickOutsideGuestPopup);
         };
-    }, [handleClickOutsideDatePopup, handleClickOutsideGuestPopup])
+    }, [handleClickOutsideDatePopup, handleClickOutsideGuestPopup]);
 
-    // Increase number of guests
     const increaseGuest = (type: keyof GuestType) => {
         setGuest((prevGuest) => ({
             ...prevGuest,
@@ -373,7 +413,6 @@ const RoomDetailContent = () => {
         }));
     };
 
-    // Decrease number of guests
     const decreaseGuest = (type: keyof GuestType) => {
         if (guest[type] > 0) {
             setGuest((prevGuest) => ({
@@ -383,7 +422,6 @@ const RoomDetailContent = () => {
         }
     };
 
-    // Add loading states
     if (hotelLoading || roomLoading) {
         return (
             <div className="flex justify-center items-center h-screen">
@@ -622,19 +660,6 @@ const RoomDetailContent = () => {
                                         </div>
                                     )}
 
-                                    {/* Breakfast Information */}
-                                    {roomDetail.roomAdditionalInfo.breakfastInfo && (
-                                        <div className="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-lg">
-                                            <h5 className="font-medium text-orange-800 mb-2 flex items-center">
-                                                <Icon.Coffee className="mr-2" />
-                                                Breakfast Information
-                                            </h5>
-                                            <div className="text-orange-700 capitalize text-justify">
-                                                {roomDetail.roomAdditionalInfo.breakfastInfo.replace(/_/g, ' ')}
-                                            </div>
-                                        </div>
-                                    )}
-
                                     {/* Check-in Instructions */}
                                     <div className="grid grid-cols-1 gap-6">
                                         {roomDetail.roomAdditionalInfo.displayFields.check_in_instructions && (
@@ -757,14 +782,24 @@ const RoomDetailContent = () => {
                                                         <Icon.CalendarBlank className='text-xl' />
                                                         <div className="text-button">Check In</div>
                                                     </div>
-                                                    <div className="body2 mt-1">{state[0].startDate.toLocaleDateString('en-GB')}</div>
+                                                    <div className="body2 mt-1">
+                                                        {state[0].startDate && !isNaN(state[0].startDate.getTime()) 
+                                                            ? state[0].startDate.toLocaleDateString('en-GB')
+                                                            : 'Select date'
+                                                        }
+                                                    </div>
                                                 </div>
                                                 <div className="left pr-5 py-4 cursor-pointer" onClick={handleOpenDate}>
                                                     <div className="flex items-center gap-1">
                                                         <Icon.CalendarBlank className='text-xl' />
                                                         <div className="text-button">Check Out</div>
                                                     </div>
-                                                    <div className="body2 mt-1">{state[0].endDate.toLocaleDateString('en-GB')}</div>
+                                                    <div className="body2 mt-1">
+                                                        {state[0].endDate && !isNaN(state[0].endDate.getTime()) 
+                                                            ? state[0].endDate.toLocaleDateString('en-GB')
+                                                            : 'Select date'
+                                                        }
+                                                    </div>
                                                 </div>
                                             </div>
                                             {/* Date Picker dropdown */}

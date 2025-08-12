@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { useParams, Link } from "react-router-dom";
 import { useSearchParams } from 'react-router-dom';
 import * as Icon from 'phosphor-react'
@@ -25,28 +25,30 @@ const HotelDetailContent = () => {
     const [searchParams] = useSearchParams();
     const destination_id = searchParams.get('destination_id');
     
-    // Handle date parameters - check both parameter formats
     const startDateParam = searchParams.get('startDate') || searchParams.get('checkin');
     const endDateParam = searchParams.get('endDate') || searchParams.get('checkout');
     
     const formatDate = (dateString: string): string => {
-        // If already in YYYY-MM-DD format, return as is
         if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
             return dateString;
         }
         
-        // Parse other date formats
         const date = new Date(dateString);
+        
+        if (isNaN(date.getTime())) {
+            console.warn('Invalid date string:', dateString);
+            return '';
+        }
+        
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
     };
     
-    const checkIn = startDateParam ? formatDate(startDateParam) : null;
-    const checkOut = endDateParam ? formatDate(endDateParam) : null;
+    const checkIn = startDateParam && formatDate(startDateParam) ? formatDate(startDateParam) : null;
+    const checkOut = endDateParam && formatDate(endDateParam) ? formatDate(endDateParam) : null;
     
-    // Debug logging
     console.log('=== HOTEL DETAILS COMPONENT MOUNT ===');
     console.log('URL params:', { id });
     console.log('Search params:', { 
@@ -61,6 +63,7 @@ const HotelDetailContent = () => {
         formattedCheckOut: checkOut,
         allParams: Object.fromEntries(searchParams.entries())
     });
+    console.log('Current URL:', window.location.href);
     console.log('Parsed dates:', {
         checkInDate: checkIn ? new Date(checkIn) : null,
         checkOutDate: checkOut ? new Date(checkOut) : null,
@@ -80,20 +83,32 @@ const HotelDetailContent = () => {
         children: 0
     });
     
-    // Ref to track active polling
     const pollingActiveRef = useRef<boolean>(false);
     
     const [state, setState] = useState(() => {
-        const startDate = checkIn ? new Date(checkIn) : new Date();
-        let endDate;
+        let startDate = new Date();
+        let endDate = addDays(new Date(), 1);
+        
+        if (checkIn) {
+            const parsedStartDate = new Date(checkIn);
+            if (!isNaN(parsedStartDate.getTime())) {
+                startDate = parsedStartDate;
+            } else {
+                console.warn('Invalid check-in date:', checkIn);
+            }
+        }
         
         if (checkOut) {
             const parsedEndDate = new Date(checkOut);
-            // Ensure checkout is at least 1 day after checkin
-            if (parsedEndDate <= startDate) {
-                endDate = addDays(startDate, 1);
+            if (!isNaN(parsedEndDate.getTime())) {
+                if (parsedEndDate <= startDate) {
+                    endDate = addDays(startDate, 1);
+                } else {
+                    endDate = parsedEndDate;
+                }
             } else {
-                endDate = parsedEndDate;
+                console.warn('Invalid check-out date:', checkOut);
+                endDate = addDays(startDate, 1);
             }
         } else {
             endDate = addDays(startDate, 1);
@@ -106,61 +121,54 @@ const HotelDetailContent = () => {
         }];
     });
 
-    const currentCheckIn = useMemo(() => {
-        const date = state[0].startDate;
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    }, [state]);
-
-    const currentCheckOut = useMemo(() => {
-        const date = state[0].endDate;
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    }, [state]);
-
-    const currentGuests = useMemo(() => {
-        return guest.adult + guest.children;
-    }, [guest]);
-
-    // Helper function to get alternative image URLs
-    const getImageFallbacks = useCallback((originalUrl: string, index: number) => {
-        if (!hotelDetails?.image_details?.prefix) return [];
-        
-        const prefix = hotelDetails.image_details.prefix;
-        const suffix = hotelDetails.image_details.suffix || '.jpg';
-        const imgixUrl = hotelDetails.imgix_url;
-        const cloudflareUrl = hotelDetails.cloudflare_image_url;
-        
-        const fallbacks: string[] = [];
-        
-        // Since we're now using 1-based indexing, the actual image index would be index + 1
-        const actualImageIndex = index + 1;
-        
-        // Try different indexing patterns around the actual index
-        const indexPatterns = [
-            actualImageIndex - 1,  // 0-based equivalent
-            actualImageIndex,      // 1-based (current)
-            actualImageIndex + 1,  // In case we're off by one
-        ].filter(i => i >= 0); // Remove negative indices
-        
-        // Generate different URL patterns
-        for (const i of indexPatterns) {
-            const candidateUrl = `${prefix}${i}${suffix}`;
-            if (candidateUrl !== originalUrl && !fallbacks.includes(candidateUrl)) {
-                fallbacks.push(candidateUrl);
+    const { currentCheckIn, currentCheckOut } = useMemo(() => {
+        const formatSafeDate = (date: Date, fallbackDate: Date): string => {
+            if (!date || isNaN(date.getTime())) {
+                return fallbackDate.toISOString().split('T')[0];
             }
-        }
-        
-        console.log(`Generated ${fallbacks.length} fallbacks for array index ${index} (image ${actualImageIndex}):`, fallbacks);
-        return fallbacks.slice(0, 2); // Limit to 2 fallbacks to prevent infinite loops
-    }, [hotelDetails?.image_details, hotelDetails?.imgix_url, hotelDetails?.cloudflare_image_url]);
+            return date.toISOString().split('T')[0];
+        };
 
-    const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
-    const [imageRetryAttempts, setImageRetryAttempts] = useState<Map<string, number>>(new Map());
+        const currentCheckIn = formatSafeDate(state[0].startDate, new Date());
+        const currentCheckOut = formatSafeDate(state[0].endDate, (() => {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            return tomorrow;
+        })());
+
+        return { currentCheckIn, currentCheckOut };
+    }, [state]);
+
+    const currentGuests = useMemo(() => guest.adult + guest.children, [guest]);
+
+    // Guest handlers
+    const increaseGuest = (type: keyof GuestType) => {
+        setGuest((prevGuest) => ({
+            ...prevGuest,
+            [type]: prevGuest[type] + 1
+        }));
+    };
+
+    const decreaseGuest = (type: keyof GuestType) => {
+        if (guest[type] > 0) {
+            setGuest((prevGuest) => ({
+                ...prevGuest,
+                [type]: prevGuest[type] - 1
+            }));
+        }
+    };
+
+    // Popup handlers
+    const handleOpenDate = () => {
+        setOpenDate(!openDate);
+        setOpenGuest(false);
+    };
+    
+    const handleOpenGuest = () => {
+        setOpenGuest(!openGuest);
+        setOpenDate(false);
+    };
+
     const [mainImage, setMainImage] = useState<string | null>(null);
 
     useEffect(() => {
@@ -170,8 +178,8 @@ const HotelDetailContent = () => {
             console.log('Hotel ID:', id);
             
             let retries = 0;
-            const maxRetries = 3; // Limit to 3 attempts
-            const delay = 1500; // 1.5 seconds between retries
+            const maxRetries = 3; 
+            const delay = 1000; 
             
             while (retries < maxRetries) {
                 try {
@@ -194,14 +202,13 @@ const HotelDetailContent = () => {
                     console.log('Hotel data received:', hotelResult);
                     setHotelDetails(hotelResult);
                     setHotelLoading(false);
-                    return; // Success, exit the function
+                    return; 
                     
                 } catch (error: unknown) {
                     console.error(`Hotel fetch attempt ${retries + 1} failed:`, error);
                     retries++;
                     
                     if (retries >= maxRetries) {
-                        // Final attempt failed
                         if (error instanceof Error) {
                             console.error("Hotel fetch error details:", {
                                 name: error.name,
@@ -213,7 +220,6 @@ const HotelDetailContent = () => {
                         setHotelLoading(false);
                         break;
                     } else {
-                        // Wait before retrying
                         console.log(`Retrying hotel fetch in ${delay}ms...`);
                         await new Promise(resolve => setTimeout(resolve, delay));
                     }
@@ -246,7 +252,6 @@ const HotelDetailContent = () => {
                 return;
             }
 
-            // Don't start new polling if already active or if we already have room data
             if (pollingActiveRef.current || (roomDetails.length > 0 && !roomsLoading)) {
                 console.log('Polling already active or room data already loaded, skipping fetch');
                 return;
@@ -255,14 +260,13 @@ const HotelDetailContent = () => {
             pollingActiveRef.current = true;
             setRoomsLoading(true);
 
-            // Create abort controller for cleanup
             const abortController = new AbortController();
             let isActive = true;
             
             const pollRoomData = async () => {
                 let retries = 0;
-                const maxRetries = 3; // Limit to 3 attempts
-                const delay = 1500; // 1.5 seconds between retries
+                const maxRetries = 3; 
+                const delay = 1000; 
 
                 const apiUrl = `http://localhost:3000/api/hotels/${id}/prices?destination_id=${destination_id}&checkin=${currentCheckIn}&checkout=${currentCheckOut}&lang=en_US&currency=SGD&country_code=SG&guests=${currentGuests}&partner_id=1089&landing_page=wl-acme-earn&product_type=earn`;
                 console.log('Room API URL:', apiUrl);
@@ -292,16 +296,14 @@ const HotelDetailContent = () => {
                             totalRooms: roomResult.rooms?.length || 0
                         });
                         
-                        // Check if the API has completed processing and has rooms
                         if (roomResult.completed && roomResult.rooms && Array.isArray(roomResult.rooms)) {
                             console.log('✅ Room data completed! Processing...');
-                            // Limit rooms for performance
                             setRoomDetails(roomResult.rooms.slice(0, 20));
                             console.log('Set room details:', roomResult.rooms.length, 'rooms');
                             setRoomsLoading(false);
-                            pollingActiveRef.current = false; // Reset polling flag
-                            isActive = false; // Stop the polling loop
-                            break; // Exit the while loop
+                            pollingActiveRef.current = false; 
+                            isActive = false; 
+                            break; 
                         } else {
                             console.log(`⏳ Room data not ready yet (attempt ${retries + 1}), retrying in ${delay}ms...`);
                             console.log('Response status:', {
@@ -327,12 +329,11 @@ const HotelDetailContent = () => {
                     }
                 }
                 
-                // If we've exhausted all retries
                 if (retries >= maxRetries && isActive && !abortController.signal.aborted) {
                     console.error('❌ Room data polling timed out after', maxRetries, 'attempts');
                     setRoomDetails([]);
                     setRoomsLoading(false);
-                    pollingActiveRef.current = false; // Reset polling flag
+                    pollingActiveRef.current = false; 
                 }
             };
 
@@ -341,12 +342,11 @@ const HotelDetailContent = () => {
             // Cleanup function
             return () => {
                 isActive = false;
-                pollingActiveRef.current = false; // Reset polling flag
-                abortController.abort(); // Abort any ongoing requests
+                pollingActiveRef.current = false; 
+                abortController.abort(); 
             };
         };
         
-        // Only fetch if we have required parameters
         if (destination_id && id) {
             fetchRoomDetails();
         } else {
@@ -354,14 +354,12 @@ const HotelDetailContent = () => {
         }
     }, [destination_id, currentCheckIn, currentCheckOut, id, currentGuests]);
 
-    // Cleanup effect to reset polling when component unmounts
     useEffect(() => {
         return () => {
             pollingActiveRef.current = false;
         };
     }, []);
 
-    // Image handling logic - try both indexing patterns
     const image_array = useMemo(() => {
         if (!hotelDetails?.image_details?.prefix) {
             console.log('No image prefix available');
@@ -370,20 +368,18 @@ const HotelDetailContent = () => {
         
         const imageDetails = hotelDetails.image_details;
         const prefix = imageDetails.prefix;
-        const count = Math.min(imageDetails.count || 0, 11); // Limit to 11 images for better gallery experience
+        const count = Math.min(imageDetails.count || 0, 11); 
         const suffix = imageDetails.suffix || '.jpg';
         const images: string[] = [];
 
         console.log('Generating image array:', { prefix, count, suffix });
 
-        // Try both 0-based and 1-based indexing, but start with what's more likely to work
-        // Based on your API showing default_image_index: 1, let's start with 1-based
         for (let i = 1; i <= count; i++) {
             const imageUrl = `${prefix}${i}${suffix}`;
             images.push(imageUrl);
         }
     
-        console.log('Generated images (1-based indexing):', images.slice(0, 3)); // Log first 3 for debugging
+        console.log('Generated images (1-based indexing):', images.slice(0, 3)); 
         console.log('Available image URLs:', { 
             imgixUrl: hotelDetails.imgix_url, 
             cloudflareUrl: hotelDetails.cloudflare_image_url, 
@@ -392,10 +388,8 @@ const HotelDetailContent = () => {
         return images;
     }, [hotelDetails?.image_details, hotelDetails?.imgix_url, hotelDetails?.cloudflare_image_url]);
 
-    // Set main image with fallback logic
     useEffect(() => {
         if (image_array.length > 0) {
-            // Use the first image from the array as the main image
             const selectedImage = image_array[0];
             console.log('Setting main image:', selectedImage);
             setMainImage(selectedImage);
@@ -405,67 +399,24 @@ const HotelDetailContent = () => {
         }
     }, [image_array]);
 
-    const handleOpenDate = () => {
-        setOpenDate(!openDate);
-        setOpenGuest(false);
-        }
-    
-    const handleOpenGuest = () => {
-        setOpenGuest(!openGuest);
-        setOpenDate(false);
-    }
-
-    // Check if the click event occurs outside the popup.
-    const handleClickOutsideDatePopup = useCallback((event: Event) => {
-        const targetElement = event.target as Element;
-        if (
-            openDate &&
-            !targetElement.closest('.sidebar-date-trigger') &&
-            !targetElement.closest('.sidebar-date-dropdown')
-        ) {
-            setOpenDate(false);
-        }
-    }, [openDate]);
-
-    const handleClickOutsideGuestPopup = useCallback((event: Event) => {
-        const targetElement = event.target as Element;
-        if (
-            openGuest &&
-            !targetElement.closest('.sub-menu-guest') &&
-            !targetElement.closest('.select-block')
-        ) {
-            setOpenGuest(false);
-        }
-    }, [openGuest]);
-    
+    // Simplified click outside handlers
     useEffect(() => {
-        document.addEventListener('click', handleClickOutsideDatePopup);
-        document.addEventListener('click', handleClickOutsideGuestPopup);
-        return () => {
-            document.removeEventListener('click', handleClickOutsideDatePopup);
-            document.removeEventListener('click', handleClickOutsideGuestPopup);
+        const handleClickOutside = (event: Event) => {
+            const targetElement = event.target as Element;
+            
+            if (openDate && !targetElement.closest('.sidebar-date-trigger') && !targetElement.closest('.sidebar-date-dropdown')) {
+                setOpenDate(false);
+            }
+            
+            if (openGuest && !targetElement.closest('.sub-menu-guest') && !targetElement.closest('.select-block')) {
+                setOpenGuest(false);
+            }
         };
-    }, [handleClickOutsideDatePopup, handleClickOutsideGuestPopup])
 
-    // Increase number of guests
-    const increaseGuest = (type: keyof GuestType) => {
-        setGuest((prevGuest) => ({
-            ...prevGuest,
-            [type]: prevGuest[type] + 1
-        }));
-    };
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
+    }, [openDate, openGuest]);
 
-    // Decrease number of guests
-    const decreaseGuest = (type: keyof GuestType) => {
-        if (guest[type] > 0) {
-            setGuest((prevGuest) => ({
-                ...prevGuest,
-                [type]: prevGuest[type] - 1
-            }));
-        }
-    };
-
-    // Show loading state while hotel details are being fetched
     if (hotelLoading) {
         return (
             <div className="flex justify-center items-center h-screen">
@@ -474,7 +425,6 @@ const HotelDetailContent = () => {
         );
     }
 
-    // Show error state if hotel details failed to load
     if (!hotelDetails) {
         return (
             <div className="flex justify-center items-center h-screen">
@@ -544,7 +494,6 @@ const HotelDetailContent = () => {
                                 );
                             })
                         ) : (
-                            // Show placeholder cat thumbnail when no images are available
                             <div className="flex-shrink-0">
                                 <div className="w-[120px] h-[80px] bg-gray-100 rounded-lg overflow-hidden">
                                     <img
@@ -754,14 +703,24 @@ const HotelDetailContent = () => {
                                                         <Icon.CalendarBlank className='text-xl' />
                                                         <div className="text-button">Check In</div>
                                                     </div>
-                                                    <div className="body2 mt-1">{state[0].startDate.toLocaleDateString('en-GB')}</div>
+                                                    <div className="body2 mt-1">
+                                                        {state[0].startDate && !isNaN(state[0].startDate.getTime()) 
+                                                            ? state[0].startDate.toLocaleDateString('en-GB')
+                                                            : 'Select date'
+                                                        }
+                                                    </div>
                                                 </div>
                                                 <div className="left pr-5 py-4 cursor-pointer" onClick={handleOpenDate}>
                                                     <div className="flex items-center justify-end gap-1">
                                                         <Icon.CalendarBlank className='text-xl' />
                                                         <div className="text-button">Check Out</div>
                                                     </div>
-                                                    <div className="body2 mt-1 text-end">{state[0].endDate.toLocaleDateString('en-GB')}</div>
+                                                    <div className="body2 mt-1 text-end">
+                                                        {state[0].endDate && !isNaN(state[0].endDate.getTime()) 
+                                                            ? state[0].endDate.toLocaleDateString('en-GB')
+                                                            : 'Select date'
+                                                        }
+                                                    </div>
                                                 </div>
                                             </div>
                                             {/* Date Picker dropdown */}
