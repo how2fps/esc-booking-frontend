@@ -171,7 +171,7 @@ const DestinationSearch = () => {
        min.setDate(today.getDate()+3)
        return (
               <>
-                     <div className="slider-block style-one relative h-[620px]" data-testid="slider">
+                     <div className="slider-block style-one relative h-[calc(100vh-160px)] overflow-hidden bg-black" data-testid="slider">
                             <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
                                    {heroImages.map((src, i) => (
                                           <img
@@ -185,10 +185,10 @@ const DestinationSearch = () => {
                                           />
                                    ))}
                             </div>
-                            <div className="container py-[176px]">
-                                   <div className="content w-full relative">
+                            <div className="container h-full relative z-20">
+                                   <div className="content w-full h-full relative flex flex-col items-center justify-center">
                                           <div className="heading flex-col items-center justify-center">
-                                                 <div className="heading2 text-white text-center">Pick your next journey</div>
+                                                 <div className="text-white font-extrabold text-4xl md:text-5xl drop-shadow-lg">Unlock Unique Stays at Exclusive Prices</div>
                                           </div>
 
                                           <div className="form-search md:mt-10 mt-6 w-full">
