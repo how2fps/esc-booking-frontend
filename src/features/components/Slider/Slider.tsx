@@ -47,7 +47,7 @@ const loadOptions = async (search: string, page: number) => {
                      hasMore: false,
               };
        }
-       const response = await fetch("http://18.138.130.229:3000/api/search/" + search);
+       const response = await fetch("http://localhost:3000/api/search/" + search);
        const data = await response.json();
        //console.log(data);
        

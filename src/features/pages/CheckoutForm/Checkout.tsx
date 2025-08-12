@@ -33,7 +33,7 @@ const CheckoutForm = () => {
     if (bookingId) {
       console.log(`Fetching payment details for booking ID: ${bookingId}`);
       
-      fetch("http://18.138.130.229:3000/api/stripe/create-checkout-session", {
+      fetch("http://localhost:3000/api/stripe/create-checkout-session", {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',

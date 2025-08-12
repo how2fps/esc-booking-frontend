@@ -21,7 +21,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    fetch("http://18.138.130.229:3000/api/users/me", { credentials: "include" })
+    fetch("http://localhost:3000/api/users/me", { credentials: "include" })
       .then((res) => res.ok ? res.json() : null)
       .then((data) => {
         if (data?.data) setUser(data.data);
@@ -30,7 +30,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const logout = async () => {
-    await fetch("http://18.138.130.229:3000/api/users/logout", {
+    await fetch("http://localhost:3000/api/users/logout", {
       method: "POST",
       credentials: "include"
     });

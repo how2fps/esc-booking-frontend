@@ -19,11 +19,7 @@ interface GuestType {
     children: number;
 }
 
-type DateRange = {
-    startDate: Date;
-    endDate: Date;
-    key: string;
-};
+
 const HotelDetailContent = () => {
     const { id } = useParams();  
     const [searchParams] = useSearchParams();
