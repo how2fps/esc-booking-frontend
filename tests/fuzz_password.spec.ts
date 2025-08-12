@@ -13,6 +13,9 @@ const passwordCases = [
   'ValidPass1',                             // valid basic
   '123456789',                             // only numbers
   faker.internet.password({ length: 50 }), // long random valid
+  faker.internet.password({ length: 8 }),
+  faker.internet.password({ length: 199 }),
+
   'Aa1!@#$',                                // valid min length with special chars
   'Abcdefgh1',                              // valid
 ];

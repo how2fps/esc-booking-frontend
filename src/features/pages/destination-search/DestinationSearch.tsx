@@ -1,3 +1,4 @@
+
 "use client";
 
 import SliderOne from "../../components/Slider/Slider";
