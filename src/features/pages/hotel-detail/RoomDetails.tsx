@@ -18,6 +18,11 @@ interface GuestType {
     adult: number;
     children: number;
 }
+type DateRange = {
+  startDate?: Date;
+  endDate?: Date;
+  key: string;
+};
 
 const RoomDetailContent = () => {
     const { id } = useParams();  
@@ -752,7 +757,7 @@ const RoomDetailContent = () => {
                                                         <Icon.CalendarBlank className='text-xl' />
                                                         <div className="text-button">Check In</div>
                                                     </div>
-                                                    <div className="body2 mt-1">{state[0].startDate.toLocaleDateString()}</div>
+                                                    <div className="body2 mt-1">{state[0].startDate ? state[0].startDate.toLocaleDateString() : ''}</div>
                                                 </div>
                                                 <div className="left pr-5 py-4 cursor-pointer" onClick={handleOpenDate}>
                                                     <div className="flex items-center gap-1">

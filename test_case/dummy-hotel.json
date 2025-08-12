@@ -1,0 +1,3272 @@
+[
+       {
+              "id": "hotel-001",
+              "imageCount": 41,
+              "latitude": 1.281,
+              "longitude": 103.84100000000001,
+              "name": "Hotel Example 1",
+              "address": "101 Integration Test Lane",
+              "address1": "101 Integration Test Lane",
+              "rating": 3.5,
+              "distance": 11042.5,
+              "trustyou": {
+                     "id": "trustyou-1",
+                     "score": {
+                            "overall": 81,
+                            "kaligo_overall": 4.1,
+                            "solo": 79,
+                            "couple": 80,
+                            "family": 77,
+                            "business": 76
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 86,
+                            "popularity": 1
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 76,
+                            "popularity": 11
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 79,
+                            "popularity": 10
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 81,
+                            "popularity": 9
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 86
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 89
+                     },
+                     {
+                            "name": "Service",
+                            "score": 91
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 81
+                     },
+                     {
+                            "name": "Location",
+                            "score": 91
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 86
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 76
+                     },
+                     {
+                            "name": "Room",
+                            "score": 79
+                     }
+              ],
+              "description": "Hotel Example 1 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": false,
+                     "continentalBreakfast": true,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": true,
+                     "outdoorPool": false,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": false
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 41,
+                     "prefix": "https://dummycdn.com/hotel-001/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-002",
+              "imageCount": 42,
+              "latitude": 1.282,
+              "longitude": 103.842,
+              "name": "Hotel Example 2",
+              "address": "102 Integration Test Lane",
+              "address1": "102 Integration Test Lane",
+              "rating": 4.0,
+              "distance": 11085.0,
+              "trustyou": {
+                     "id": "trustyou-2",
+                     "score": {
+                            "overall": 82,
+                            "kaligo_overall": 4.2,
+                            "solo": 80,
+                            "couple": 81,
+                            "family": 78,
+                            "business": 77
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 87,
+                            "popularity": 2
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 77,
+                            "popularity": 12
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 80,
+                            "popularity": 11
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 82,
+                            "popularity": 10
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 87
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 90
+                     },
+                     {
+                            "name": "Service",
+                            "score": 92
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 82
+                     },
+                     {
+                            "name": "Location",
+                            "score": 90
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 85
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 77
+                     },
+                     {
+                            "name": "Room",
+                            "score": 80
+                     }
+              ],
+              "description": "Hotel Example 2 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": true,
+                     "continentalBreakfast": true,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": false,
+                     "outdoorPool": true,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": false
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 42,
+                     "prefix": "https://dummycdn.com/hotel-002/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-003",
+              "imageCount": 43,
+              "latitude": 1.283,
+              "longitude": 103.843,
+              "name": "Hotel Example 3",
+              "address": "103 Integration Test Lane",
+              "address1": "103 Integration Test Lane",
+              "rating": 3.0,
+              "distance": 11127.5,
+              "trustyou": {
+                     "id": "trustyou-3",
+                     "score": {
+                            "overall": 83,
+                            "kaligo_overall": 4.3,
+                            "solo": 81,
+                            "couple": 82,
+                            "family": 76,
+                            "business": 78
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 88,
+                            "popularity": 3
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 78,
+                            "popularity": 13
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 81,
+                            "popularity": 12
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 83,
+                            "popularity": 8
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 88
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 91
+                     },
+                     {
+                            "name": "Service",
+                            "score": 90
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 83
+                     },
+                     {
+                            "name": "Location",
+                            "score": 89
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 87
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 78
+                     },
+                     {
+                            "name": "Room",
+                            "score": 81
+                     }
+              ],
+              "description": "Hotel Example 3 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": false,
+                     "continentalBreakfast": false,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": true,
+                     "outdoorPool": true,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": false
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 43,
+                     "prefix": "https://dummycdn.com/hotel-003/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-004",
+              "imageCount": 44,
+              "latitude": 1.284,
+              "longitude": 103.84400000000001,
+              "name": "Hotel Example 4",
+              "address": "104 Integration Test Lane",
+              "address1": "104 Integration Test Lane",
+              "rating": 3.5,
+              "distance": 11170.0,
+              "trustyou": {
+                     "id": "trustyou-4",
+                     "score": {
+                            "overall": 84,
+                            "kaligo_overall": 4.4,
+                            "solo": 78,
+                            "couple": 83,
+                            "family": 77,
+                            "business": 79
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 89,
+                            "popularity": 4
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 79,
+                            "popularity": 14
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 82,
+                            "popularity": 9
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 84,
+                            "popularity": 9
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 89
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 92
+                     },
+                     {
+                            "name": "Service",
+                            "score": 91
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 84
+                     },
+                     {
+                            "name": "Location",
+                            "score": 92
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 86
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 79
+                     },
+                     {
+                            "name": "Room",
+                            "score": 78
+                     }
+              ],
+              "description": "Hotel Example 4 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": true,
+                     "continentalBreakfast": true,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": false,
+                     "outdoorPool": false,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": true
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 44,
+                     "prefix": "https://dummycdn.com/hotel-004/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-005",
+              "imageCount": 45,
+              "latitude": 1.285,
+              "longitude": 103.845,
+              "name": "Hotel Example 5",
+              "address": "105 Integration Test Lane",
+              "address1": "105 Integration Test Lane",
+              "rating": 4.0,
+              "distance": 11212.5,
+              "trustyou": {
+                     "id": "trustyou-5",
+                     "score": {
+                            "overall": 85,
+                            "kaligo_overall": 4.0,
+                            "solo": 79,
+                            "couple": 79,
+                            "family": 78,
+                            "business": 80
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 85,
+                            "popularity": 5
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 80,
+                            "popularity": 10
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 78,
+                            "popularity": 10
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 80,
+                            "popularity": 10
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 90
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 88
+                     },
+                     {
+                            "name": "Service",
+                            "score": 92
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 85
+                     },
+                     {
+                            "name": "Location",
+                            "score": 91
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 85
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 80
+                     },
+                     {
+                            "name": "Room",
+                            "score": 79
+                     }
+              ],
+              "description": "Hotel Example 5 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": false,
+                     "continentalBreakfast": true,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": true,
+                     "outdoorPool": true,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": false
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 45,
+                     "prefix": "https://dummycdn.com/hotel-005/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-006",
+              "imageCount": 46,
+              "latitude": 1.286,
+              "longitude": 103.846,
+              "name": "Hotel Example 6",
+              "address": "106 Integration Test Lane",
+              "address1": "106 Integration Test Lane",
+              "rating": 3.0,
+              "distance": 11255.0,
+              "trustyou": {
+                     "id": "trustyou-6",
+                     "score": {
+                            "overall": 86,
+                            "kaligo_overall": 4.1,
+                            "solo": 80,
+                            "couple": 80,
+                            "family": 76,
+                            "business": 75
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 86,
+                            "popularity": 6
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 81,
+                            "popularity": 11
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 79,
+                            "popularity": 11
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 81,
+                            "popularity": 8
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 91
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 89
+                     },
+                     {
+                            "name": "Service",
+                            "score": 90
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 86
+                     },
+                     {
+                            "name": "Location",
+                            "score": 90
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 87
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 75
+                     },
+                     {
+                            "name": "Room",
+                            "score": 80
+                     }
+              ],
+              "description": "Hotel Example 6 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": true,
+                     "continentalBreakfast": false,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": false,
+                     "outdoorPool": true,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": false
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 46,
+                     "prefix": "https://dummycdn.com/hotel-006/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-007",
+              "imageCount": 47,
+              "latitude": 1.287,
+              "longitude": 103.84700000000001,
+              "name": "Hotel Example 7",
+              "address": "107 Integration Test Lane",
+              "address1": "107 Integration Test Lane",
+              "rating": 3.5,
+              "distance": 11297.5,
+              "trustyou": {
+                     "id": "trustyou-7",
+                     "score": {
+                            "overall": 87,
+                            "kaligo_overall": 4.2,
+                            "solo": 81,
+                            "couple": 81,
+                            "family": 77,
+                            "business": 76
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 87,
+                            "popularity": 7
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 82,
+                            "popularity": 12
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 80,
+                            "popularity": 12
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 82,
+                            "popularity": 9
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 92
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 90
+                     },
+                     {
+                            "name": "Service",
+                            "score": 91
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 87
+                     },
+                     {
+                            "name": "Location",
+                            "score": 89
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 86
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 76
+                     },
+                     {
+                            "name": "Room",
+                            "score": 81
+                     }
+              ],
+              "description": "Hotel Example 7 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": false,
+                     "continentalBreakfast": true,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": true,
+                     "outdoorPool": false,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": false
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 47,
+                     "prefix": "https://dummycdn.com/hotel-007/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-008",
+              "imageCount": 48,
+              "latitude": 1.288,
+              "longitude": 103.848,
+              "name": "Hotel Example 8",
+              "address": "108 Integration Test Lane",
+              "address1": "108 Integration Test Lane",
+              "rating": 4.0,
+              "distance": 11340.0,
+              "trustyou": {
+                     "id": "trustyou-8",
+                     "score": {
+                            "overall": 88,
+                            "kaligo_overall": 4.3,
+                            "solo": 78,
+                            "couple": 82,
+                            "family": 78,
+                            "business": 77
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 88,
+                            "popularity": 8
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 83,
+                            "popularity": 13
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 81,
+                            "popularity": 9
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 83,
+                            "popularity": 10
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 93
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 91
+                     },
+                     {
+                            "name": "Service",
+                            "score": 92
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 88
+                     },
+                     {
+                            "name": "Location",
+                            "score": 92
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 85
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 77
+                     },
+                     {
+                            "name": "Room",
+                            "score": 78
+                     }
+              ],
+              "description": "Hotel Example 8 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": true,
+                     "continentalBreakfast": true,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": false,
+                     "outdoorPool": true,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": true
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 48,
+                     "prefix": "https://dummycdn.com/hotel-008/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-009",
+              "imageCount": 49,
+              "latitude": 1.289,
+              "longitude": 103.849,
+              "name": "Hotel Example 9",
+              "address": "109 Integration Test Lane",
+              "address1": "109 Integration Test Lane",
+              "rating": 3.0,
+              "distance": 11382.5,
+              "trustyou": {
+                     "id": "trustyou-9",
+                     "score": {
+                            "overall": 89,
+                            "kaligo_overall": 4.4,
+                            "solo": 79,
+                            "couple": 83,
+                            "family": 76,
+                            "business": 78
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 89,
+                            "popularity": 9
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 84,
+                            "popularity": 14
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 82,
+                            "popularity": 10
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 84,
+                            "popularity": 8
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 94
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 92
+                     },
+                     {
+                            "name": "Service",
+                            "score": 90
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 89
+                     },
+                     {
+                            "name": "Location",
+                            "score": 91
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 87
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 78
+                     },
+                     {
+                            "name": "Room",
+                            "score": 79
+                     }
+              ],
+              "description": "Hotel Example 9 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": false,
+                     "continentalBreakfast": false,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": true,
+                     "outdoorPool": true,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": false
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 49,
+                     "prefix": "https://dummycdn.com/hotel-009/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-010",
+              "imageCount": 50,
+              "latitude": 1.29,
+              "longitude": 103.85000000000001,
+              "name": "Hotel Example 10",
+              "address": "110 Integration Test Lane",
+              "address1": "110 Integration Test Lane",
+              "rating": 3.5,
+              "distance": 11425.0,
+              "trustyou": {
+                     "id": "trustyou-10",
+                     "score": {
+                            "overall": 80,
+                            "kaligo_overall": 4.0,
+                            "solo": 80,
+                            "couple": 79,
+                            "family": 77,
+                            "business": 79
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 85,
+                            "popularity": 0
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 75,
+                            "popularity": 10
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 78,
+                            "popularity": 11
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 80,
+                            "popularity": 9
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 85
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 88
+                     },
+                     {
+                            "name": "Service",
+                            "score": 91
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 80
+                     },
+                     {
+                            "name": "Location",
+                            "score": 90
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 86
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 79
+                     },
+                     {
+                            "name": "Room",
+                            "score": 80
+                     }
+              ],
+              "description": "Hotel Example 10 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": true,
+                     "continentalBreakfast": true,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": false,
+                     "outdoorPool": false,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": false
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 50,
+                     "prefix": "https://dummycdn.com/hotel-010/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-011",
+              "imageCount": 51,
+              "latitude": 1.291,
+              "longitude": 103.851,
+              "name": "Hotel Example 11",
+              "address": "111 Integration Test Lane",
+              "address1": "111 Integration Test Lane",
+              "rating": 4.0,
+              "distance": 11467.5,
+              "trustyou": {
+                     "id": "trustyou-11",
+                     "score": {
+                            "overall": 81,
+                            "kaligo_overall": 4.1,
+                            "solo": 81,
+                            "couple": 80,
+                            "family": 78,
+                            "business": 80
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 86,
+                            "popularity": 1
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 76,
+                            "popularity": 11
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 79,
+                            "popularity": 12
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 81,
+                            "popularity": 10
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 86
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 89
+                     },
+                     {
+                            "name": "Service",
+                            "score": 92
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 81
+                     },
+                     {
+                            "name": "Location",
+                            "score": 89
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 85
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 80
+                     },
+                     {
+                            "name": "Room",
+                            "score": 81
+                     }
+              ],
+              "description": "Hotel Example 11 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": false,
+                     "continentalBreakfast": true,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": true,
+                     "outdoorPool": true,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": false
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 51,
+                     "prefix": "https://dummycdn.com/hotel-011/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-012",
+              "imageCount": 52,
+              "latitude": 1.292,
+              "longitude": 103.852,
+              "name": "Hotel Example 12",
+              "address": "112 Integration Test Lane",
+              "address1": "112 Integration Test Lane",
+              "rating": 3.0,
+              "distance": 11510.0,
+              "trustyou": {
+                     "id": "trustyou-12",
+                     "score": {
+                            "overall": 82,
+                            "kaligo_overall": 4.2,
+                            "solo": 78,
+                            "couple": 81,
+                            "family": 76,
+                            "business": 75
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 87,
+                            "popularity": 2
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 77,
+                            "popularity": 12
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 80,
+                            "popularity": 9
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 82,
+                            "popularity": 8
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 87
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 90
+                     },
+                     {
+                            "name": "Service",
+                            "score": 90
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 82
+                     },
+                     {
+                            "name": "Location",
+                            "score": 92
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 87
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 75
+                     },
+                     {
+                            "name": "Room",
+                            "score": 78
+                     }
+              ],
+              "description": "Hotel Example 12 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": true,
+                     "continentalBreakfast": false,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": false,
+                     "outdoorPool": true,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": true
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 52,
+                     "prefix": "https://dummycdn.com/hotel-012/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-013",
+              "imageCount": 53,
+              "latitude": 1.293,
+              "longitude": 103.85300000000001,
+              "name": "Hotel Example 13",
+              "address": "113 Integration Test Lane",
+              "address1": "113 Integration Test Lane",
+              "rating": 3.5,
+              "distance": 11552.5,
+              "trustyou": {
+                     "id": "trustyou-13",
+                     "score": {
+                            "overall": 83,
+                            "kaligo_overall": 4.3,
+                            "solo": 79,
+                            "couple": 82,
+                            "family": 77,
+                            "business": 76
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 88,
+                            "popularity": 3
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 78,
+                            "popularity": 13
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 81,
+                            "popularity": 10
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 83,
+                            "popularity": 9
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 88
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 91
+                     },
+                     {
+                            "name": "Service",
+                            "score": 91
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 83
+                     },
+                     {
+                            "name": "Location",
+                            "score": 91
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 86
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 76
+                     },
+                     {
+                            "name": "Room",
+                            "score": 79
+                     }
+              ],
+              "description": "Hotel Example 13 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": false,
+                     "continentalBreakfast": true,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": true,
+                     "outdoorPool": false,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": false
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 53,
+                     "prefix": "https://dummycdn.com/hotel-013/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-014",
+              "imageCount": 54,
+              "latitude": 1.294,
+              "longitude": 103.854,
+              "name": "Hotel Example 14",
+              "address": "114 Integration Test Lane",
+              "address1": "114 Integration Test Lane",
+              "rating": 4.0,
+              "distance": 11595.0,
+              "trustyou": {
+                     "id": "trustyou-14",
+                     "score": {
+                            "overall": 84,
+                            "kaligo_overall": 4.4,
+                            "solo": 80,
+                            "couple": 83,
+                            "family": 78,
+                            "business": 77
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 89,
+                            "popularity": 4
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 79,
+                            "popularity": 14
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 82,
+                            "popularity": 11
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 84,
+                            "popularity": 10
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 89
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 92
+                     },
+                     {
+                            "name": "Service",
+                            "score": 92
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 84
+                     },
+                     {
+                            "name": "Location",
+                            "score": 90
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 85
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 77
+                     },
+                     {
+                            "name": "Room",
+                            "score": 80
+                     }
+              ],
+              "description": "Hotel Example 14 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": true,
+                     "continentalBreakfast": true,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": false,
+                     "outdoorPool": true,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": false
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 54,
+                     "prefix": "https://dummycdn.com/hotel-014/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-015",
+              "imageCount": 55,
+              "latitude": 1.295,
+              "longitude": 103.855,
+              "name": "Hotel Example 15",
+              "address": "115 Integration Test Lane",
+              "address1": "115 Integration Test Lane",
+              "rating": 3.0,
+              "distance": 11637.5,
+              "trustyou": {
+                     "id": "trustyou-15",
+                     "score": {
+                            "overall": 85,
+                            "kaligo_overall": 4.0,
+                            "solo": 81,
+                            "couple": 79,
+                            "family": 76,
+                            "business": 78
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 85,
+                            "popularity": 5
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 80,
+                            "popularity": 10
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 78,
+                            "popularity": 12
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 80,
+                            "popularity": 8
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 90
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 88
+                     },
+                     {
+                            "name": "Service",
+                            "score": 90
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 85
+                     },
+                     {
+                            "name": "Location",
+                            "score": 89
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 87
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 78
+                     },
+                     {
+                            "name": "Room",
+                            "score": 81
+                     }
+              ],
+              "description": "Hotel Example 15 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": false,
+                     "continentalBreakfast": false,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": true,
+                     "outdoorPool": true,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": false
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 55,
+                     "prefix": "https://dummycdn.com/hotel-015/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-016",
+              "imageCount": 56,
+              "latitude": 1.296,
+              "longitude": 103.85600000000001,
+              "name": "Hotel Example 16",
+              "address": "116 Integration Test Lane",
+              "address1": "116 Integration Test Lane",
+              "rating": 3.5,
+              "distance": 11680.0,
+              "trustyou": {
+                     "id": "trustyou-16",
+                     "score": {
+                            "overall": 86,
+                            "kaligo_overall": 4.1,
+                            "solo": 78,
+                            "couple": 80,
+                            "family": 77,
+                            "business": 79
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 86,
+                            "popularity": 6
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 81,
+                            "popularity": 11
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 79,
+                            "popularity": 9
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 81,
+                            "popularity": 9
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 91
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 89
+                     },
+                     {
+                            "name": "Service",
+                            "score": 91
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 86
+                     },
+                     {
+                            "name": "Location",
+                            "score": 92
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 86
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 79
+                     },
+                     {
+                            "name": "Room",
+                            "score": 78
+                     }
+              ],
+              "description": "Hotel Example 16 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": true,
+                     "continentalBreakfast": true,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": false,
+                     "outdoorPool": false,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": true
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 56,
+                     "prefix": "https://dummycdn.com/hotel-016/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-017",
+              "imageCount": 57,
+              "latitude": 1.297,
+              "longitude": 103.857,
+              "name": "Hotel Example 17",
+              "address": "117 Integration Test Lane",
+              "address1": "117 Integration Test Lane",
+              "rating": 4.0,
+              "distance": 11722.5,
+              "trustyou": {
+                     "id": "trustyou-17",
+                     "score": {
+                            "overall": 87,
+                            "kaligo_overall": 4.2,
+                            "solo": 79,
+                            "couple": 81,
+                            "family": 78,
+                            "business": 80
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 87,
+                            "popularity": 7
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 82,
+                            "popularity": 12
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 80,
+                            "popularity": 10
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 82,
+                            "popularity": 10
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 92
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 90
+                     },
+                     {
+                            "name": "Service",
+                            "score": 92
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 87
+                     },
+                     {
+                            "name": "Location",
+                            "score": 91
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 85
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 80
+                     },
+                     {
+                            "name": "Room",
+                            "score": 79
+                     }
+              ],
+              "description": "Hotel Example 17 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": false,
+                     "continentalBreakfast": true,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": true,
+                     "outdoorPool": true,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": false
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 57,
+                     "prefix": "https://dummycdn.com/hotel-017/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-018",
+              "imageCount": 58,
+              "latitude": 1.298,
+              "longitude": 103.858,
+              "name": "Hotel Example 18",
+              "address": "118 Integration Test Lane",
+              "address1": "118 Integration Test Lane",
+              "rating": 3.0,
+              "distance": 11765.0,
+              "trustyou": {
+                     "id": "trustyou-18",
+                     "score": {
+                            "overall": 88,
+                            "kaligo_overall": 4.3,
+                            "solo": 80,
+                            "couple": 82,
+                            "family": 76,
+                            "business": 75
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 88,
+                            "popularity": 8
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 83,
+                            "popularity": 13
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 81,
+                            "popularity": 11
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 83,
+                            "popularity": 8
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 93
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 91
+                     },
+                     {
+                            "name": "Service",
+                            "score": 90
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 88
+                     },
+                     {
+                            "name": "Location",
+                            "score": 90
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 87
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 75
+                     },
+                     {
+                            "name": "Room",
+                            "score": 80
+                     }
+              ],
+              "description": "Hotel Example 18 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": true,
+                     "continentalBreakfast": false,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": false,
+                     "outdoorPool": true,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": false
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 58,
+                     "prefix": "https://dummycdn.com/hotel-018/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-019",
+              "imageCount": 59,
+              "latitude": 1.299,
+              "longitude": 103.85900000000001,
+              "name": "Hotel Example 19",
+              "address": "119 Integration Test Lane",
+              "address1": "119 Integration Test Lane",
+              "rating": 3.5,
+              "distance": 11807.5,
+              "trustyou": {
+                     "id": "trustyou-19",
+                     "score": {
+                            "overall": 89,
+                            "kaligo_overall": 4.4,
+                            "solo": 81,
+                            "couple": 83,
+                            "family": 77,
+                            "business": 76
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 89,
+                            "popularity": 9
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 84,
+                            "popularity": 14
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 82,
+                            "popularity": 12
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 84,
+                            "popularity": 9
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 94
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 92
+                     },
+                     {
+                            "name": "Service",
+                            "score": 91
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 89
+                     },
+                     {
+                            "name": "Location",
+                            "score": 89
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 86
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 76
+                     },
+                     {
+                            "name": "Room",
+                            "score": 81
+                     }
+              ],
+              "description": "Hotel Example 19 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": false,
+                     "continentalBreakfast": true,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": true,
+                     "outdoorPool": false,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": false
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 59,
+                     "prefix": "https://dummycdn.com/hotel-019/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-020",
+              "imageCount": 40,
+              "latitude": 1.3,
+              "longitude": 103.86,
+              "name": "Hotel Example 20",
+              "address": "120 Integration Test Lane",
+              "address1": "120 Integration Test Lane",
+              "rating": 4.0,
+              "distance": 11850.0,
+              "trustyou": {
+                     "id": "trustyou-20",
+                     "score": {
+                            "overall": 80,
+                            "kaligo_overall": 4.0,
+                            "solo": 78,
+                            "couple": 79,
+                            "family": 78,
+                            "business": 77
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 85,
+                            "popularity": 0
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 75,
+                            "popularity": 10
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 78,
+                            "popularity": 9
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 80,
+                            "popularity": 10
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 85
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 88
+                     },
+                     {
+                            "name": "Service",
+                            "score": 92
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 80
+                     },
+                     {
+                            "name": "Location",
+                            "score": 92
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 85
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 77
+                     },
+                     {
+                            "name": "Room",
+                            "score": 78
+                     }
+              ],
+              "description": "Hotel Example 20 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": true,
+                     "continentalBreakfast": true,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": false,
+                     "outdoorPool": true,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": true
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 40,
+                     "prefix": "https://dummycdn.com/hotel-020/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-021",
+              "imageCount": 41,
+              "latitude": 1.301,
+              "longitude": 103.861,
+              "name": "Hotel Example 21",
+              "address": "121 Integration Test Lane",
+              "address1": "121 Integration Test Lane",
+              "rating": 3.0,
+              "distance": 11892.5,
+              "trustyou": {
+                     "id": "trustyou-21",
+                     "score": {
+                            "overall": 81,
+                            "kaligo_overall": 4.1,
+                            "solo": 79,
+                            "couple": 80,
+                            "family": 76,
+                            "business": 78
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 86,
+                            "popularity": 1
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 76,
+                            "popularity": 11
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 79,
+                            "popularity": 10
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 81,
+                            "popularity": 8
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 86
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 89
+                     },
+                     {
+                            "name": "Service",
+                            "score": 90
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 81
+                     },
+                     {
+                            "name": "Location",
+                            "score": 91
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 87
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 78
+                     },
+                     {
+                            "name": "Room",
+                            "score": 79
+                     }
+              ],
+              "description": "Hotel Example 21 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": false,
+                     "continentalBreakfast": false,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": true,
+                     "outdoorPool": true,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": false
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 41,
+                     "prefix": "https://dummycdn.com/hotel-021/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-022",
+              "imageCount": 42,
+              "latitude": 1.302,
+              "longitude": 103.86200000000001,
+              "name": "Hotel Example 22",
+              "address": "122 Integration Test Lane",
+              "address1": "122 Integration Test Lane",
+              "rating": 3.5,
+              "distance": 11935.0,
+              "trustyou": {
+                     "id": "trustyou-22",
+                     "score": {
+                            "overall": 82,
+                            "kaligo_overall": 4.2,
+                            "solo": 80,
+                            "couple": 81,
+                            "family": 77,
+                            "business": 79
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 87,
+                            "popularity": 2
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 77,
+                            "popularity": 12
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 80,
+                            "popularity": 11
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 82,
+                            "popularity": 9
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 87
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 90
+                     },
+                     {
+                            "name": "Service",
+                            "score": 91
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 82
+                     },
+                     {
+                            "name": "Location",
+                            "score": 90
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 86
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 79
+                     },
+                     {
+                            "name": "Room",
+                            "score": 80
+                     }
+              ],
+              "description": "Hotel Example 22 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": true,
+                     "continentalBreakfast": true,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": false,
+                     "outdoorPool": false,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": false
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 42,
+                     "prefix": "https://dummycdn.com/hotel-022/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-023",
+              "imageCount": 43,
+              "latitude": 1.303,
+              "longitude": 103.863,
+              "name": "Hotel Example 23",
+              "address": "123 Integration Test Lane",
+              "address1": "123 Integration Test Lane",
+              "rating": 4.0,
+              "distance": 11977.5,
+              "trustyou": {
+                     "id": "trustyou-23",
+                     "score": {
+                            "overall": 83,
+                            "kaligo_overall": 4.3,
+                            "solo": 81,
+                            "couple": 82,
+                            "family": 78,
+                            "business": 80
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 88,
+                            "popularity": 3
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 78,
+                            "popularity": 13
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 81,
+                            "popularity": 12
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 83,
+                            "popularity": 10
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 88
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 91
+                     },
+                     {
+                            "name": "Service",
+                            "score": 92
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 83
+                     },
+                     {
+                            "name": "Location",
+                            "score": 89
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 85
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 80
+                     },
+                     {
+                            "name": "Room",
+                            "score": 81
+                     }
+              ],
+              "description": "Hotel Example 23 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": false,
+                     "continentalBreakfast": true,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": true,
+                     "outdoorPool": true,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": false
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 43,
+                     "prefix": "https://dummycdn.com/hotel-023/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-024",
+              "imageCount": 44,
+              "latitude": 1.304,
+              "longitude": 103.864,
+              "name": "Hotel Example 24",
+              "address": "124 Integration Test Lane",
+              "address1": "124 Integration Test Lane",
+              "rating": 3.0,
+              "distance": 12020.0,
+              "trustyou": {
+                     "id": "trustyou-24",
+                     "score": {
+                            "overall": 84,
+                            "kaligo_overall": 4.4,
+                            "solo": 78,
+                            "couple": 83,
+                            "family": 76,
+                            "business": 75
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 89,
+                            "popularity": 4
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 79,
+                            "popularity": 14
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 82,
+                            "popularity": 9
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 84,
+                            "popularity": 8
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 89
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 92
+                     },
+                     {
+                            "name": "Service",
+                            "score": 90
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 84
+                     },
+                     {
+                            "name": "Location",
+                            "score": 92
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 87
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 75
+                     },
+                     {
+                            "name": "Room",
+                            "score": 78
+                     }
+              ],
+              "description": "Hotel Example 24 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": true,
+                     "continentalBreakfast": false,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": false,
+                     "outdoorPool": true,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": true
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 44,
+                     "prefix": "https://dummycdn.com/hotel-024/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-025",
+              "imageCount": 45,
+              "latitude": 1.305,
+              "longitude": 103.86500000000001,
+              "name": "Hotel Example 25",
+              "address": "125 Integration Test Lane",
+              "address1": "125 Integration Test Lane",
+              "rating": 3.5,
+              "distance": 12062.5,
+              "trustyou": {
+                     "id": "trustyou-25",
+                     "score": {
+                            "overall": 85,
+                            "kaligo_overall": 4.0,
+                            "solo": 79,
+                            "couple": 79,
+                            "family": 77,
+                            "business": 76
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 85,
+                            "popularity": 5
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 80,
+                            "popularity": 10
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 78,
+                            "popularity": 10
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 80,
+                            "popularity": 9
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 90
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 88
+                     },
+                     {
+                            "name": "Service",
+                            "score": 91
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 85
+                     },
+                     {
+                            "name": "Location",
+                            "score": 91
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 86
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 76
+                     },
+                     {
+                            "name": "Room",
+                            "score": 79
+                     }
+              ],
+              "description": "Hotel Example 25 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": false,
+                     "continentalBreakfast": true,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": true,
+                     "outdoorPool": false,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": false
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 45,
+                     "prefix": "https://dummycdn.com/hotel-025/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-026",
+              "imageCount": 46,
+              "latitude": 1.306,
+              "longitude": 103.866,
+              "name": "Hotel Example 26",
+              "address": "126 Integration Test Lane",
+              "address1": "126 Integration Test Lane",
+              "rating": 4.0,
+              "distance": 12105.0,
+              "trustyou": {
+                     "id": "trustyou-26",
+                     "score": {
+                            "overall": 86,
+                            "kaligo_overall": 4.1,
+                            "solo": 80,
+                            "couple": 80,
+                            "family": 78,
+                            "business": 77
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 86,
+                            "popularity": 6
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 81,
+                            "popularity": 11
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 79,
+                            "popularity": 11
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 81,
+                            "popularity": 10
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 91
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 89
+                     },
+                     {
+                            "name": "Service",
+                            "score": 92
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 86
+                     },
+                     {
+                            "name": "Location",
+                            "score": 90
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 85
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 77
+                     },
+                     {
+                            "name": "Room",
+                            "score": 80
+                     }
+              ],
+              "description": "Hotel Example 26 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": true,
+                     "continentalBreakfast": true,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": false,
+                     "outdoorPool": true,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": false
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 46,
+                     "prefix": "https://dummycdn.com/hotel-026/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-027",
+              "imageCount": 47,
+              "latitude": 1.307,
+              "longitude": 103.867,
+              "name": "Hotel Example 27",
+              "address": "127 Integration Test Lane",
+              "address1": "127 Integration Test Lane",
+              "rating": 3.0,
+              "distance": 12147.5,
+              "trustyou": {
+                     "id": "trustyou-27",
+                     "score": {
+                            "overall": 87,
+                            "kaligo_overall": 4.2,
+                            "solo": 81,
+                            "couple": 81,
+                            "family": 76,
+                            "business": 78
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 87,
+                            "popularity": 7
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 82,
+                            "popularity": 12
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 80,
+                            "popularity": 12
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 82,
+                            "popularity": 8
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 92
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 90
+                     },
+                     {
+                            "name": "Service",
+                            "score": 90
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 87
+                     },
+                     {
+                            "name": "Location",
+                            "score": 89
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 87
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 78
+                     },
+                     {
+                            "name": "Room",
+                            "score": 81
+                     }
+              ],
+              "description": "Hotel Example 27 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": false,
+                     "continentalBreakfast": false,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": true,
+                     "outdoorPool": true,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": false
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 47,
+                     "prefix": "https://dummycdn.com/hotel-027/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-028",
+              "imageCount": 48,
+              "latitude": 1.308,
+              "longitude": 103.86800000000001,
+              "name": "Hotel Example 28",
+              "address": "128 Integration Test Lane",
+              "address1": "128 Integration Test Lane",
+              "rating": 3.5,
+              "distance": 12190.0,
+              "trustyou": {
+                     "id": "trustyou-28",
+                     "score": {
+                            "overall": 88,
+                            "kaligo_overall": 4.3,
+                            "solo": 78,
+                            "couple": 82,
+                            "family": 77,
+                            "business": 79
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 88,
+                            "popularity": 8
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 83,
+                            "popularity": 13
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 81,
+                            "popularity": 9
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 83,
+                            "popularity": 9
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 93
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 91
+                     },
+                     {
+                            "name": "Service",
+                            "score": 91
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 88
+                     },
+                     {
+                            "name": "Location",
+                            "score": 92
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 86
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 79
+                     },
+                     {
+                            "name": "Room",
+                            "score": 78
+                     }
+              ],
+              "description": "Hotel Example 28 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": true,
+                     "continentalBreakfast": true,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": false,
+                     "outdoorPool": false,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": true
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 48,
+                     "prefix": "https://dummycdn.com/hotel-028/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-029",
+              "imageCount": 49,
+              "latitude": 1.309,
+              "longitude": 103.869,
+              "name": "Hotel Example 29",
+              "address": "129 Integration Test Lane",
+              "address1": "129 Integration Test Lane",
+              "rating": 4.0,
+              "distance": 12232.5,
+              "trustyou": {
+                     "id": "trustyou-29",
+                     "score": {
+                            "overall": 89,
+                            "kaligo_overall": 4.4,
+                            "solo": 79,
+                            "couple": 83,
+                            "family": 78,
+                            "business": 80
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 89,
+                            "popularity": 9
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 84,
+                            "popularity": 14
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 82,
+                            "popularity": 10
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 84,
+                            "popularity": 10
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 94
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 92
+                     },
+                     {
+                            "name": "Service",
+                            "score": 92
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 89
+                     },
+                     {
+                            "name": "Location",
+                            "score": 91
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 85
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 80
+                     },
+                     {
+                            "name": "Room",
+                            "score": 79
+                     }
+              ],
+              "description": "Hotel Example 29 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": false,
+                     "continentalBreakfast": true,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": true,
+                     "outdoorPool": true,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": false
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 49,
+                     "prefix": "https://dummycdn.com/hotel-029/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       },
+       {
+              "id": "hotel-030",
+              "imageCount": 50,
+              "latitude": 1.31,
+              "longitude": 103.87,
+              "name": "Hotel Example 30",
+              "address": "130 Integration Test Lane",
+              "address1": "130 Integration Test Lane",
+              "rating": 3.0,
+              "distance": 12275.0,
+              "trustyou": {
+                     "id": "trustyou-30",
+                     "score": {
+                            "overall": 80,
+                            "kaligo_overall": 4.0,
+                            "solo": 80,
+                            "couple": 79,
+                            "family": 76,
+                            "business": 75
+                     }
+              },
+              "categories": {
+                     "overall": {
+                            "name": "Overall",
+                            "score": 85,
+                            "popularity": 0
+                     },
+                     "romantic_hotel": {
+                            "name": "Romantic Hotel",
+                            "score": 75,
+                            "popularity": 10
+                     },
+                     "family_hotel": {
+                            "name": "Family Hotel",
+                            "score": 78,
+                            "popularity": 11
+                     },
+                     "business_hotel": {
+                            "name": "Business Hotel",
+                            "score": 80,
+                            "popularity": 8
+                     }
+              },
+              "amenities_ratings": [
+                     {
+                            "name": "Food",
+                            "score": 85
+                     },
+                     {
+                            "name": "WiFi",
+                            "score": 88
+                     },
+                     {
+                            "name": "Service",
+                            "score": 90
+                     },
+                     {
+                            "name": "Amenities",
+                            "score": 80
+                     },
+                     {
+                            "name": "Location",
+                            "score": 90
+                     },
+                     {
+                            "name": "Comfort",
+                            "score": 87
+                     },
+                     {
+                            "name": "Breakfast",
+                            "score": 75
+                     },
+                     {
+                            "name": "Room",
+                            "score": 80
+                     }
+              ],
+              "description": "Hotel Example 30 offers modern accommodations with essential amenities, centrally located for convenience.",
+              "amenities": {
+                     "airConditioning": true,
+                     "clothingIron": true,
+                     "continentalBreakfast": false,
+                     "dataPorts": true,
+                     "hairDryer": true,
+                     "kitchen": false,
+                     "outdoorPool": true,
+                     "parkingGarage": true,
+                     "safe": true,
+                     "tVInRoom": true,
+                     "voiceMail": false
+              },
+              "original_metadata": {
+                     "name": null,
+                     "city": "Singapore",
+                     "state": null,
+                     "country": "SG"
+              },
+              "image_details": {
+                     "suffix": ".jpg",
+                     "count": 50,
+                     "prefix": "https://dummycdn.com/hotel-030/"
+              },
+              "hires_image_index": "0,1,2,3,4,5,6,7,8,9",
+              "number_of_images": 10,
+              "default_image_index": 1,
+              "imgix_url": "https://dummyimgix.net",
+              "cloudflare_image_url": "https://dummycdn.xyz/images",
+              "checkin_time": "3:00 PM"
+       }
+]

@@ -1,0 +1,698 @@
+{
+       "searchCompleted": null,
+       "completed": true,
+       "status": null,
+       "currency": "SGD",
+       "hotels": [
+              {
+                     "id": "hotel-001",
+                     "searchRank": 0.88,
+                     "price_type": "multi",
+                     "free_cancellation": false,
+                     "rooms_available": 13,
+                     "max_cash_payment": 250,
+                     "coverted_max_cash_payment": 255,
+                     "points": 623,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 250,
+                     "price": 255,
+                     "converted_price": 255,
+                     "lowest_converted_price": 255,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 247.5
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-002",
+                     "searchRank": 0.91,
+                     "price_type": "multi",
+                     "free_cancellation": true,
+                     "rooms_available": 16,
+                     "max_cash_payment": 300,
+                     "coverted_max_cash_payment": 310,
+                     "points": 746,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 300,
+                     "price": 310,
+                     "converted_price": 310,
+                     "lowest_converted_price": 310,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 295.0
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-003",
+                     "searchRank": 0.94,
+                     "price_type": "multi",
+                     "free_cancellation": false,
+                     "rooms_available": 19,
+                     "max_cash_payment": 350,
+                     "coverted_max_cash_payment": 365,
+                     "points": 869,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 350,
+                     "price": 365,
+                     "converted_price": 365,
+                     "lowest_converted_price": 365,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 342.5
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-004",
+                     "searchRank": 0.97,
+                     "price_type": "multi",
+                     "free_cancellation": true,
+                     "rooms_available": 22,
+                     "max_cash_payment": 400,
+                     "coverted_max_cash_payment": 420,
+                     "points": 992,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 400,
+                     "price": 420,
+                     "converted_price": 420,
+                     "lowest_converted_price": 420,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 390.0
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-005",
+                     "searchRank": 0.85,
+                     "price_type": "multi",
+                     "free_cancellation": false,
+                     "rooms_available": 25,
+                     "max_cash_payment": 450,
+                     "coverted_max_cash_payment": 475,
+                     "points": 1115,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 450,
+                     "price": 475,
+                     "converted_price": 475,
+                     "lowest_converted_price": 475,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 437.5
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-006",
+                     "searchRank": 0.88,
+                     "price_type": "multi",
+                     "free_cancellation": true,
+                     "rooms_available": 28,
+                     "max_cash_payment": 500,
+                     "coverted_max_cash_payment": 530,
+                     "points": 1238,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 500,
+                     "price": 530,
+                     "converted_price": 530,
+                     "lowest_converted_price": 530,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 485.0
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-007",
+                     "searchRank": 0.91,
+                     "price_type": "multi",
+                     "free_cancellation": false,
+                     "rooms_available": 31,
+                     "max_cash_payment": 550,
+                     "coverted_max_cash_payment": 585,
+                     "points": 1361,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 550,
+                     "price": 585,
+                     "converted_price": 585,
+                     "lowest_converted_price": 585,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 532.5
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-008",
+                     "searchRank": 0.94,
+                     "price_type": "multi",
+                     "free_cancellation": true,
+                     "rooms_available": 34,
+                     "max_cash_payment": 600,
+                     "coverted_max_cash_payment": 640,
+                     "points": 1484,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 600,
+                     "price": 640,
+                     "converted_price": 640,
+                     "lowest_converted_price": 640,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 580.0
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-009",
+                     "searchRank": 0.97,
+                     "price_type": "multi",
+                     "free_cancellation": false,
+                     "rooms_available": 37,
+                     "max_cash_payment": 650,
+                     "coverted_max_cash_payment": 695,
+                     "points": 1607,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 650,
+                     "price": 695,
+                     "converted_price": 695,
+                     "lowest_converted_price": 695,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 627.5
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-010",
+                     "searchRank": 0.85,
+                     "price_type": "multi",
+                     "free_cancellation": true,
+                     "rooms_available": 40,
+                     "max_cash_payment": 700,
+                     "coverted_max_cash_payment": 750,
+                     "points": 1730,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 700,
+                     "price": 750,
+                     "converted_price": 750,
+                     "lowest_converted_price": 750,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 675.0
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-011",
+                     "searchRank": 0.88,
+                     "price_type": "multi",
+                     "free_cancellation": false,
+                     "rooms_available": 43,
+                     "max_cash_payment": 750,
+                     "coverted_max_cash_payment": 805,
+                     "points": 1853,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 750,
+                     "price": 805,
+                     "converted_price": 805,
+                     "lowest_converted_price": 805,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 722.5
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-012",
+                     "searchRank": 0.91,
+                     "price_type": "multi",
+                     "free_cancellation": true,
+                     "rooms_available": 46,
+                     "max_cash_payment": 800,
+                     "coverted_max_cash_payment": 860,
+                     "points": 1976,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 800,
+                     "price": 860,
+                     "converted_price": 860,
+                     "lowest_converted_price": 860,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 770.0
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-013",
+                     "searchRank": 0.94,
+                     "price_type": "multi",
+                     "free_cancellation": false,
+                     "rooms_available": 49,
+                     "max_cash_payment": 850,
+                     "coverted_max_cash_payment": 915,
+                     "points": 2099,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 850,
+                     "price": 915,
+                     "converted_price": 915,
+                     "lowest_converted_price": 915,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 817.5
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-014",
+                     "searchRank": 0.97,
+                     "price_type": "multi",
+                     "free_cancellation": true,
+                     "rooms_available": 52,
+                     "max_cash_payment": 900,
+                     "coverted_max_cash_payment": 970,
+                     "points": 2222,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 900,
+                     "price": 970,
+                     "converted_price": 970,
+                     "lowest_converted_price": 970,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 865.0
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-015",
+                     "searchRank": 0.85,
+                     "price_type": "multi",
+                     "free_cancellation": false,
+                     "rooms_available": 55,
+                     "max_cash_payment": 950,
+                     "coverted_max_cash_payment": 1025,
+                     "points": 2345,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 950,
+                     "price": 1025,
+                     "converted_price": 1025,
+                     "lowest_converted_price": 1025,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 912.5
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-016",
+                     "searchRank": 0.88,
+                     "price_type": "multi",
+                     "free_cancellation": true,
+                     "rooms_available": 58,
+                     "max_cash_payment": 1000,
+                     "coverted_max_cash_payment": 1080,
+                     "points": 2468,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 1000,
+                     "price": 1080,
+                     "converted_price": 1080,
+                     "lowest_converted_price": 1080,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 960.0
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-017",
+                     "searchRank": 0.91,
+                     "price_type": "multi",
+                     "free_cancellation": false,
+                     "rooms_available": 61,
+                     "max_cash_payment": 1050,
+                     "coverted_max_cash_payment": 1135,
+                     "points": 2591,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 1050,
+                     "price": 1135,
+                     "converted_price": 1135,
+                     "lowest_converted_price": 1135,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 1007.5
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-018",
+                     "searchRank": 0.94,
+                     "price_type": "multi",
+                     "free_cancellation": true,
+                     "rooms_available": 64,
+                     "max_cash_payment": 1100,
+                     "coverted_max_cash_payment": 1190,
+                     "points": 2714,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 1100,
+                     "price": 1190,
+                     "converted_price": 1190,
+                     "lowest_converted_price": 1190,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 1055.0
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-019",
+                     "searchRank": 0.97,
+                     "price_type": "multi",
+                     "free_cancellation": false,
+                     "rooms_available": 67,
+                     "max_cash_payment": 1150,
+                     "coverted_max_cash_payment": 1245,
+                     "points": 2837,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 1150,
+                     "price": 1245,
+                     "converted_price": 1245,
+                     "lowest_converted_price": 1245,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 1102.5
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-020",
+                     "searchRank": 0.85,
+                     "price_type": "multi",
+                     "free_cancellation": true,
+                     "rooms_available": 70,
+                     "max_cash_payment": 1200,
+                     "coverted_max_cash_payment": 1300,
+                     "points": 2960,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 1200,
+                     "price": 1300,
+                     "converted_price": 1300,
+                     "lowest_converted_price": 1300,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 1150.0
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-021",
+                     "searchRank": 0.88,
+                     "price_type": "multi",
+                     "free_cancellation": false,
+                     "rooms_available": 73,
+                     "max_cash_payment": 1250,
+                     "coverted_max_cash_payment": 1355,
+                     "points": 3083,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 1250,
+                     "price": 1355,
+                     "converted_price": 1355,
+                     "lowest_converted_price": 1355,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 1197.5
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-022",
+                     "searchRank": 0.91,
+                     "price_type": "multi",
+                     "free_cancellation": true,
+                     "rooms_available": 76,
+                     "max_cash_payment": 1300,
+                     "coverted_max_cash_payment": 1410,
+                     "points": 3206,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 1300,
+                     "price": 1410,
+                     "converted_price": 1410,
+                     "lowest_converted_price": 1410,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 1245.0
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-023",
+                     "searchRank": 0.94,
+                     "price_type": "multi",
+                     "free_cancellation": false,
+                     "rooms_available": 79,
+                     "max_cash_payment": 1350,
+                     "coverted_max_cash_payment": 1465,
+                     "points": 3329,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 1350,
+                     "price": 1465,
+                     "converted_price": 1465,
+                     "lowest_converted_price": 1465,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 1292.5
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-024",
+                     "searchRank": 0.97,
+                     "price_type": "multi",
+                     "free_cancellation": true,
+                     "rooms_available": 82,
+                     "max_cash_payment": 1400,
+                     "coverted_max_cash_payment": 1520,
+                     "points": 3452,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 1400,
+                     "price": 1520,
+                     "converted_price": 1520,
+                     "lowest_converted_price": 1520,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 1340.0
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-025",
+                     "searchRank": 0.85,
+                     "price_type": "multi",
+                     "free_cancellation": false,
+                     "rooms_available": 85,
+                     "max_cash_payment": 1450,
+                     "coverted_max_cash_payment": 1575,
+                     "points": 3575,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 1450,
+                     "price": 1575,
+                     "converted_price": 1575,
+                     "lowest_converted_price": 1575,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 1387.5
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-026",
+                     "searchRank": 0.88,
+                     "price_type": "multi",
+                     "free_cancellation": true,
+                     "rooms_available": 88,
+                     "max_cash_payment": 1500,
+                     "coverted_max_cash_payment": 1630,
+                     "points": 3698,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 1500,
+                     "price": 1630,
+                     "converted_price": 1630,
+                     "lowest_converted_price": 1630,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 1435.0
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-027",
+                     "searchRank": 0.91,
+                     "price_type": "multi",
+                     "free_cancellation": false,
+                     "rooms_available": 91,
+                     "max_cash_payment": 1550,
+                     "coverted_max_cash_payment": 1685,
+                     "points": 3821,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 1550,
+                     "price": 1685,
+                     "converted_price": 1685,
+                     "lowest_converted_price": 1685,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 1482.5
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-028",
+                     "searchRank": 0.94,
+                     "price_type": "multi",
+                     "free_cancellation": true,
+                     "rooms_available": 94,
+                     "max_cash_payment": 1600,
+                     "coverted_max_cash_payment": 1740,
+                     "points": 3944,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 1600,
+                     "price": 1740,
+                     "converted_price": 1740,
+                     "lowest_converted_price": 1740,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 1530.0
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-029",
+                     "searchRank": 0.97,
+                     "price_type": "multi",
+                     "free_cancellation": false,
+                     "rooms_available": 97,
+                     "max_cash_payment": 1650,
+                     "coverted_max_cash_payment": 1795,
+                     "points": 4067,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 1650,
+                     "price": 1795,
+                     "converted_price": 1795,
+                     "lowest_converted_price": 1795,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 1577.5
+                            }
+                     ]
+              },
+              {
+                     "id": "hotel-030",
+                     "searchRank": 0.85,
+                     "price_type": "multi",
+                     "free_cancellation": true,
+                     "rooms_available": 100,
+                     "max_cash_payment": 1700,
+                     "coverted_max_cash_payment": 1850,
+                     "points": 4190,
+                     "bonuses": 0,
+                     "bonus_programs": [],
+                     "bonus_tiers": [],
+                     "lowest_price": 1700,
+                     "price": 1850,
+                     "converted_price": 1850,
+                     "lowest_converted_price": 1850,
+                     "market_rates": [
+                            {
+                                   "supplier": "expedia",
+                                   "rate": 1625.0
+                            }
+                     ]
+              }
+       ]
+}

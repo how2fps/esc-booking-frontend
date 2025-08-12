@@ -14,8 +14,8 @@ const SignupForm = () => {
        const [showConfirmPassword, setShowConfirmPassword] = useState(false);
        const [errors, setErrors] = useState<string[]>([]);
        const [isValid, setIsValid] = useState(false);
-       const [submitError, setSubmitError] = useState<string | null>(null);
-       const [submitting, setSubmitting] = useState(false);
+       const [_submitError, setSubmitError] = useState<string | null>(null);
+       const [_submitting, setSubmitting] = useState(false);
        const navigate = useNavigate();
 
        useEffect(() => {
@@ -35,7 +35,7 @@ const SignupForm = () => {
               if (isValid) {
                      setSubmitting(true);
                      try {
-                            const response = await fetch("http://localhost:3000/api/users/signup", {
+                            const response = await fetch("http://18.138.130.229:3000/api/users/signup", {
                                    method: "POST",
                                    headers: {
                                           "Content-Type": "application/json",
