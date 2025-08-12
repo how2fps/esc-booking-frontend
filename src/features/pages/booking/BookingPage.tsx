@@ -153,7 +153,7 @@ const BookingPage = () => {
           className="flex flex-col lg:flex-row items-start gap-10"
         >
           {/* Sidebar with Booking Info */}
-          <div className="w-full lg:w-1/5 max-w-[220px]">
+          <div className="w-full lg:w-1/5 lg:max-w-[220px]">
             <h2 className="text-md font-semibold mb-4">Your Selection</h2>
             {/* Small hotel image */}
             {state.hotelImage && (
@@ -165,7 +165,7 @@ const BookingPage = () => {
               />
             )}
             {/* Compact Info List */}
-            <dl className="space-y-2 text-sm text-center">
+            <dl className="space-y-2 text-sm text-left md:text-center">
               {[
                 ['Selected Hotel', selectedHotel],
                 ['Room Type', roomType],
