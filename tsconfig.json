@@ -1,17 +1,17 @@
 {
-       "compilerOptions": {
-              "jsx": "react-jsx",
-              "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-              "target": "es2015",
-              "moduleResolution": "bundler",
-                  "module": "esnext",
-                     "skipLibCheck": true
-              
-
-       },
-       "files": [],
-       "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }],
-       "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "test_case/components/HotelListing"],
-       "exclude": ["node_modules"]
-}
+    "compilerOptions": {
+      "jsx": "react-jsx",
+      "esModuleInterop": true,
+      "allowSyntheticDefaultImports": true,
+      "target": "es2015",
+      "moduleResolution": "bundler",
+      "module": "esnext",
+      "skipLibCheck": true,
+      "types": ["jest", "node"]        // <-- add this line
+    },
+    "files": [],
+    "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }],
+    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "test_case/components/HotelListing"],
+    "exclude": ["node_modules"]
+  }
+  

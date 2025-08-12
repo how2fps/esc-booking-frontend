@@ -25,7 +25,7 @@ const Login = () => {
                      console.log("Login response:", data);
                      if (response.ok && data.success) {
                             console.log("Setting user:", data.data);
-                            setUser(data.data); 
+                            setUser(data.data);
                             navigate("/dashboard");
                      } else {
                             setError(data.message || "Login failed");
@@ -55,7 +55,7 @@ const Login = () => {
                                                         </label>
                                                         <input
                                                                type="email"
-                                                               className="border-line px-4 pt-3 pb-3 w-full rounded-lg mt-2"
+                                                               className="border-line px-4 pt-3 pb-3 w-full rounded-lg mt-2 bg-[#d1d1d1]"
                                                                id="username"
                                                                value={email}
                                                                onChange={(e) => setEmail(e.target.value)}
