@@ -183,7 +183,7 @@ const DestinationSearch = () => {
 
        return (
               <>
-                     <div className="slider-block style-one relative h-[calc(100vh-160px)] overflow-hidden bg-black" data-testid="slider">
+                     <div className="slider-block style-one relative h-[calc(100vh-160px)] bg-black" data-testid="slider">
                             <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
                                    {heroImages.map((src, i) => (
                                           <img

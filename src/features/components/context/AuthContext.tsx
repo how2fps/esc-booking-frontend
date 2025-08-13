@@ -3,10 +3,10 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 
 interface User {
-  id: number;
+  
   email: string;
   name: string;
-  phone_number: number;
+  phone_number: string;
 }
 
 interface AuthContextType {

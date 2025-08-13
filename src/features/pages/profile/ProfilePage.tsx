@@ -122,7 +122,7 @@ const ProfilePage: React.FC = () => {
                      const data = await res.json()
                      if (data.success) {
                             setUser({ ...form })
-                            setAuthUser({...form})
+                            setAuthUser({...form })
                             setEditing(false)
                             setMessage('Profile updated successfully!')
                      } else {
