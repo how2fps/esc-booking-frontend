@@ -212,6 +212,7 @@ const ProfilePage: React.FC = () => {
                      })
                      const data = await res.json()
                      if (data.success) {
+                            await logout()
                             setUser(null)
                             navigate('/login')
                      } else {
