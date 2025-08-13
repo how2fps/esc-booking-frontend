@@ -200,7 +200,7 @@ const DestinationSearch = () => {
                             <div className="container h-full relative z-20">
                                    <div className="content w-full h-full relative flex flex-col items-center justify-center">
                                           <div className="heading flex-col items-center justify-center">
-                                                 <div className="text-white font-extrabold text-4xl md:text-5xl drop-shadow-lg">Unlock Unique Stays at Exclusive Prices</div>
+                                                 <div className="text-white font-extrabold text-4xl md:text-5xl drop-shadow-lg"> Unique Stays at Exclusive Prices</div>
                                           </div>
 
                                           <div className="form-search md:mt-10 mt-6 w-full">
@@ -290,8 +290,9 @@ const DestinationSearch = () => {
                                                                                     <div className="text-title" data-testid="adult">{guest.adult}</div>
                                                                                     <div
                                                                                            className="plus w-8 h-8 flex items-center justify-center rounded-full border border-outline cursor-pointer duration-300 hover:bg-black hover:text-white"
-                                                                                           onClick={() => increaseGuest("adult")}>
-                                                                                           <Icon.Plus weight="bold" />
+                                                                                           onClick={() => increaseGuest("adult")}
+                                                                                           data-testid ="adult-plus">
+                                                                                           <Icon.Plus weight="bold"  />
                                                                                     </div>
                                                                              </div>
                                                                       </div>
@@ -309,7 +310,8 @@ const DestinationSearch = () => {
                                                                                     <div className="text-title" data-testid="children">{guest.children}</div>
                                                                                     <div
                                                                                            className="plus w-8 h-8 flex items-center justify-center rounded-full border border-outline cursor-pointer duration-300 hover:bg-black hover:text-white"
-                                                                                           onClick={() => increaseGuest("children")}>
+                                                                                           onClick={() => increaseGuest("children")}
+                                                                                           data-testid ="children-plus">
                                                                                            <Icon.Plus weight="bold" />
                                                                                     </div>
                                                                              </div>

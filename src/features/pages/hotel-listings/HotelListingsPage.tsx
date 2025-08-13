@@ -92,7 +92,7 @@ const HotelListings = () => {
        }>({});
 
        const [isLoading, setIsLoading] = useState<boolean>(true);
-       // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
 
        const [filters, setFilters] = useState<HotelFilter>({
               amenities: new Set(),
@@ -340,7 +340,7 @@ const HotelListings = () => {
                                                  setItemsPerPage={setItemsPerPage}
                                           />
 
-                                          <SortSelector setSortOption={setSortOption} />
+                                          <SortSelector setSortOption={setSortOption} data-testid="sort"/>
                                    </div>
                                    {isLoading ? (
                                           <div
@@ -360,7 +360,7 @@ const HotelListings = () => {
                                                                       hotelData={hotel}
                                                                       destination_id ={destinationId as string}
                                                                       dateRange={formattedDateString}
-                                                                    
+                                                                   
                                                                />
                                                         ))
                                                  ) : (
