@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 
-const baseURL = 'http://localhost:8080/signup'; // adjust to your dev server
+const baseURL = 'https://7sffsjcgsu.ap-southeast-1.awsapprunner.com/signup'; // adjust to your dev server
 
 // Generate both valid and invalid passwords to fuzz the SignupForm logic
 const passwordCases = [
@@ -22,14 +22,15 @@ const passwordCases = [
 
 test.describe('SignupForm password fuzz test', () => {
 
-  for (const pwd of passwordCases) {
-    test(`Test password: "${pwd}"`, async ({ page }) => {
-      await page.goto(baseURL);
+  for (let i = 0; i < passwordCases.length; i++) {
+  const pwd = passwordCases[i];
+  test(`Password fuzz case #${i + 1}`, async ({ page }) => {
+    await page.goto(baseURL);
 
       // Fill required other fields with dummy valid data
       await page.fill('#name', faker.person.firstName());
       await page.fill('#email', faker.internet.email());
-      await page.fill('#phoneNumber', faker.phone.number('##########'));
+      await page.fill('#phoneNumber', faker.phone.number({ style: 'national' }));
 
       // Password & confirm password (same as password for now)
       await page.fill('#password', pwd);

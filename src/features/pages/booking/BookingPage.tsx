@@ -103,7 +103,7 @@ const BookingPage = () => {
   
     if (validationErrors.length === 0) {
       try {
-        const response = await fetch('http://18.138.130.229:3000/api/bookings', {
+        const response = await fetch('https://api.ascendahotelbackend.com/api/bookings', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',

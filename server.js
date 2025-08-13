@@ -12,7 +12,7 @@ if (!apiKey) {
 const stripe = new Stripe(apiKey);
 app.use(express.static('public'));
 
-const YOUR_DOMAIN = 'http://54.255.23.219:8080?';
+const YOUR_DOMAIN = 'https://7sffsjcgsu.ap-southeast-1.awsapprunner.com';
 
 app.post('/create-checkout-session', async (req, res) => {
   const session = await stripe.checkout.sessions.create({

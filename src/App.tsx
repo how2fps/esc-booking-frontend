@@ -11,9 +11,16 @@ function App() {
   return (
        <AuthProvider>
               <BrowserRouter>
+              <div className="-z-10">
                      <HeaderOne />
-                     <AppRoutes />
+              </div>
+                    
+                     <div className="z-10">
+                            <AppRoutes />
+                     </div>
+                     <div className="-z-10">
                      <Footer />
+              </div>
               </BrowserRouter>
        </AuthProvider>
   );

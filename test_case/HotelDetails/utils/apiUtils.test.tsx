@@ -19,7 +19,7 @@ describe('Hotel and Room API Utilities', () => {
       
       while (attemptCount < maxRetries) {
         try {
-          const response = await fetch(`http://localhost:3000/api/hotels/${id}`, {
+          const response = await fetch(`https://localhost:3000/api/hotels/${id}`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -66,7 +66,7 @@ describe('Hotel and Room API Utilities', () => {
 
       const result = await fetchHotelDetails('4qUA');
       expect(result).toEqual(mockHotel);
-      expect(mockFetch).toHaveBeenCalledWith('http://localhost:3000/api/hotels/4qUA', {
+      expect(mockFetch).toHaveBeenCalledWith('https://localhost:3000/api/hotels/4qUA', {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -122,7 +122,7 @@ describe('Hotel and Room API Utilities', () => {
       maxAttempts = 5,
       delay = 1000
     ) => {
-      const apiUrl = `http://localhost:3000/api/hotels/${hotelId}/prices?destination_id=${destination_id}&checkin=${checkin}&checkout=${checkout}&lang=en_US&currency=SGD&country_code=SG&guests=${guests}&partner_id=1089&landing_page=wl-acme-earn&product_type=earn`;
+      const apiUrl = `https://localhost:3000/api/hotels/${hotelId}/prices?destination_id=${destination_id}&checkin=${checkin}&checkout=${checkout}&lang=en_US&currency=SGD&country_code=SG&guests=${guests}&partner_id=1089&landing_page=wl-acme-earn&product_type=earn`;
 
       for (let attempt = 1; attempt <= maxAttempts; attempt++) {
         try {
@@ -195,7 +195,7 @@ describe('Hotel and Room API Utilities', () => {
       const result = await fetchRoomPrices('4qUA', 'dest123', '2024-03-15', '2024-03-16', 2, 3, 10);
       expect(result).toEqual(mockRooms);
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining('http://localhost:3000/api/hotels/4qUA/prices'),
+        expect.stringContaining('https://localhost:3000/api/hotels/4qUA/prices'),
         {
           method: "GET",
           headers: { "Content-Type": "application/json" }

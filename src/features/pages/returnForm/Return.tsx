@@ -23,7 +23,7 @@ const ReturnForm = () => {
 
     // Start polling the status every 2 seconds
     const intervalId = setInterval(() => {
-      fetch(`http://api.ascendahotelbackend.com/api/stripe/session-status?session_id=${sessionId}`,{credentials:"include"})
+      fetch(`https://api.ascendahotelbackend.com/api/stripe/session-status?session_id=${sessionId}`,{credentials:"include"})
         .then((res) => res.json())
         .then((data) => {
           // Only update state if the status has changed
@@ -37,7 +37,7 @@ const ReturnForm = () => {
             clearInterval(intervalId);
 
             // Call your backend to update the database
-            fetch('http://api.ascendahotelbackend.com/api/bookings/confirm-payment', {
+            fetch('https://api.ascendahotelbackend.com/api/bookings/confirm-payment', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               credentials:'include',

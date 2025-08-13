@@ -196,7 +196,7 @@ const HotelDetailContent = () => {
                     console.log('Hotel API Response status:', response.status);
                     
                     if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                        throw new Error(` error! status: ${response.status}`);
                     }
                     
                     const hotelResult: Hotel = await response.json();
@@ -532,7 +532,7 @@ const HotelDetailContent = () => {
                                 </div>
                                 {hotelDetails?.latitude && hotelDetails?.longitude && (
                                     <a 
-                                        href={`http://maps.google.com/?q=${hotelDetails?.latitude},${hotelDetails?.longitude}`} 
+                                        href={`https://maps.google.com/?q=${hotelDetails?.latitude},${hotelDetails?.longitude}`} 
                                         target='_blank' 
                                         rel='noopener noreferrer'
                                         className='text-primary underline'

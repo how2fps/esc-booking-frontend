@@ -256,7 +256,7 @@ const RoomDetailContent = () => {
             const maxAttempts = 5; 
             const delayBetweenAttempts = 1000; 
             
-            const apiUrl = `http://18.138.130.229:3000/api/hotels/${id}/prices?destination_id=${destination_id}&checkin=${currentCheckIn}&checkout=${currentCheckOut}&lang=en_US&currency=SGD&country_code=SG&guests=${currentGuests}&partner_id=1089&landing_page=wl-acme-earn&product_type=earn`;
+            const apiUrl = `https://api.ascendahotelbackend.com/api/hotels/${id}/prices?destination_id=${destination_id}&checkin=${currentCheckIn}&checkout=${currentCheckOut}&lang=en_US&currency=SGD&country_code=SG&guests=${currentGuests}&partner_id=1089&landing_page=wl-acme-earn&product_type=earn`;
 
             for (let attempt = 1; attempt <= maxAttempts; attempt++) {
                 try {
@@ -551,7 +551,7 @@ const RoomDetailContent = () => {
                                 </div>
                                 {hotelDetails?.latitude && hotelDetails?.longitude && (
                                     <a 
-                                        href={`http://maps.google.com/?q=${hotelDetails?.latitude},${hotelDetails?.longitude}`} 
+                                        href={`https://maps.google.com/?q=${hotelDetails?.latitude},${hotelDetails?.longitude}`} 
                                         target='_blank' 
                                         rel='noopener noreferrer'
                                         className='text-primary underline'

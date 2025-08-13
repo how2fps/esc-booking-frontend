@@ -113,7 +113,7 @@ const ProfilePage: React.FC = () => {
               setError(null)
               try {
                    
-                     const res = await fetch('http://api.ascendahotelbackend.com/api/users/profile', {
+                     const res = await fetch('https://api.ascendahotelbackend.com/api/users/profile', {
                             method: 'PUT',
                             headers: { 'Content-Type': 'application/json' },
                             credentials: 'include',
@@ -151,7 +151,7 @@ const ProfilePage: React.FC = () => {
             setPasswordSaving(true);
         
             try {
-            const res = await fetch('http://api.ascendahotelbackend.com/api/users/change-password', {
+            const res = await fetch('https://api.ascendahotelbackend.com/api/users/change-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -182,7 +182,7 @@ const ProfilePage: React.FC = () => {
 
        const handleLogout = async () => {
               try {
-                     await fetch('http://api.ascendahotelbackend.com/api/users/logout', {
+                     await fetch('https://api.ascendahotelbackend.com/api/users/logout', {
                             method: 'POST',
                             credentials: 'include',
                      })
@@ -207,7 +207,7 @@ const ProfilePage: React.FC = () => {
 
               setDeleting(true)
               try {
-                     const res = await fetch('http://api.ascendahotelbackend.com/api/users/delete', {
+                     const res = await fetch('https://api.ascendahotelbackend.com/api/users/delete', {
                             method: 'DELETE',
                             headers: { 'Content-Type': 'application/json' },
                             credentials: 'include',

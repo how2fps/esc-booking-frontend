@@ -12,7 +12,7 @@ test.describe('DestinationSearch fuzz test', () => {
 
   for (let i = 0; i < fuzzIterations; i++) {
     test(`Fuzz iteration ${i + 1}`, async ({ page }) => {
-      await page.goto('http://localhost:8080/dashboard', { waitUntil: 'load' });
+      await page.goto('https://7sffsjcgsu.ap-southeast-1.awsapprunner.com/dashboard', { waitUntil: 'load' });
 
       // ---- DESTINATION SEARCH ----
       const searchQuery = faker.location.city(); // random city name

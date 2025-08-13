@@ -238,14 +238,14 @@ const DestinationSearch = () => {
                                                                       onClick={handleOpenDate}>
                                                                       <Icon.CalendarBlank className="icon text-xl left-5" />
                                                                       <input
-                                                                             className="body2 w-full pl-12 pr-5 py-3 border border-outline rounded-lg bg-white text-black"
+                                                                             className="body2 w-full pl-12 pr-5 py-3 text-sm border border-outline rounded-lg bg-white text-black"
                                                                              type="text"
                                                                              placeholder="Add Dates"
                                                                              value={`${state[0].startDate.toLocaleDateString()} - ${state[0].endDate.toLocaleDateString()}`}
                                                                              readOnly
                                                                       />
                                                                </div>
-                                                               <div data-testid = "picker">
+                                                               <div data-testid = "picker" className="z-10">
                                                                <DateRangePicker
                                                                       className={`form-date-picker box-shadow md:border-t border-outline  ${openDate ? "open" : ""}`}
                                                                       
@@ -275,7 +275,7 @@ const DestinationSearch = () => {
                                                                              readOnly
                                                                       />
                                                                </div>
-                                                               <div className={`sub-menu-guest bg-white rounded-b-xl overflow-hidden p-5 absolute top-full md:mt-5 mt-3 left-0 w-full box-shadow md:border-t border-outline ${openGuest ? "open" : ""}`}>
+                                                               <div className={`sub-menu-guest z-10 bg-white rounded-b-xl overflow-hidden p-5 absolute top-full md:mt-5 mt-3 left-0 w-full box-shadow md:border-t border-outline ${openGuest ? "open" : ""}`}>
                                                                       <div className="item flex items-center justify-between pb-4 border-b border-outline">
                                                                              <div className="left">
                                                                                     <p>Adults</p>
@@ -345,9 +345,11 @@ const DestinationSearch = () => {
                                                                </div>
                                                         </div>
                                                         <div className="button-block flex-shrink-0 max-lg:w-[48%] max-md:w-full">
+                                                               <Link to={`/hotels?location=${location ? location.uid : "None"}&startDate=${state[0].startDate.toLocaleDateString()}&endDate=${state[0].endDate.toLocaleDateString()}&adult=${guest.adult}&children=${guest.children}&room=${guest.room}`}>
                                                                <div className="button-main max-lg:w-full">
-                                                                      <Link to={`/hotels?location=${location ? location.uid : "None"}&startDate=${state[0].startDate.toLocaleDateString()}&endDate=${state[0].endDate.toLocaleDateString()}&adult=${guest.adult}&children=${guest.children}&room=${guest.room}`}>Search</Link>
+                                                                      Search
                                                                </div>
+                                                               </Link>
                                                         </div>
                                                  </form>
                                           </div>

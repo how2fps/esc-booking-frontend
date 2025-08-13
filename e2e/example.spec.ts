@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test('Booking flow: user enters details and proceeds to checkout', async ({ page }) => {
   // Mock the user session API to simulate logged-in user
-  await page.route('http://18.138.130.229:3000/api/users/session', route =>
+  await page.route('https://18.138.130.229:3000/api/users/session', route =>
     route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -32,7 +32,7 @@ test('Booking flow: user enters details and proceeds to checkout', async ({ page
   };
 
   // Intercept the booking POST request and mock its response
-  await page.route('http://18.138.130.229:3000/api/bookings', route =>
+  await page.route('https://18.138.130.229:3000/api/bookings', route =>
     route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -44,7 +44,7 @@ test('Booking flow: user enters details and proceeds to checkout', async ({ page
   // Since Playwright does not natively simulate React Router state, use URL params or localStorage
   // Here we assume that bookingState is encoded in a query param or injected by the app for testing; 
   // you may need to adjust this based on your app's setup.
-  await page.goto('http://localhost:3000/booking', { waitUntil: 'networkidle' });
+  await page.goto('https://localhost:3000/booking', { waitUntil: 'networkidle' });
 
   // Wait for user details form to be visible (means loading done)
   await expect(page.locator('text=Your Details')).toBeVisible();
