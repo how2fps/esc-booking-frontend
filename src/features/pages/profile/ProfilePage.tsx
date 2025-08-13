@@ -13,7 +13,7 @@ const ProfilePage: React.FC = () => {
        const [error, setError] = useState<string | null>(null)
        const [saving, setSaving] = useState(false)
        const navigate = useNavigate()
-       const { logout } = useAuth()
+       const { logout, setUser: setAuthUser } = useAuth()
 
        const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
        const [currentPassword, setCurrentPassword] = useState('');
@@ -119,6 +119,7 @@ const ProfilePage: React.FC = () => {
                      const data = await res.json()
                      if (data.success) {
                             setUser({ ...form })
+                            setAuthUser({...form})
                             setEditing(false)
                             setMessage('Profile updated successfully!')
                      } else {
