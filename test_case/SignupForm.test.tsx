@@ -15,7 +15,7 @@ describe("SignupForm", () => {
     renderWithRouter();
     expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/^password$/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^password/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/confirm password/i)).toBeInTheDocument();
   });
 
@@ -28,12 +28,12 @@ describe("SignupForm", () => {
     renderWithRouter();
     fireEvent.change(screen.getByLabelText(/name/i), { target: { value: "Nicky" } });
     fireEvent.change(screen.getByLabelText(/email/i), { target: { value: "nicky@example.com" } });
-    fireEvent.change(screen.getByLabelText(/^password$/i), { target: { value: "Password1" } });
+    fireEvent.change(screen.getByLabelText(/^password/i), { target: { value: "Password1" } });
     fireEvent.change(screen.getByLabelText(/confirm password/i), { target: { value: "Password1" } });
 
     expect(screen.getByLabelText(/name/i)).toHaveValue("Nicky");
     expect(screen.getByLabelText(/email/i)).toHaveValue("nicky@example.com");
-    expect(screen.getByLabelText(/^password$/i)).toHaveValue("Password1");
+    expect(screen.getByLabelText(/^password/i)).toHaveValue("Password1");
     expect(screen.getByLabelText(/confirm password/i)).toHaveValue("Password1");
   });
 
@@ -47,7 +47,7 @@ describe("SignupForm", () => {
     renderWithRouter();
     fireEvent.change(screen.getByLabelText(/name/i), { target: { value: "Nicky" } });
     fireEvent.change(screen.getByLabelText(/email/i), { target: { value: "nicky@example.com" } });
-    fireEvent.change(screen.getByLabelText(/^password$/i), { target: { value: "Password1" } });
+    fireEvent.change(screen.getByLabelText(/^password/i), { target: { value: "Password1" } });
     fireEvent.change(screen.getByLabelText(/confirm password/i), { target: { value: "Password1" } });
 
     expect(screen.getByRole("button", { name: /register/i })).not.toBeDisabled();
